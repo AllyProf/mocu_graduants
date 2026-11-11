@@ -3,7 +3,7 @@
 @section('title', 'Timetable | ' . config('app.name'))
 
 @section('content')
-<section class="sg-page-top sg-hero-timetable">
+<section class="sg-page-top sg-hero-timetable sg-app-pagehead">
 	<div class="container">
 		<div class="sg-section-title">
 			<span class="sg-caption">Schedule</span>

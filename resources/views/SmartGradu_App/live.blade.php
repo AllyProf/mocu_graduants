@@ -3,7 +3,7 @@
 @section('title', 'Live Ceremony | ' . config('app.name'))
 
 @section('content')
-<section class="sg-page-top sg-hero-live">
+<section class="sg-page-top sg-hero-live sg-app-pagehead">
 	<div class="container">
 		<div class="sg-section-title">
 			<span class="sg-caption">Watch Online</span>

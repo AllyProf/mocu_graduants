@@ -3,7 +3,11 @@
 @section('title', 'Best Students | ' . config('app.name'))
 
 @section('content')
-<section class="sg-page-top sg-hero-best">
+@php
+	$total = $students->count();
+	$avgGpa = $total ? round($students->avg('gpa'), 2) : 0;
+@endphp
+<section class="sg-page-top sg-hero-best sg-app-pagehead">
 	<div class="container">
 		<div class="sg-section-title">
 			<span class="sg-caption">Top Performers</span>
@@ -12,62 +16,65 @@
 	</div>
 </section>
 
-<section class="sg-section">
-	<div class="container" data-filter-root data-per-page="10">
-		<div class="sg-filter">
-			<div class="row">
-				<div class="col-md-5 col-sm-6">
-					<label for="best_programme">Programme</label>
-					<select id="best_programme" class="form-control sg-select2" data-filter-programme data-placeholder="All programmes">
-						<option value="">All programmes</option>
-						@foreach($programmes as $programme)
-							<option value="{{ $programme }}">{{ $programme }}</option>
-						@endforeach
-					</select>
-				</div>
-				<div class="col-md-7 col-sm-6">
-					<label for="best_q">Search</label>
-					<input type="text" id="best_q" class="form-control" data-filter-q placeholder="Search by name or award...">
-				</div>
+<section class="sg-section sg-list-page">
+	<div class="container" data-filter-root data-per-page="10" data-total-all="{{ $total }}" data-avg-all="{{ $avgGpa }}">
+		<div class="sg-list-summary">
+			<span class="sg-list-summary-icon"><i class="fa fa-star"></i></span>
+			<div class="sg-list-summary-main">
+				<strong>Top performers</strong>
+				<span><b data-filter-count>{{ $total }}</b> shown · Avg GPA <b data-filter-avg>{{ number_format($avgGpa, 2) }}</b></span>
 			</div>
 		</div>
 
-		<p class="mb-3"><strong data-filter-count>{{ $students->count() }}</strong> result(s)</p>
+		<div class="sg-list-tools">
+			<div class="sg-list-search-row">
+				<div class="sg-list-search">
+					<i class="fa fa-search" aria-hidden="true"></i>
+					<input type="text" id="best_q" class="form-control" data-filter-q placeholder="Search name...">
+				</div>
+				<button type="button" class="sg-list-clear" data-filter-clear>Clear</button>
+			</div>
+			<div class="sg-list-filters">
+				<select id="best_programme" class="form-control sg-select2" data-filter-programme data-placeholder="All programmes" data-sheet-title="Programme">
+					<option value="">All programmes</option>
+					@foreach($programmes as $programme)
+						<option value="{{ $programme }}">{{ $programme }}</option>
+					@endforeach
+				</select>
+			</div>
+		</div>
+
+		<p class="sg-list-showing">Showing <strong data-filter-showing>{{ min(10, $total) }}</strong> of <strong data-filter-count-2>{{ $total }}</strong></p>
 		<div class="sg-empty" data-filter-empty style="display:none;">No best students match your filters.</div>
 
-		<div class="sg-table-wrap">
-			<table class="table sg-table mb-0">
-				<thead>
-					<tr>
-						<th>#</th>
-						<th>Name</th>
-						<th>Gender</th>
-						<th>Study Level</th>
-						<th>Programme</th>
-						<th>Code</th>
-						<th>Award</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach($students as $index => $student)
-						<tr
-							data-filter-item
-							data-programme="{{ $student->programme }}"
-							data-search="{{ $student->full_name }} {{ $student->programme }} {{ $student->programme_short }} {{ $student->award }} {{ $student->gender }}"
-						>
-							<td data-row-num>{{ $index + 1 }}</td>
-							<td>{{ $student->full_name }}</td>
-							<td>{{ $student->gender }}</td>
-							<td>{{ $student->study_level }}</td>
-							<td>{{ $student->programme }}</td>
-							<td><strong>{{ $student->programme_short }}</strong></td>
-							<td><span class="sg-badge">{{ $student->award ?: 'Best Student' }}</span></td>
-						</tr>
-					@endforeach
-				</tbody>
-			</table>
+		<div class="sg-people-list">
+			@foreach($students as $index => $student)
+				<article
+					class="sg-people-item"
+					data-filter-item
+					data-programme="{{ $student->programme }}"
+					data-gpa="{{ $student->gpa }}"
+					data-search="{{ $student->full_name }} {{ $student->programme }} {{ $student->programme_short }} {{ $student->award }} {{ $student->gender }}"
+				>
+					<span class="sg-people-rank" data-row-num>{{ $index + 1 }}</span>
+					<div class="sg-people-info">
+						<strong class="sg-people-name">{{ $student->full_name }}</strong>
+						<span class="sg-people-meta">{{ $student->programme_short }}</span>
+						@if(!empty($student->award))
+							<span class="sg-people-award">{{ $student->award }}</span>
+						@endif
+					</div>
+					<div class="sg-people-stat">
+						<strong>{{ number_format((float) $student->gpa, 2) }}</strong>
+						<span>{{ $student->gender }}</span>
+					</div>
+				</article>
+			@endforeach
 		</div>
-		<nav class="sg-pagination" data-pagination aria-label="Best students pagination"></nav>
+
+		<div class="sg-load-more-wrap" data-load-more-wrap style="display:none;">
+			<button type="button" class="sg-load-more" data-load-more>Load more</button>
+		</div>
 	</div>
 </section>
 @endsection

@@ -31,60 +31,53 @@
 		return matched;
 	}
 
-	function renderPagination(root, page, totalPages) {
-		var nav = root.querySelector("[data-pagination]");
-		if (!nav) return;
+	function renderLoadMore(root, visible, total) {
+		var wrap = root.querySelector("[data-load-more-wrap]");
+		var btn = root.querySelector("[data-load-more]");
+		if (!wrap || !btn) return;
 
-		if (totalPages <= 1) {
-			nav.innerHTML = "";
-			nav.style.display = "none";
+		if (visible >= total) {
+			wrap.style.display = "none";
 			return;
 		}
 
-		nav.style.display = "";
-		var html = "";
-		html += '<button type="button" class="sg-page-btn" data-page-action="prev"' + (page <= 1 ? " disabled" : "") + ">Prev</button>";
-
-		for (var i = 1; i <= totalPages; i++) {
-			html +=
-				'<button type="button" class="sg-page-btn' +
-				(i === page ? " is-active" : "") +
-				'" data-page="' +
-				i +
-				'">' +
-				i +
-				"</button>";
-		}
-
-		html += '<button type="button" class="sg-page-btn" data-page-action="next"' + (page >= totalPages ? " disabled" : "") + ">Next</button>";
-		nav.innerHTML = html;
+		wrap.style.display = "";
+		var remaining = total - visible;
+		btn.textContent = "Load more (" + remaining + ")";
 	}
 
-	function applyListFilter(root, pageOverride) {
+	function applyListFilter(root, resetVisible) {
 		var matched = getMatchedRows(root);
-		var perPage = parseInt(root.getAttribute("data-per-page") || "0", 10);
-		var usePaging = perPage > 0 && !!root.querySelector("[data-pagination]");
-		var page = parseInt(root.getAttribute("data-current-page") || "1", 10);
+		var perPage = parseInt(root.getAttribute("data-per-page") || "10", 10);
+		if (perPage < 1) perPage = 10;
 
-		if (typeof pageOverride === "number") {
-			page = pageOverride;
+		var visibleLimit = parseInt(root.getAttribute("data-visible-count") || String(perPage), 10);
+		if (resetVisible) {
+			visibleLimit = perPage;
 		}
+		if (visibleLimit < perPage) visibleLimit = perPage;
+		if (visibleLimit > matched.length) visibleLimit = matched.length;
 
-		var totalPages = usePaging ? Math.max(1, Math.ceil(matched.length / perPage)) : 1;
-		if (page > totalPages) page = totalPages;
-		if (page < 1) page = 1;
-		root.setAttribute("data-current-page", String(page));
+		root.setAttribute("data-visible-count", String(visibleLimit));
 
-		var start = usePaging ? (page - 1) * perPage : 0;
-		var end = usePaging ? start + perPage : matched.length;
+		var visibleCount = 0;
+		var gpaSum = 0;
+		var gpaCount = 0;
 
 		root.querySelectorAll("[data-filter-item]").forEach(function (row) {
 			row.style.display = "none";
 		});
 
 		matched.forEach(function (row, index) {
-			if (index >= start && index < end) {
+			var gpa = parseFloat(row.getAttribute("data-gpa"));
+			if (!isNaN(gpa)) {
+				gpaSum += gpa;
+				gpaCount += 1;
+			}
+
+			if (index < visibleLimit) {
 				row.style.display = "";
+				visibleCount += 1;
 				var numCell = row.querySelector("[data-row-num]");
 				if (numCell) {
 					numCell.textContent = String(index + 1);
@@ -92,9 +85,18 @@
 			}
 		});
 
-		var count = root.querySelector("[data-filter-count]");
-		if (count) {
-			count.textContent = String(matched.length);
+		root.querySelectorAll("[data-filter-count], [data-filter-count-2]").forEach(function (el) {
+			el.textContent = String(matched.length);
+		});
+
+		var showing = root.querySelector("[data-filter-showing]");
+		if (showing) {
+			showing.textContent = String(visibleCount);
+		}
+
+		var avgEl = root.querySelector("[data-filter-avg]");
+		if (avgEl) {
+			avgEl.textContent = gpaCount ? (gpaSum / gpaCount).toFixed(2) : "0.00";
 		}
 
 		var empty = root.querySelector("[data-filter-empty]");
@@ -102,66 +104,77 @@
 			empty.style.display = matched.length ? "none" : "";
 		}
 
-		renderPagination(root, page, totalPages);
+		renderLoadMore(root, visibleCount, matched.length);
 	}
 
-	function initSelect2() {
-		if (!window.jQuery || !jQuery.fn || !jQuery.fn.select2) return;
+	function loadMore(root) {
+		var perPage = parseInt(root.getAttribute("data-per-page") || "10", 10);
+		var visibleLimit = parseInt(root.getAttribute("data-visible-count") || String(perPage), 10);
+		root.setAttribute("data-visible-count", String(visibleLimit + perPage));
+		applyListFilter(root, false);
+	}
 
-		jQuery(".sg-select2").each(function () {
-			var $el = jQuery(this);
-			if ($el.hasClass("select2-hidden-accessible")) return;
-
-			$el.select2({
-				width: "100%",
-				placeholder: $el.data("placeholder") || "Select an option",
-				allowClear: true,
-				minimumResultsForSearch: 0,
-			});
+	function clearFilters(root) {
+		root.querySelectorAll("[data-filter-q]").forEach(function (el) {
+			el.value = "";
 		});
+
+		root.querySelectorAll("[data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
+			el.value = "";
+			if (window.jQuery && jQuery(el).hasClass("select2-hidden-accessible")) {
+				jQuery(el).val(null).trigger("change");
+			} else {
+				el.dispatchEvent(new Event("change", { bubbles: true }));
+			}
+
+			var trigger = el.closest(".sg-sheet-field");
+			if (trigger) {
+				var valueEl = trigger.querySelector(".sg-sheet-trigger-value");
+				var placeholder = el.getAttribute("data-placeholder") || "Select";
+				if (valueEl) valueEl.textContent = placeholder;
+				trigger.classList.remove("has-value");
+			}
+		});
+
+		applyListFilter(root, true);
 	}
 
 	function bindFilters() {
 		document.querySelectorAll("[data-filter-root]").forEach(function (root) {
-			root.setAttribute("data-current-page", "1");
+			root.setAttribute("data-visible-count", root.getAttribute("data-per-page") || "10");
 
 			root.querySelectorAll("[data-filter-q]").forEach(function (el) {
 				el.addEventListener("input", function () {
-					applyListFilter(root, 1);
+					applyListFilter(root, true);
 				});
 			});
 
 			root.querySelectorAll("[data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
 				el.addEventListener("change", function () {
-					applyListFilter(root, 1);
+					applyListFilter(root, true);
 				});
 
 				if (window.jQuery) {
 					jQuery(el).on("select2:select select2:clear select2:unselect change", function () {
-						applyListFilter(root, 1);
+						applyListFilter(root, true);
 					});
 				}
 			});
 
-			var pager = root.querySelector("[data-pagination]");
-			if (pager) {
-				pager.addEventListener("click", function (event) {
-					var btn = event.target.closest(".sg-page-btn");
-					if (!btn || btn.disabled) return;
+			root.querySelectorAll("[data-filter-clear]").forEach(function (btn) {
+				btn.addEventListener("click", function () {
+					clearFilters(root);
+				});
+			});
 
-					var current = parseInt(root.getAttribute("data-current-page") || "1", 10);
-					var action = btn.getAttribute("data-page-action");
-					var nextPage = current;
-
-					if (action === "prev") nextPage = current - 1;
-					else if (action === "next") nextPage = current + 1;
-					else if (btn.getAttribute("data-page")) nextPage = parseInt(btn.getAttribute("data-page"), 10);
-
-					applyListFilter(root, nextPage);
+			var loadMoreBtn = root.querySelector("[data-load-more]");
+			if (loadMoreBtn) {
+				loadMoreBtn.addEventListener("click", function () {
+					loadMore(root);
 				});
 			}
 
-			applyListFilter(root, 1);
+			applyListFilter(root, true);
 		});
 	}
 
@@ -322,7 +335,6 @@
 	}
 
 	function boot() {
-		initSelect2();
 		bindFilters();
 		bindVenueRouter();
 		bindLiveStreams();

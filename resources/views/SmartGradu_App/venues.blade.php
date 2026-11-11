@@ -3,7 +3,7 @@
 @section('title', 'Venue Guide | ' . config('app.name'))
 
 @section('content')
-<section class="sg-page-top sg-hero-campus">
+<section class="sg-page-top sg-hero-campus sg-app-pagehead">
 	<div class="container">
 		<div class="sg-section-title">
 			<span class="sg-caption">Campus Map</span>

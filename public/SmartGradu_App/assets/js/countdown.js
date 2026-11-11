@@ -5,6 +5,8 @@
 
 	function tick(root) {
 		var target = new Date(root.getAttribute("data-graduation")).getTime();
+		if (!target || isNaN(target)) return;
+
 		var now = Date.now();
 		var diff = Math.max(0, target - now);
 
@@ -25,12 +27,15 @@
 	}
 
 	function boot() {
-		var root = document.getElementById("sg-countdown");
-		if (!root) return;
-		tick(root);
-		setInterval(function () {
-			tick(root);
-		}, 1000);
+		var roots = Array.prototype.slice.call(document.querySelectorAll(".sg-countdown[data-graduation]"));
+		if (!roots.length) return;
+
+		function tickAll() {
+			roots.forEach(tick);
+		}
+
+		tickAll();
+		window.setInterval(tickAll, 1000);
 	}
 
 	if (document.readyState === "loading") {
