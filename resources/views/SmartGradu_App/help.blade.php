@@ -5,9 +5,12 @@
 @section('content')
 <section class="sg-page-top sg-hero-help sg-app-pagehead">
 	<div class="container">
-		<div class="sg-section-title">
-			<span class="sg-caption">Support</span>
-			<h1>{{ $help->title }}</h1>
+		<div class="sg-pagehead-bar">
+			@include('SmartGradu_App.partials.page-back')
+			<div class="sg-section-title">
+				<span class="sg-caption">Support</span>
+				<h1>{{ $help->title }}</h1>
+			</div>
 		</div>
 	</div>
 </section>

@@ -9,9 +9,12 @@
 @endphp
 <section class="sg-page-top sg-hero-best sg-app-pagehead">
 	<div class="container">
-		<div class="sg-section-title">
-			<span class="sg-caption">Top Performers</span>
-			<h1>Best Students</h1>
+		<div class="sg-pagehead-bar">
+			@include('SmartGradu_App.partials.page-back')
+			<div class="sg-section-title">
+				<span class="sg-caption">Top Performers</span>
+				<h1>Best Students</h1>
+			</div>
 		</div>
 	</div>
 </section>
@@ -44,7 +47,6 @@
 			</div>
 		</div>
 
-		<p class="sg-list-showing">Showing <strong data-filter-showing>{{ min(10, $total) }}</strong> of <strong data-filter-count-2>{{ $total }}</strong></p>
 		<div class="sg-empty" data-filter-empty style="display:none;">No best students match your filters.</div>
 
 		<div class="sg-people-list">

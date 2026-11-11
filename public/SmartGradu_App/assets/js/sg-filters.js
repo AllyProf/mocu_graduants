@@ -85,14 +85,9 @@
 			}
 		});
 
-		root.querySelectorAll("[data-filter-count], [data-filter-count-2]").forEach(function (el) {
+		root.querySelectorAll("[data-filter-count]").forEach(function (el) {
 			el.textContent = String(matched.length);
 		});
-
-		var showing = root.querySelector("[data-filter-showing]");
-		if (showing) {
-			showing.textContent = String(visibleCount);
-		}
 
 		var avgEl = root.querySelector("[data-filter-avg]");
 		if (avgEl) {

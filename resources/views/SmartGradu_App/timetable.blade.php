@@ -5,9 +5,12 @@
 @section('content')
 <section class="sg-page-top sg-hero-timetable sg-app-pagehead">
 	<div class="container">
-		<div class="sg-section-title">
-			<span class="sg-caption">Schedule</span>
-			<h1>Ceremony Timetable</h1>
+		<div class="sg-pagehead-bar">
+			@include('SmartGradu_App.partials.page-back')
+			<div class="sg-section-title">
+				<span class="sg-caption">Schedule</span>
+				<h1>Ceremony Timetable</h1>
+			</div>
 		</div>
 	</div>
 </section>
