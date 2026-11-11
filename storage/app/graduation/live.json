@@ -1,0 +1,22 @@
+{
+    "title": "Live Ceremony Streams",
+    "message": "Select an available stream below. Use Open in YouTube or Copy URL to share.",
+    "streams": [
+        {
+            "id": "graduation-day",
+            "label": "Graduation Day",
+            "youtube_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+            "embed_url": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+            "is_live": false,
+            "status": "Scheduled"
+        },
+        {
+            "id": "convocation-day",
+            "label": "Convocation Day",
+            "youtube_url": "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+            "embed_url": "https://www.youtube.com/embed/jNQXAC9IVRw",
+            "is_live": false,
+            "status": "Scheduled"
+        }
+    ]
+}

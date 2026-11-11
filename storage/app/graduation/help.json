@@ -1,0 +1,52 @@
+{
+    "title": "Graduation Help",
+    "intro": "Quick answers for graduands, parents, and guests attending the Moshi Co-operative University graduation ceremony.",
+    "contacts": [
+        {
+            "label": "Graduation Desk",
+            "value": "+255 27 275 1833",
+            "type": "phone"
+        },
+        {
+            "label": "Fax",
+            "value": "+255 27 275 1834",
+            "type": "fax"
+        },
+        {
+            "label": "Email Support",
+            "value": "hodict@mocu.ac.tz",
+            "type": "email"
+        },
+        {
+            "label": "Help Desk Location",
+            "value": "Yellow tents at the Graduation Arena entrance",
+            "type": "place"
+        }
+    ],
+    "faqs": [
+        {
+            "question": "How do I find my name on the graduands list?",
+            "answer": "Open Graduands, then filter by your study level and programme. You can also search by name in real time."
+        },
+        {
+            "question": "What time should I arrive?",
+            "answer": "Graduands should arrive by 07:00 for assembly. Guests are advised to be seated by 08:00. See the Timetable page for the full schedule."
+        },
+        {
+            "question": "Where do I collect my gown?",
+            "answer": "Follow faculty notices for gown collection. On ceremony day, final checks are done at the Main Campus Quadrangle."
+        },
+        {
+            "question": "How do I watch the ceremony online?",
+            "answer": "Open Live Ceremony, choose Graduation Day or Convocation Day, then watch on the page or open in YouTube."
+        },
+        {
+            "question": "Who are the best students?",
+            "answer": "Visit Best Students to see recognised top performers by programme and award."
+        },
+        {
+            "question": "I cannot find a venue on campus.",
+            "answer": "Use the Venue Guide to pick From and To locations, then open the route in Maps."
+        }
+    ]
+}

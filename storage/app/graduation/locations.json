@@ -1,0 +1,62 @@
+[
+    {
+        "id": "moshi-town-center",
+        "name": "Moshi Town Center",
+        "lat": -3.3398,
+        "lng": 37.3400
+    },
+    {
+        "id": "mocu-main-gate",
+        "name": "MoCU Main Gate",
+        "lat": -3.3486,
+        "lng": 37.3455
+    },
+    {
+        "id": "nyerere-hall",
+        "name": "Nyerere Hall",
+        "lat": -3.3492,
+        "lng": 37.3462
+    },
+    {
+        "id": "george-kahama-hall",
+        "name": "George Kahama Hall",
+        "lat": -3.3498,
+        "lng": 37.3468
+    },
+    {
+        "id": "pius-mswekwa-hall",
+        "name": "Pius Mswekwa Hall",
+        "lat": -3.3501,
+        "lng": 37.3471
+    },
+    {
+        "id": "ushirika-building",
+        "name": "Ushirika Building",
+        "lat": -3.3490,
+        "lng": 37.3459
+    },
+    {
+        "id": "block-b",
+        "name": "Block B",
+        "lat": -3.3495,
+        "lng": 37.3452
+    },
+    {
+        "id": "dus",
+        "name": "DUS",
+        "lat": -3.3488,
+        "lng": 37.3448
+    },
+    {
+        "id": "library-building",
+        "name": "Library Building",
+        "lat": -3.3494,
+        "lng": 37.3465
+    },
+    {
+        "id": "mucasa",
+        "name": "MUCASA",
+        "lat": -3.3504,
+        "lng": 37.3456
+    }
+]

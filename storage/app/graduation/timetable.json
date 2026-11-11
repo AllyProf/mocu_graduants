@@ -1,0 +1,66 @@
+[
+    {
+        "title": "Rehearsal Briefing",
+        "event_type": "Rehearsal",
+        "description": "Graduands briefing and practice for procession seating and name calling.",
+        "starts_at": "2026-12-09 09:00",
+        "ends_at": "2026-12-09 12:00",
+        "venue": "Nyerere Hall"
+    },
+    {
+        "title": "Full Ceremony Rehearsal",
+        "event_type": "Rehearsal",
+        "description": "Full walk-through of the graduation day programme with marshals.",
+        "starts_at": "2026-12-10 08:00",
+        "ends_at": "2026-12-10 13:00",
+        "venue": "Ushirika Stadium"
+    },
+    {
+        "title": "Graduands Assembly",
+        "event_type": "Graduation Day",
+        "description": "All graduands assemble for gown check and seating guidance.",
+        "starts_at": "2026-12-11 07:00",
+        "ends_at": "2026-12-11 08:00",
+        "venue": "Main Campus Quadrangle"
+    },
+    {
+        "title": "Academic Procession",
+        "event_type": "Graduation Day",
+        "description": "Procession of university leadership, guests, and graduands.",
+        "starts_at": "2026-12-11 08:15",
+        "ends_at": "2026-12-11 08:45",
+        "venue": "Ushirika Stadium"
+    },
+    {
+        "title": "Conferment of Awards",
+        "event_type": "Graduation Day",
+        "description": "Conferment of certificates, diplomas, bachelor and masters degrees.",
+        "starts_at": "2026-12-11 09:00",
+        "ends_at": "2026-12-11 14:00",
+        "venue": "Ushirika Stadium"
+    },
+    {
+        "title": "Best Students Award Ceremony",
+        "event_type": "Award Ceremony",
+        "description": "Recognition of best students across programmes and study levels.",
+        "starts_at": "2026-12-11 13:00",
+        "ends_at": "2026-12-11 13:45",
+        "venue": "Ushirika Stadium"
+    },
+    {
+        "title": "Convocation Address",
+        "event_type": "Convocation Day",
+        "description": "Formal convocation session with guest speaker and academic addresses.",
+        "starts_at": "2026-12-12 09:00",
+        "ends_at": "2026-12-12 11:30",
+        "venue": "George Kahama Hall"
+    },
+    {
+        "title": "Convocation Networking & Closing",
+        "event_type": "Convocation Day",
+        "description": "Alumni networking, group photos, and official closing.",
+        "starts_at": "2026-12-12 11:30",
+        "ends_at": "2026-12-12 13:00",
+        "venue": "Pius Mswekwa Hall"
+    }
+]

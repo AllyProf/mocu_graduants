@@ -1,0 +1,122 @@
+[
+    {
+        "full_name": "Amina Juma Hassan",
+        "gender": "Female",
+        "study_level": "Bachelor",
+        "programme": "Bachelor of Laws",
+        "programme_short": "LL.B",
+        "gpa": 4.70,
+        "is_best_student": true,
+        "award": "Best Overall Student"
+    },
+    {
+        "full_name": "John Peter Mushi",
+        "gender": "Male",
+        "study_level": "Bachelor",
+        "programme": "Bachelor of Science in Information Technology",
+        "programme_short": "BSc IT",
+        "gpa": 4.20,
+        "is_best_student": false,
+        "award": null
+    },
+    {
+        "full_name": "Grace Neema Kimaro",
+        "gender": "Female",
+        "study_level": "Bachelor",
+        "programme": "Bachelor of Business Administration",
+        "programme_short": "BBA",
+        "gpa": 4.55,
+        "is_best_student": true,
+        "award": "Best in Business Administration"
+    },
+    {
+        "full_name": "Baraka Eliud Mwanga",
+        "gender": "Male",
+        "study_level": "Bachelor",
+        "programme": "Bachelor of Business Administration",
+        "programme_short": "BBA",
+        "gpa": 3.80,
+        "is_best_student": false,
+        "award": null
+    },
+    {
+        "full_name": "Fatuma Said Ally",
+        "gender": "Female",
+        "study_level": "Diploma",
+        "programme": "Diploma in Cooperative Management",
+        "programme_short": "Dip CM",
+        "gpa": 4.40,
+        "is_best_student": true,
+        "award": "Best Diploma Student"
+    },
+    {
+        "full_name": "Daniel Joseph Lyimo",
+        "gender": "Male",
+        "study_level": "Diploma",
+        "programme": "Diploma in Cooperative Management",
+        "programme_short": "Dip CM",
+        "gpa": 3.65,
+        "is_best_student": false,
+        "award": null
+    },
+    {
+        "full_name": "Rehema Paul Kessy",
+        "gender": "Female",
+        "study_level": "Certificate",
+        "programme": "Certificate in Accountancy",
+        "programme_short": "Cert Acc",
+        "gpa": 4.10,
+        "is_best_student": true,
+        "award": "Best Certificate Student"
+    },
+    {
+        "full_name": "Michael Frank Ngowi",
+        "gender": "Male",
+        "study_level": "Certificate",
+        "programme": "Certificate in Accountancy",
+        "programme_short": "Cert Acc",
+        "gpa": 3.40,
+        "is_best_student": false,
+        "award": null
+    },
+    {
+        "full_name": "Neema Deus Shirima",
+        "gender": "Female",
+        "study_level": "Masters",
+        "programme": "Master of Business Administration",
+        "programme_short": "MBA",
+        "gpa": 4.60,
+        "is_best_student": true,
+        "award": "Best Masters Graduate"
+    },
+    {
+        "full_name": "Emmanuel Godfrey Masawe",
+        "gender": "Male",
+        "study_level": "Masters",
+        "programme": "Master of Business Administration",
+        "programme_short": "MBA",
+        "gpa": 4.00,
+        "is_best_student": false,
+        "award": null
+    },
+    {
+        "full_name": "Sophia Abdul Mwakyusa",
+        "gender": "Female",
+        "study_level": "Bachelor",
+        "programme": "Bachelor of Science in Accounting and Finance",
+        "programme_short": "BSc AF",
+        "gpa": 4.35,
+        "is_best_student": true,
+        "award": "Best in Accounting and Finance"
+    },
+    {
+        "full_name": "Ibrahim Hassan Mrema",
+        "gender": "Male",
+        "study_level": "Bachelor",
+        "programme": "Bachelor of Science in Accounting and Finance",
+        "programme_short": "BSc AF",
+        "gpa": 3.90,
+        "is_best_student": false,
+        "award": null
+    }
+]
