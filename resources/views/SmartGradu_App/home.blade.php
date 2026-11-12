@@ -7,7 +7,7 @@
 	<div class="sg-dash-header">
 		<div class="sg-dash-copy">
 			<h1>Smart Gradu App</h1>
-			<p>Graduation Day · 11 Dec 2026</p>
+			<p>Moshi Co-operative University (MoCU)</p>
 		</div>
 		@include('SmartGradu_App.partials.header-logo')
 	</div>
