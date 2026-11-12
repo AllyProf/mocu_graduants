@@ -19,7 +19,7 @@
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/fonts.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/menu.css?v=20') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/style.css?v=20') }}">
-	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=91') }}">
+	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=94') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/responsive.css') }}">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 	@stack('styles')

@@ -14,7 +14,14 @@
 
 	<div class="sg-dash-sheet">
 		<div class="sg-dash-countdown">
-			@include('SmartGradu_App.partials.countdown')
+			<div class="sg-countdown-banner">
+				<img class="sg-countdown-banner-img" src="{{ asset('SmartGradu_App/assets/img/sg-countdown-banner.jpg') }}" alt="">
+				<span class="sg-countdown-banner-shade" aria-hidden="true"></span>
+				<div class="sg-countdown-banner-body">
+					<span class="sg-countdown-banner-label">Graduation Day · 11 Dec 2026</span>
+					@include('SmartGradu_App.partials.countdown')
+				</div>
+			</div>
 		</div>
 
 		<div class="sg-dash-grid">
