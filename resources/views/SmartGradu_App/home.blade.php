@@ -9,6 +9,7 @@
 			<h1>Smart Gradu App</h1>
 			<p>Graduation Day · 11 Dec 2026</p>
 		</div>
+		@include('SmartGradu_App.partials.header-logo')
 	</div>
 
 	<div class="sg-dash-sheet">

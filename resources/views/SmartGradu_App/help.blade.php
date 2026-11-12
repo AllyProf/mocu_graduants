@@ -20,7 +20,6 @@
 		<div class="sg-help-block sg-help-block-contacts">
 			<div class="sg-help-block-head">
 				<h2>Quick contacts</h2>
-				<p>Tap to call, email, or find the desk</p>
 			</div>
 			<div class="sg-help-contact-cards">
 				@forelse($help->contacts as $contact)
@@ -68,8 +67,8 @@
 					@php $isOpen = $index === 0; @endphp
 					<div class="sg-acc-item {{ $isOpen ? 'is-open' : '' }}">
 						<button type="button" class="sg-acc-trigger" aria-expanded="{{ $isOpen ? 'true' : 'false' }}">
-							<span class="sg-acc-icon" aria-hidden="true"></span>
 							<span class="sg-acc-title">{{ $faq->question }}</span>
+							<span class="sg-acc-chevron" aria-hidden="true"><i class="fa fa-angle-down"></i></span>
 						</button>
 						<div class="sg-acc-panel" @if(!$isOpen) hidden @endif>
 							<p>{{ $faq->answer }}</p>
@@ -79,12 +78,6 @@
 					<div class="sg-empty">No help articles yet.</div>
 				@endforelse
 			</div>
-		</div>
-
-		<div class="sg-help-care-wrap sg-help-care-banner">
-			<img class="sg-help-care-img" src="{{ asset('SmartGradu_App/assets/img/sg-help-care.jpg') }}" alt="Customer care support">
-			<span class="sg-help-care-overlay" aria-hidden="true"></span>
-			<span class="sg-help-care-caption">Need more help? Visit the yellow tents at the arena entrance.</span>
 		</div>
 	</div>
 </section>

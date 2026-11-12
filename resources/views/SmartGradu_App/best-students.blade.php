@@ -29,7 +29,7 @@
 			</div>
 		</div>
 
-		<div class="sg-list-tools">
+		<div class="sg-list-tools sg-list-tools-desktop-row">
 			<div class="sg-list-search-row">
 				<div class="sg-list-search">
 					<i class="fa fa-search" aria-hidden="true"></i>
