@@ -27,7 +27,9 @@
 
 <body class="sg-body sg-app-shell" data-spy="scroll" data-offset="80">
 
-	@include('SmartGradu_App.partials.preloader')
+	@unless(request()->routeIs('home'))
+		@include('SmartGradu_App.partials.preloader')
+	@endunless
 	@include('SmartGradu_App.partials.app-nav')
 	@include('SmartGradu_App.partials.header')
 
