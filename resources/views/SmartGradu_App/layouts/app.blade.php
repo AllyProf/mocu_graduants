@@ -51,7 +51,7 @@
 	<script src="{{ asset('SmartGradu_App/assets/js/countdown.js?v=2') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=12') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=2') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=3') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=8') }}"></script>
 	@stack('scripts')
 </body>
 
