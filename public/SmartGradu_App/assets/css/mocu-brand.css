@@ -2146,7 +2146,7 @@ body.sg-body,
 		position: relative;
 		z-index: 2;
 		margin-top: 0;
-		padding: 12px 14px calc(92px + env(safe-area-inset-bottom, 0px));
+		padding: 10px 14px calc(72px + env(safe-area-inset-bottom, 0px));
 		background: #f3f4f6;
 		border-radius: 22px 22px 0 0;
 		min-height: 0;
@@ -2161,10 +2161,12 @@ body.sg-body,
 	}
 
 	body.sg-home-lock .sg-dash-grid {
-		flex: 0 0 auto;
-		align-content: start;
-		padding-bottom: 12px;
-		margin-bottom: 4px;
+		flex: 1 1 auto;
+		align-content: stretch;
+		grid-template-rows: repeat(3, minmax(0, 1fr));
+		gap: 8px;
+		padding-bottom: 0;
+		margin-bottom: 0;
 		min-height: 0;
 	}
 
@@ -2224,7 +2226,7 @@ body.sg-body,
 	.sg-dash-grid {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 10px;
+		gap: 8px;
 		padding-bottom: 0;
 	}
 
@@ -2233,10 +2235,10 @@ body.sg-body,
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 8px;
-		min-height: 108px;
-		height: auto;
-		padding: 12px 10px;
+		gap: 6px;
+		min-height: 0;
+		height: 100%;
+		padding: 10px 8px;
 		background: var(--sg-white);
 		border: 1px solid #e6e8ec;
 		border-radius: 14px;
@@ -3051,7 +3053,7 @@ body.sg-body,
 	}
 
 	.sg-dash {
-		min-height: calc(100vh - 88px);
+		min-height: 0;
 		display: flex;
 		flex-direction: column;
 		background: #eef2f8;
@@ -3154,7 +3156,7 @@ body.sg-body,
 		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 	}
 
-	/* Home web: banner + compact 3x2 cards, fully visible */
+	/* Home web: banner + cards with less empty bottom space */
 	body.sg-home-lock {
 		overflow-x: hidden;
 		overflow-y: auto;
@@ -3165,21 +3167,21 @@ body.sg-body,
 	body.sg-home-lock .sg-main {
 		overflow: visible;
 		height: auto;
-		min-height: calc(100vh - 88px);
+		min-height: 0;
 	}
 
 	body.sg-home-lock .sg-dash {
 		height: auto;
-		min-height: calc(100vh - 88px);
+		min-height: 0;
 		max-height: none;
 		overflow: visible;
 	}
 
 	body.sg-home-lock .sg-dash-sheet {
 		min-height: 0;
-		flex: 1;
+		flex: 0 0 auto;
 		overflow: visible;
-		padding: 22px 28px 28px;
+		padding: 18px 28px 24px;
 		justify-content: flex-start;
 	}
 
@@ -3187,7 +3189,7 @@ body.sg-body,
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		grid-template-rows: auto auto;
-		gap: 16px;
+		gap: 14px;
 		flex: 0 0 auto;
 		min-height: 0;
 		align-content: start;
@@ -3195,11 +3197,11 @@ body.sg-body,
 	}
 
 	.sg-dash-card {
-		min-height: 138px;
+		min-height: 120px;
 		height: auto;
 		border-radius: 18px;
-		padding: 22px 14px;
-		gap: 12px;
+		padding: 18px 14px;
+		gap: 10px;
 		box-shadow: 0 8px 20px rgba(11, 18, 32, 0.06);
 	}
 
