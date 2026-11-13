@@ -3189,7 +3189,7 @@ body.sg-body,
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		grid-template-rows: auto auto;
-		gap: 14px;
+		gap: 16px;
 		flex: 0 0 auto;
 		min-height: 0;
 		align-content: start;
@@ -3197,10 +3197,10 @@ body.sg-body,
 	}
 
 	.sg-dash-card {
-		min-height: 196px;
+		min-height: 138px;
 		height: auto;
 		border-radius: 18px;
-		padding: 36px 14px;
+		padding: 22px 14px;
 		gap: 12px;
 		box-shadow: 0 8px 20px rgba(11, 18, 32, 0.06);
 	}
