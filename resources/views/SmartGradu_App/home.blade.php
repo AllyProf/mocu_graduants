@@ -45,11 +45,11 @@
 			</a>
 			<a class="sg-dash-card" href="{{ route('live') }}">
 				<span class="sg-dash-icon sg-dash-icon-red"><i class="fa fa-video-camera"></i></span>
-				<span class="sg-dash-label" data-i18n="liveShort">Live Ceremony</span>
+				<span class="sg-dash-label" data-i18n="live">Live Ceremony</span>
 			</a>
 			<a class="sg-dash-card" href="{{ route('venues') }}">
 				<span class="sg-dash-icon sg-dash-icon-teal"><i class="fa fa-map-marker"></i></span>
-				<span class="sg-dash-label" data-i18n="venuesShort">Venue Guide</span>
+				<span class="sg-dash-label" data-i18n="venues">Venue Guide</span>
 			</a>
 		</div>
 	</div>
