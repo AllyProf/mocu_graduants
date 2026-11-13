@@ -2146,7 +2146,7 @@ body.sg-body,
 		position: relative;
 		z-index: 2;
 		margin-top: 0;
-		padding: 10px 14px calc(72px + env(safe-area-inset-bottom, 0px));
+		padding: 12px 14px calc(46px + env(safe-area-inset-bottom, 0px));
 		background: #f3f4f6;
 		border-radius: 22px 22px 0 0;
 		min-height: 0;
@@ -2161,10 +2161,10 @@ body.sg-body,
 	}
 
 	body.sg-home-lock .sg-dash-grid {
-		flex: 1 1 auto;
-		align-content: stretch;
-		grid-template-rows: repeat(3, minmax(0, 1fr));
-		gap: 8px;
+		flex: 0 0 auto;
+		align-content: start;
+		grid-template-rows: none;
+		gap: 10px;
 		padding-bottom: 0;
 		margin-bottom: 0;
 		min-height: 0;
@@ -2226,7 +2226,7 @@ body.sg-body,
 	.sg-dash-grid {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 8px;
+		gap: 10px;
 		padding-bottom: 0;
 	}
 
@@ -2235,10 +2235,10 @@ body.sg-body,
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 6px;
-		min-height: 0;
-		height: 100%;
-		padding: 10px 8px;
+		gap: 8px;
+		min-height: 168px;
+		height: auto;
+		padding: 20px 10px;
 		background: var(--sg-white);
 		border: 1px solid #e6e8ec;
 		border-radius: 14px;
@@ -3197,11 +3197,11 @@ body.sg-body,
 	}
 
 	.sg-dash-card {
-		min-height: 120px;
+		min-height: 196px;
 		height: auto;
 		border-radius: 18px;
-		padding: 18px 14px;
-		gap: 10px;
+		padding: 36px 14px;
+		gap: 12px;
 		box-shadow: 0 8px 20px rgba(11, 18, 32, 0.06);
 	}
 
