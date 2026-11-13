@@ -8,8 +8,8 @@
 		<div class="sg-pagehead-bar">
 			@include('SmartGradu_App.partials.page-back')
 			<div class="sg-section-title">
-				<span class="sg-caption">Watch Online</span>
-				<h1>Live Ceremony</h1>
+				<span class="sg-caption" data-i18n="captionWatch">Watch Online</span>
+				<h1 data-i18n="live">Live Ceremony</h1>
 			</div>
 		</div>
 	</div>
@@ -22,9 +22,9 @@
 		@else
 			<div class="sg-filter">
 				<div class="row align-items-end sg-live-controls">
-					<div class="col-lg-3 col-md-6 col-sm-12">
+					<div class="col-lg-6 col-md-8 col-sm-12">
 						<label for="stream-filter">Available stream</label>
-						<select id="stream-filter" class="form-control sg-select2" data-placeholder="Available stream">
+						<select id="stream-filter" class="form-control sg-select2" data-placeholder="Available stream" data-i18n-data-placeholder="availableStream" data-i18n-sheet-title="availableStream">
 							@foreach($live->streams as $stream)
 								<option
 									value="{{ $stream->id }}"
@@ -36,17 +36,9 @@
 							@endforeach
 						</select>
 					</div>
-					<div class="col-lg-4 col-md-6 col-sm-12">
-						<label for="stream-url">Stream URL</label>
-						<input type="text" id="stream-url" class="form-control" readonly value="">
-					</div>
-					<div class="col-lg-3 col-md-6 col-sm-6">
+					<div class="col-lg-3 col-md-4 col-sm-12">
 						<label>&nbsp;</label>
-						<a id="stream-open-youtube" class="btn btn-block sg-btn-blue sg-live-action-btn" href="#" target="_blank" rel="noopener">Open in YouTube</a>
-					</div>
-					<div class="col-lg-2 col-md-6 col-sm-6">
-						<label>&nbsp;</label>
-						<button type="button" id="stream-copy-url" class="btn btn-block btn-default sg-live-action-btn">Copy URL</button>
+						<a id="stream-open-youtube" class="btn btn-block sg-btn-blue sg-live-action-btn" href="#" target="_blank" rel="noopener" data-i18n="openYoutube">Open in YouTube</a>
 					</div>
 				</div>
 			</div>

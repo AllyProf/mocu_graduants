@@ -8,8 +8,8 @@
 		<div class="sg-pagehead-bar">
 			@include('SmartGradu_App.partials.page-back')
 			<div class="sg-section-title">
-				<span class="sg-caption">Campus Map</span>
-				<h1>Venue Guide</h1>
+				<span class="sg-caption" data-i18n="captionCampus">Campus Map</span>
+				<h1 data-i18n="venues">Venue Guide</h1>
 			</div>
 		</div>
 	</div>
@@ -21,7 +21,7 @@
 			<div class="row">
 				<div class="col-md-5 col-sm-6">
 					<label for="route-from">From</label>
-					<select id="route-from" class="form-control sg-select2" data-placeholder="Select start location">
+					<select id="route-from" class="form-control sg-select2" data-placeholder="Select start location" data-i18n-data-placeholder="selectFrom" data-i18n-sheet-title="selectFrom">
 						<option value="">Select start location</option>
 						@foreach($locations as $location)
 							<option value="{{ $location->id }}" data-lat="{{ $location->lat }}" data-lng="{{ $location->lng }}">{{ $location->name }}</option>
@@ -30,7 +30,7 @@
 				</div>
 				<div class="col-md-5 col-sm-6">
 					<label for="route-to">To</label>
-					<select id="route-to" class="form-control sg-select2" data-placeholder="Select destination">
+					<select id="route-to" class="form-control sg-select2" data-placeholder="Select destination" data-i18n-data-placeholder="selectTo" data-i18n-sheet-title="selectTo">
 						<option value="">Select destination</option>
 						@foreach($locations as $location)
 							<option value="{{ $location->id }}" data-lat="{{ $location->lat }}" data-lng="{{ $location->lng }}">{{ $location->name }}</option>

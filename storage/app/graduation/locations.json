@@ -1,7 +1,7 @@
 [
     {
-        "id": "moshi-town-center",
-        "name": "Moshi Town Center",
+        "id": "moshi-town-centre",
+        "name": "Moshi Town Centre",
         "lat": -3.3398,
         "lng": 37.3400
     },
@@ -24,8 +24,8 @@
         "lng": 37.3468
     },
     {
-        "id": "pius-mswekwa-hall",
-        "name": "Pius Mswekwa Hall",
+        "id": "pius-msekwa-hall",
+        "name": "Pius Msekwa Hall",
         "lat": -3.3501,
         "lng": 37.3471
     },
@@ -36,16 +36,16 @@
         "lng": 37.3459
     },
     {
+        "id": "administration-block",
+        "name": "Administration Block",
+        "lat": -3.3489,
+        "lng": 37.3464
+    },
+    {
         "id": "block-b",
         "name": "Block B",
         "lat": -3.3495,
         "lng": 37.3452
-    },
-    {
-        "id": "dus",
-        "name": "DUS",
-        "lat": -3.3488,
-        "lng": 37.3448
     },
     {
         "id": "library-building",
@@ -58,5 +58,35 @@
         "name": "MUCASA",
         "lat": -3.3504,
         "lng": 37.3456
+    },
+    {
+        "id": "wazalendo",
+        "name": "WAZALENDO",
+        "lat": -3.3506,
+        "lng": 37.3460
+    },
+    {
+        "id": "dus",
+        "name": "DUS",
+        "lat": -3.3488,
+        "lng": 37.3448
+    },
+    {
+        "id": "ushirika-stadium",
+        "name": "Ushirika Stadium",
+        "lat": -3.3510,
+        "lng": 37.3475
+    },
+    {
+        "id": "packing-block-b",
+        "name": "Packing Block B",
+        "lat": -3.3497,
+        "lng": 37.3449
+    },
+    {
+        "id": "hostel",
+        "name": "Hostel",
+        "lat": -3.3508,
+        "lng": 37.3450
     }
 ]

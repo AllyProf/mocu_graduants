@@ -43,7 +43,9 @@
 
 		wrap.style.display = "";
 		var remaining = total - visible;
-		btn.textContent = "Load more (" + remaining + ")";
+		var pack = window.sgGetLangPack ? window.sgGetLangPack() : null;
+		var label = (pack && pack.loadMore) || btn.getAttribute("data-i18n-load-more-label") || "Load more";
+		btn.textContent = label + " (" + remaining + ")";
 	}
 
 	function applyListFilter(root, resetVisible) {
@@ -87,6 +89,14 @@
 
 		root.querySelectorAll("[data-filter-count]").forEach(function (el) {
 			el.textContent = String(matched.length);
+		});
+
+		var totalAll = parseInt(root.getAttribute("data-total-all") || "0", 10);
+		if (!totalAll) {
+			totalAll = root.querySelectorAll("[data-filter-item]").length;
+		}
+		root.querySelectorAll("[data-filter-total]").forEach(function (el) {
+			el.textContent = String(totalAll);
 		});
 
 		var avgEl = root.querySelector("[data-filter-avg]");
@@ -261,9 +271,7 @@
 		var frame = document.getElementById("stream-frame");
 		var status = document.getElementById("stream-status");
 		var openBtn = document.getElementById("stream-open-youtube");
-		var copyBtn = document.getElementById("stream-copy-url");
-		var urlInput = document.getElementById("stream-url");
-		if (!select || !frame || !openBtn || !copyBtn || !urlInput) return;
+		if (!select || !frame || !openBtn) return;
 
 		function applyStream() {
 			var option = select.options[select.selectedIndex];
@@ -273,7 +281,6 @@
 			var live = option.dataset.live === "1";
 
 			frame.src = embed;
-			urlInput.value = youtube;
 			openBtn.href = youtube || "#";
 			if (status) {
 				status.textContent = live ? "Live now" : option.dataset.status || "Scheduled";
@@ -285,20 +292,6 @@
 		if (window.jQuery) {
 			jQuery(select).on("select2:select select2:clear select2:unselect change", applyStream);
 		}
-
-		copyBtn.addEventListener("click", function () {
-			urlInput.select();
-			urlInput.setSelectionRange(0, 99999);
-			if (navigator.clipboard && navigator.clipboard.writeText) {
-				navigator.clipboard.writeText(urlInput.value);
-			} else {
-				document.execCommand("copy");
-			}
-			copyBtn.textContent = "Copied";
-			setTimeout(function () {
-				copyBtn.textContent = "Copy URL";
-			}, 1400);
-		});
 
 		applyStream();
 	}
@@ -334,6 +327,12 @@
 		bindVenueRouter();
 		bindLiveStreams();
 		bindAccordions();
+
+		document.addEventListener("sg:langchange", function () {
+			document.querySelectorAll("[data-filter-root]").forEach(function (root) {
+				applyListFilter(root, false);
+			});
+		});
 	}
 
 	if (document.readyState === "loading") {

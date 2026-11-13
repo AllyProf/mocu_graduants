@@ -19,13 +19,13 @@
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/fonts.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/menu.css?v=20') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/style.css?v=20') }}">
-	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=95') }}">
+	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=116') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/responsive.css') }}">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 	@stack('styles')
 </head>
 
-<body class="sg-body sg-app-shell" data-spy="scroll" data-offset="80">
+<body class="sg-body sg-app-shell {{ request()->routeIs('home') ? 'sg-home-lock' : '' }}" data-spy="scroll" data-offset="80">
 
 	@unless(request()->routeIs('home'))
 		@include('SmartGradu_App.partials.preloader')
@@ -39,6 +39,7 @@
 
 	@include('SmartGradu_App.partials.tabbar')
 	@include('SmartGradu_App.partials.sheet')
+	@include('SmartGradu_App.partials.lang-sheet')
 
 	<script src="{{ asset('SmartGradu_App/assets/js/jquery-1.12.4.min.js') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -48,8 +49,9 @@
 	<script src="{{ asset('SmartGradu_App/assets/js/scrolltopcontrol.js') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/scripts.js?v=5') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/countdown.js?v=2') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=9') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=1') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=12') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=2') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=3') }}"></script>
 	@stack('scripts')
 </body>
 

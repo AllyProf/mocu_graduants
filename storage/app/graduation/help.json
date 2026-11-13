@@ -4,17 +4,12 @@
     "contacts": [
         {
             "label": "Graduation Desk",
-            "value": "+255 27 275 1833",
+            "value": "+255 27 2751833",
             "type": "phone"
         },
         {
-            "label": "Fax",
-            "value": "+255 27 275 1834",
-            "type": "fax"
-        },
-        {
             "label": "Email Support",
-            "value": "hodict@mocu.ac.tz",
+            "value": "info@mocu.ac.tz",
             "type": "email"
         },
         {

@@ -15,7 +15,7 @@
 		<span class="sg-mobile-inquiry-icon"><i class="fa fa-phone"></i></span>
 		<div>
 			<span class="sg-mobile-inquiry-label">To More Inquiry</span>
-			<a href="tel:+255272751833">+255 27 275 1833</a>
+			<a href="tel:+255272751833">+255 27 2751833</a>
 		</div>
 	</div>
 </div>

@@ -8,8 +8,8 @@
 		<div class="sg-pagehead-bar">
 			@include('SmartGradu_App.partials.page-back')
 			<div class="sg-section-title">
-				<span class="sg-caption">Support</span>
-				<h1>{{ $help->title }}</h1>
+				<span class="sg-caption" data-i18n="captionSupport">Support</span>
+				<h1 data-i18n="helpTitle">{{ $help->title }}</h1>
 			</div>
 		</div>
 	</div>
@@ -19,7 +19,7 @@
 	<div class="container">
 		<div class="sg-help-block sg-help-block-contacts">
 			<div class="sg-help-block-head">
-				<h2>Quick contacts</h2>
+				<h2 data-i18n="quickContacts">Quick contacts</h2>
 			</div>
 			<div class="sg-help-contact-cards">
 				@forelse($help->contacts as $contact)

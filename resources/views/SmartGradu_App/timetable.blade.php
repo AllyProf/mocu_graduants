@@ -8,8 +8,8 @@
 		<div class="sg-pagehead-bar">
 			@include('SmartGradu_App.partials.page-back')
 			<div class="sg-section-title">
-				<span class="sg-caption">Schedule</span>
-				<h1>Ceremony Timetable</h1>
+				<span class="sg-caption" data-i18n="captionSchedule">Schedule</span>
+				<h1 data-i18n="timetableTitle">Ceremony Timetable</h1>
 			</div>
 		</div>
 	</div>
@@ -21,7 +21,7 @@
 			<div class="row">
 				<div class="col-md-5 col-sm-6">
 					<label for="event_type">Event type</label>
-					<select id="event_type" class="form-control sg-select2" data-filter-type data-placeholder="All event types">
+					<select id="event_type" class="form-control sg-select2" data-filter-type data-placeholder="All event types" data-i18n-data-placeholder="allEventTypes" data-i18n-sheet-title="allEventTypes">
 						<option value="">All event types</option>
 						@foreach($eventTypes as $type)
 							<option value="{{ $type }}">{{ $type }}</option>
@@ -30,7 +30,7 @@
 				</div>
 				<div class="col-md-7 col-sm-6">
 					<label for="timetable_q">Search</label>
-					<input type="text" id="timetable_q" class="form-control" data-filter-q placeholder="Search events or venues...">
+					<input type="text" id="timetable_q" class="form-control" data-filter-q data-i18n-placeholder="searchEvents" placeholder="Search events or venues...">
 				</div>
 			</div>
 		</div>

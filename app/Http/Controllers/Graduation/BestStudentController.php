@@ -13,7 +13,8 @@ class BestStudentController extends Controller
 
         return view('SmartGradu_App.best-students', [
             'students' => $students,
-            'programmes' => $students->pluck('programme')->unique()->sort()->values(),
+            'programmes' => $data->programmes(),
+            'studyLevels' => $data->studyLevels(),
         ]);
     }
 }

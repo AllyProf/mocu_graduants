@@ -7,7 +7,7 @@
 			<button type="button" class="sg-sheet-close" data-sheet-close aria-label="Close">&times;</button>
 		</div>
 		<div class="sg-sheet-search-wrap">
-			<input type="search" class="sg-sheet-search" id="sg-sheet-search" placeholder="Search..." autocomplete="off">
+			<input type="search" class="sg-sheet-search" id="sg-sheet-search" data-i18n-placeholder="search" placeholder="Search..." autocomplete="off">
 		</div>
 		<div class="sg-sheet-list" id="sg-sheet-list" role="listbox"></div>
 	</div>

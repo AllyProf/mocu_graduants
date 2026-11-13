@@ -2,19 +2,19 @@
     {
         "full_name": "Amina Juma Hassan",
         "gender": "Female",
-        "study_level": "Bachelor",
+        "study_level": "Bachelor Degree",
         "programme": "Bachelor of Laws",
         "programme_short": "LL.B",
         "gpa": 4.70,
         "is_best_student": true,
-        "award": "Best Overall Student"
+        "award": null
     },
     {
         "full_name": "John Peter Mushi",
         "gender": "Male",
-        "study_level": "Bachelor",
-        "programme": "Bachelor of Science in Information Technology",
-        "programme_short": "BSc IT",
+        "study_level": "Bachelor Degree",
+        "programme": "Bachelor of Business Information and Communication Technology",
+        "programme_short": "BBICT",
         "gpa": 4.20,
         "is_best_student": false,
         "award": null
@@ -22,19 +22,19 @@
     {
         "full_name": "Grace Neema Kimaro",
         "gender": "Female",
-        "study_level": "Bachelor",
-        "programme": "Bachelor of Business Administration",
-        "programme_short": "BBA",
+        "study_level": "Bachelor Degree",
+        "programme": "Bachelor of Human Resource Management",
+        "programme_short": "BHRM",
         "gpa": 4.55,
         "is_best_student": true,
-        "award": "Best in Business Administration"
+        "award": null
     },
     {
         "full_name": "Baraka Eliud Mwanga",
         "gender": "Male",
-        "study_level": "Bachelor",
-        "programme": "Bachelor of Business Administration",
-        "programme_short": "BBA",
+        "study_level": "Bachelor Degree",
+        "programme": "Bachelor of Microfinance and Enterprise Development",
+        "programme_short": "BME",
         "gpa": 3.80,
         "is_best_student": false,
         "award": null
@@ -42,19 +42,19 @@
     {
         "full_name": "Fatuma Said Ally",
         "gender": "Female",
-        "study_level": "Diploma",
-        "programme": "Diploma in Cooperative Management",
-        "programme_short": "Dip CM",
+        "study_level": "Non Degree",
+        "programme": "Diploma in Business and Enterprise Management",
+        "programme_short": "DBEM",
         "gpa": 4.40,
         "is_best_student": true,
-        "award": "Best Diploma Student"
+        "award": null
     },
     {
         "full_name": "Daniel Joseph Lyimo",
         "gender": "Male",
-        "study_level": "Diploma",
-        "programme": "Diploma in Cooperative Management",
-        "programme_short": "Dip CM",
+        "study_level": "Non Degree",
+        "programme": "Diploma in Business Information and Communication Technology",
+        "programme_short": "DBICT",
         "gpa": 3.65,
         "is_best_student": false,
         "award": null
@@ -62,19 +62,19 @@
     {
         "full_name": "Rehema Paul Kessy",
         "gender": "Female",
-        "study_level": "Certificate",
-        "programme": "Certificate in Accountancy",
-        "programme_short": "Cert Acc",
+        "study_level": "Non Degree",
+        "programme": "Certificate in Accountancy and Finance",
+        "programme_short": "CAF",
         "gpa": 4.10,
         "is_best_student": true,
-        "award": "Best Certificate Student"
+        "award": null
     },
     {
         "full_name": "Michael Frank Ngowi",
         "gender": "Male",
-        "study_level": "Certificate",
-        "programme": "Certificate in Accountancy",
-        "programme_short": "Cert Acc",
+        "study_level": "Non Degree",
+        "programme": "Certificate in Human Resource Management",
+        "programme_short": "CHRM",
         "gpa": 3.40,
         "is_best_student": false,
         "award": null
@@ -83,18 +83,18 @@
         "full_name": "Neema Deus Shirima",
         "gender": "Female",
         "study_level": "Masters",
-        "programme": "Master of Business Administration",
-        "programme_short": "MBA",
+        "programme": "Bachelor of Procurement and Supply Chain Management",
+        "programme_short": "BPSCM",
         "gpa": 4.60,
         "is_best_student": true,
-        "award": "Best Masters Graduate"
+        "award": null
     },
     {
         "full_name": "Emmanuel Godfrey Masawe",
         "gender": "Male",
-        "study_level": "Masters",
-        "programme": "Master of Business Administration",
-        "programme_short": "MBA",
+        "study_level": "Postgraduate Diploma",
+        "programme": "Bachelor of Accounting and Finance",
+        "programme_short": "BAF",
         "gpa": 4.00,
         "is_best_student": false,
         "award": null
@@ -102,20 +102,40 @@
     {
         "full_name": "Sophia Abdul Mwakyusa",
         "gender": "Female",
-        "study_level": "Bachelor",
-        "programme": "Bachelor of Science in Accounting and Finance",
-        "programme_short": "BSc AF",
+        "study_level": "Bachelor Degree",
+        "programme": "Bachelor of Accounting and Finance",
+        "programme_short": "BAF",
         "gpa": 4.35,
         "is_best_student": true,
-        "award": "Best in Accounting and Finance"
+        "award": null
     },
     {
         "full_name": "Ibrahim Hassan Mrema",
         "gender": "Male",
-        "study_level": "Bachelor",
-        "programme": "Bachelor of Science in Accounting and Finance",
-        "programme_short": "BSc AF",
+        "study_level": "PhD",
+        "programme": "Bachelor of Economics",
+        "programme_short": "BEC",
         "gpa": 3.90,
+        "is_best_student": false,
+        "award": null
+    },
+    {
+        "full_name": "Halima Yusuf Komba",
+        "gender": "Female",
+        "study_level": "Bachelor Degree",
+        "programme": "Bachelor of Cooperative Management and Accounting",
+        "programme_short": "BCMA",
+        "gpa": 4.25,
+        "is_best_student": true,
+        "award": null
+    },
+    {
+        "full_name": "Peter John Msigwa",
+        "gender": "Male",
+        "study_level": "Non Degree",
+        "programme": "Certificate in Information Technology",
+        "programme_short": "CIT",
+        "gpa": 3.75,
         "is_best_student": false,
         "award": null
     }

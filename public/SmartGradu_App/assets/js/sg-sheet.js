@@ -12,14 +12,50 @@
 		var titleEl = document.getElementById("sg-sheet-title");
 		var searchEl = document.getElementById("sg-sheet-search");
 		var listEl = document.getElementById("sg-sheet-list");
+		var panel = sheet.querySelector(".sg-sheet-panel");
 		var activeSelect = null;
+		var blurTimer = null;
+
+		function clearKeyboardLift() {
+			sheet.classList.remove("is-search-focused");
+			if (panel) {
+				panel.style.bottom = "";
+				panel.style.maxHeight = "";
+			}
+		}
+
+		function liftForKeyboard() {
+			if (!panel || sheet.hidden) return;
+			sheet.classList.add("is-search-focused");
+
+			var keyboard = 0;
+			if (window.visualViewport) {
+				var vv = window.visualViewport;
+				keyboard = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+			}
+
+			panel.style.bottom = keyboard + "px";
+			panel.style.maxHeight = keyboard
+				? Math.max(280, Math.round(window.innerHeight - keyboard - 12)) + "px"
+				: "min(92vh, 720px)";
+		}
+
+		function onViewportChange() {
+			if (sheet.classList.contains("is-search-focused")) {
+				liftForKeyboard();
+			}
+		}
 
 		function closeSheet() {
 			sheet.hidden = true;
 			sheet.setAttribute("aria-hidden", "true");
 			document.body.classList.remove("sg-sheet-open");
 			activeSelect = null;
-			if (searchEl) searchEl.value = "";
+			clearKeyboardLift();
+			if (searchEl) {
+				searchEl.blur();
+				searchEl.value = "";
+			}
 		}
 
 		function openSheet(select) {
@@ -31,13 +67,11 @@
 			}
 			if (titleEl) titleEl.textContent = label;
 			if (searchEl) searchEl.value = "";
+			clearKeyboardLift();
 			renderOptions("");
 			sheet.hidden = false;
 			sheet.setAttribute("aria-hidden", "false");
 			document.body.classList.add("sg-sheet-open");
-			window.setTimeout(function () {
-				if (searchEl) searchEl.focus();
-			}, 220);
 		}
 
 		function renderOptions(query) {
@@ -148,6 +182,24 @@
 			searchEl.addEventListener("input", function () {
 				renderOptions(searchEl.value);
 			});
+
+			searchEl.addEventListener("focus", function () {
+				window.clearTimeout(blurTimer);
+				liftForKeyboard();
+				window.setTimeout(liftForKeyboard, 120);
+				window.setTimeout(liftForKeyboard, 320);
+			});
+
+			searchEl.addEventListener("blur", function () {
+				blurTimer = window.setTimeout(function () {
+					clearKeyboardLift();
+				}, 180);
+			});
+		}
+
+		if (window.visualViewport) {
+			window.visualViewport.addEventListener("resize", onViewportChange);
+			window.visualViewport.addEventListener("scroll", onViewportChange);
 		}
 
 		listEl.addEventListener("click", function (event) {

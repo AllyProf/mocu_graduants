@@ -34,17 +34,42 @@ class GraduationData
 
     public function studyLevels(): Collection
     {
-        return $this->graduands()->pluck('study_level')->unique()->sort()->values();
+        return collect([
+            'Non Degree',
+            'Bachelor Degree',
+            'Postgraduate Diploma',
+            'Masters',
+            'PhD',
+        ]);
     }
 
     public function programmes(?string $studyLevel = null): Collection
     {
-        return $this->graduands()
-            ->when($studyLevel, fn (Collection $items) => $items->where('study_level', $studyLevel))
-            ->pluck('programme')
-            ->unique()
-            ->sort()
-            ->values();
+        return collect([
+            'BBICT',
+            'BHRM',
+            'BME',
+            'BMFED',
+            'BPSCM',
+            'LL.B',
+            'BCMA',
+            'BA-CMA',
+            'BEC',
+            'BCED',
+            'BAF',
+            'BAT',
+            'DBEM',
+            'DBRM',
+            'DBICT',
+            'DMFM',
+            'DCMA',
+            'CMA',
+            'CAF',
+            'CHRM',
+            'CIT',
+            'CL',
+            'CMF',
+        ]);
     }
 
     public function bestStudents(): Collection

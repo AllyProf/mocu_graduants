@@ -4,18 +4,18 @@
 <div class="sg-countdown" data-graduation="{{ $graduationDay }}" aria-label="Countdown to graduation day">
 	<div class="sg-countdown-item">
 		<strong data-unit="days">0</strong>
-		<span>Days</span>
+		<span data-i18n="days">Days</span>
 	</div>
 	<div class="sg-countdown-item">
 		<strong data-unit="hours">0</strong>
-		<span>Hours</span>
+		<span data-i18n="hours">Hours</span>
 	</div>
 	<div class="sg-countdown-item">
 		<strong data-unit="minutes">0</strong>
-		<span>Minutes</span>
+		<span data-i18n="minutes">Minutes</span>
 	</div>
 	<div class="sg-countdown-item">
 		<strong data-unit="seconds">0</strong>
-		<span>Seconds</span>
+		<span data-i18n="seconds">Seconds</span>
 	</div>
 </div>
