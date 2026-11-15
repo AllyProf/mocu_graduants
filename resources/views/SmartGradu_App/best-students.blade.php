@@ -37,12 +37,6 @@
 				<button type="button" class="sg-list-clear" data-filter-clear data-i18n="clear">Clear</button>
 			</div>
 			<div class="sg-list-filters sg-list-filters-3">
-				<select id="best_year" class="form-control sg-select2" data-filter-year data-placeholder="All years" data-sheet-title="Year of study" data-i18n-data-placeholder="allYears" data-i18n-sheet-title="yearOfStudy">
-					<option value="">All years</option>
-					@foreach($yearsOfStudy as $year)
-						<option value="{{ $year }}">{{ $year }}</option>
-					@endforeach
-				</select>
 				<select id="best_level" class="form-control sg-select2" data-filter-level data-placeholder="All levels" data-sheet-title="Study level" data-i18n-data-placeholder="allLevels" data-i18n-sheet-title="studyLevel">
 					<option value="">All levels</option>
 					@foreach($studyLevels as $level)
@@ -53,6 +47,12 @@
 					<option value="">All programmes</option>
 					@foreach($programmes as $programme)
 						<option value="{{ $programme }}">{{ $programme }}</option>
+					@endforeach
+				</select>
+				<select id="best_year" class="form-control sg-select2" data-filter-year data-placeholder="All years" data-sheet-title="Year of study" data-i18n-data-placeholder="allYears" data-i18n-sheet-title="yearOfStudy">
+					<option value="">All years</option>
+					@foreach($yearsOfStudy as $year)
+						<option value="{{ $year }}">{{ $year }}</option>
 					@endforeach
 				</select>
 			</div>
