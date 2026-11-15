@@ -11,6 +11,7 @@
 		<span class="sg-tabbar-fab">
 			<i class="fa fa-video-camera" aria-hidden="true"></i>
 		</span>
+		<span data-i18n="liveShort">Live</span>
 	</a>
 	<a href="{{ route('venues') }}" class="sg-tabbar-item {{ request()->routeIs('venues') ? 'is-active' : '' }}">
 		<i class="fa fa-map-marker" aria-hidden="true"></i>

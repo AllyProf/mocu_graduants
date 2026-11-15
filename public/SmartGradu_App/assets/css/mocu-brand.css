@@ -2719,6 +2719,10 @@ body.sg-body,
 		color: var(--sg-black);
 	}
 
+	.sg-tabbar-center span:last-child {
+		margin-top: 24px;
+	}
+
 	/* Bottom sheet picker */
 	.sg-sheet[hidden] {
 		display: none !important;
