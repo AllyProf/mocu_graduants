@@ -3323,3 +3323,60 @@ body.sg-body,
 		display: none !important;
 	}
 }
+
+/* ---------- Pull to refresh (mobile) ---------- */
+.sg-pull-refresh {
+	position: fixed;
+	top: 0;
+	left: 50%;
+	z-index: 1200;
+	transform: translate(-50%, -80px);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.15s ease;
+}
+
+.sg-pull-refresh.is-visible {
+	opacity: 1;
+}
+
+.sg-pull-refresh-inner {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: var(--sg-blue);
+	color: var(--sg-white);
+	box-shadow: 0 6px 18px rgba(5, 111, 231, 0.28);
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.01em;
+	white-space: nowrap;
+}
+
+.sg-pull-refresh.is-ready .sg-pull-refresh-inner {
+	background: var(--sg-yellow);
+	color: var(--sg-black);
+}
+
+.sg-pull-refresh i {
+	font-size: 0.95rem;
+	transition: transform 0.05s linear;
+}
+
+.sg-pull-refresh.is-refreshing i {
+	animation: sg-pull-spin 0.7s linear infinite;
+}
+
+@keyframes sg-pull-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (min-width: 992px) {
+	.sg-pull-refresh {
+		display: none !important;
+	}
+}

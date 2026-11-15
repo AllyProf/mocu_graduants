@@ -56,6 +56,9 @@
 			showing: "Showing",
 			graduandsAll: "Graduands All",
 			bestAll: "Best Students All",
+			pullRefresh: "Pull to refresh",
+			releaseRefresh: "Release to refresh",
+			refreshing: "Refreshing...",
 		},
 		sw: {
 			appName: "Mahafali ya MoCU",
@@ -106,6 +109,9 @@
 			showing: "Inaonyesha",
 			graduandsAll: "Wahitimu Wote",
 			bestAll: "Wanafunzi Bora Wote",
+			pullRefresh: "Vuta kusasisha",
+			releaseRefresh: "Achilia kusasisha",
+			refreshing: "Inasasisha...",
 		},
 	};
 
