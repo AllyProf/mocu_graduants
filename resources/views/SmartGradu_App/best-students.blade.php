@@ -36,7 +36,13 @@
 				</div>
 				<button type="button" class="sg-list-clear" data-filter-clear data-i18n="clear">Clear</button>
 			</div>
-			<div class="sg-list-filters">
+			<div class="sg-list-filters sg-list-filters-3">
+				<select id="best_year" class="form-control sg-select2" data-filter-year data-placeholder="All years" data-sheet-title="Year of study" data-i18n-data-placeholder="allYears" data-i18n-sheet-title="yearOfStudy">
+					<option value="">All years</option>
+					@foreach($yearsOfStudy as $year)
+						<option value="{{ $year }}">{{ $year }}</option>
+					@endforeach
+				</select>
 				<select id="best_level" class="form-control sg-select2" data-filter-level data-placeholder="All levels" data-sheet-title="Study level" data-i18n-data-placeholder="allLevels" data-i18n-sheet-title="studyLevel">
 					<option value="">All levels</option>
 					@foreach($studyLevels as $level)
@@ -56,17 +62,26 @@
 
 		<div class="sg-people-list">
 			@foreach($students as $index => $student)
+				@php
+					$isOverall = ($student->best_award ?? '') === 'overall';
+					$year = $student->year_of_study ?? '';
+				@endphp
 				<article
 					class="sg-people-item sg-people-item-plain"
 					data-filter-item
+					data-year="{{ $year }}"
 					data-level="{{ $student->study_level }}"
 					data-programme="{{ $student->programme_short }}"
-					data-search="{{ $student->full_name }} {{ $student->programme }} {{ $student->programme_short }} {{ $student->gender }}"
+					data-award="{{ $student->best_award ?? 'programme' }}"
+					data-search="{{ $student->full_name }} {{ $student->programme }} {{ $student->programme_short }} {{ $student->gender }} {{ $year }}"
 				>
 					<span class="sg-people-rank" data-row-num>{{ $index + 1 }}</span>
 					<div class="sg-people-info">
 						<strong class="sg-people-name">{{ $student->full_name }}</strong>
-						<span class="sg-people-meta">{{ $student->programme_short }} · {{ $student->study_level }}</span>
+						<span class="sg-people-meta">{{ $student->programme_short }} · {{ $year }} · {{ $student->study_level }}</span>
+						@if($isOverall)
+							<span class="sg-people-award" data-i18n="overall">Overall</span>
+						@endif
 					</div>
 					<span class="sg-people-gender">{{ $student->gender }}</span>
 				</article>

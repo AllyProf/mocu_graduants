@@ -35,11 +35,21 @@ class GraduationData
     public function studyLevels(): Collection
     {
         return collect([
-            'Non Degree',
+            'Certificate',
+            'Diploma',
             'Bachelor Degree',
             'Postgraduate Diploma',
             'Masters',
             'PhD',
+        ]);
+    }
+
+    public function yearsOfStudy(): Collection
+    {
+        return collect([
+            'First Year',
+            'Second Year',
+            'Third Year',
         ]);
     }
 
@@ -76,7 +86,16 @@ class GraduationData
     {
         return $this->graduands()
             ->where('is_best_student', true)
-            ->sortByDesc('gpa')
+            ->sort(function ($a, $b) {
+                $aOverall = ($a->best_award ?? '') === 'overall' ? 0 : 1;
+                $bOverall = ($b->best_award ?? '') === 'overall' ? 0 : 1;
+
+                if ($aOverall !== $bOverall) {
+                    return $aOverall <=> $bOverall;
+                }
+
+                return ((float) ($b->gpa ?? 0)) <=> ((float) ($a->gpa ?? 0));
+            })
             ->values();
     }
 

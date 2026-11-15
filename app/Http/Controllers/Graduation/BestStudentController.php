@@ -15,6 +15,7 @@ class BestStudentController extends Controller
             'students' => $students,
             'programmes' => $data->programmes(),
             'studyLevels' => $data->studyLevels(),
+            'yearsOfStudy' => $data->yearsOfStudy(),
         ]);
     }
 }

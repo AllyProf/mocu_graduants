@@ -1629,8 +1629,26 @@ body.sg-body,
 	gap: 8px;
 }
 
+.sg-list-filters.sg-list-filters-3 {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sg-list-filters.sg-list-filters-3 > :nth-child(3) {
+	grid-column: 1 / -1;
+}
+
 .sg-list-filters:has(> :only-child) {
 	grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+	.sg-list-filters.sg-list-filters-3 {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+
+	.sg-list-filters.sg-list-filters-3 > :nth-child(3) {
+		grid-column: auto;
+	}
 }
 
 .sg-list-filters > .sg-sheet-field,
@@ -2701,10 +2719,6 @@ body.sg-body,
 		color: var(--sg-black);
 	}
 
-	.sg-tabbar-center span:last-child {
-		margin-top: 24px;
-	}
-
 	/* Bottom sheet picker */
 	.sg-sheet[hidden] {
 		display: none !important;
@@ -3263,6 +3277,10 @@ body.sg-body,
 
 	.sg-list-filters {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.sg-list-filters.sg-list-filters-3 {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 
 	.sg-list-tools-desktop-row {

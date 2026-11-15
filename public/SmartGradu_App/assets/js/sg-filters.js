@@ -7,6 +7,7 @@
 
 	function getMatchedRows(root) {
 		var q = normalize(root.querySelector("[data-filter-q]") && root.querySelector("[data-filter-q]").value);
+		var year = normalize(root.querySelector("[data-filter-year]") && root.querySelector("[data-filter-year]").value);
 		var level = normalize(root.querySelector("[data-filter-level]") && root.querySelector("[data-filter-level]").value);
 		var programme = normalize(root.querySelector("[data-filter-programme]") && root.querySelector("[data-filter-programme]").value);
 		var type = normalize(root.querySelector("[data-filter-type]") && root.querySelector("[data-filter-type]").value);
@@ -14,16 +15,24 @@
 
 		root.querySelectorAll("[data-filter-item]").forEach(function (row) {
 			var hay = normalize(row.getAttribute("data-search"));
+			var rowYear = normalize(row.getAttribute("data-year"));
 			var rowLevel = normalize(row.getAttribute("data-level"));
 			var rowProgramme = normalize(row.getAttribute("data-programme"));
 			var rowType = normalize(row.getAttribute("data-type"));
+			var rowAward = normalize(row.getAttribute("data-award"));
 
 			var matchQ = !q || hay.indexOf(q) !== -1;
+			var matchYear = !year || rowYear === year;
 			var matchLevel = !level || rowLevel === level;
-			var matchProgramme = !programme || rowProgramme === programme;
+			// Overall best stays visible for Third Year even when a programme is selected,
+			// unless a different year is filtered.
+			var matchProgramme =
+				!programme ||
+				rowProgramme === programme ||
+				(rowAward === "overall" && (!year || year === "third year"));
 			var matchType = !type || rowType === type;
 
-			if (matchQ && matchLevel && matchProgramme && matchType) {
+			if (matchQ && matchYear && matchLevel && matchProgramme && matchType) {
 				matched.push(row);
 			}
 		});
@@ -124,7 +133,7 @@
 			el.value = "";
 		});
 
-		root.querySelectorAll("[data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
+		root.querySelectorAll("[data-filter-year], [data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
 			el.value = "";
 			if (window.jQuery && jQuery(el).hasClass("select2-hidden-accessible")) {
 				jQuery(el).val(null).trigger("change");
@@ -154,7 +163,7 @@
 				});
 			});
 
-			root.querySelectorAll("[data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
+			root.querySelectorAll("[data-filter-year], [data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
 				el.addEventListener("change", function () {
 					applyListFilter(root, true);
 				});
