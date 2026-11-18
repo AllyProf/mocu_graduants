@@ -111,6 +111,44 @@
 			if (label) label.textContent = pack.signingIn || "Signing in...";
 		});
 	}
+
+	var body = document.body;
+	if (!body.classList.contains("sg-login-shell")) return;
+
+	var page = document.querySelector(".sg-login-page");
+	var baseline = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+	function setKeyboardOpen(open) {
+		body.classList.toggle("is-keyboard-open", !!open);
+	}
+
+	function syncKeyboard() {
+		var focused = document.activeElement;
+		var onField = focused && focused.matches && focused.matches("input, textarea, select");
+		var height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+		var shrunk = height < baseline - 120;
+		setKeyboardOpen(onField || shrunk);
+		if (onField && page && typeof focused.scrollIntoView === "function") {
+			window.setTimeout(function () {
+				focused.scrollIntoView({ block: "center", inline: "nearest" });
+			}, 50);
+		}
+	}
+
+	["focusin", "focusout"].forEach(function (evt) {
+		document.addEventListener(evt, function () {
+			window.setTimeout(syncKeyboard, 50);
+		});
+	});
+
+	if (window.visualViewport) {
+		window.visualViewport.addEventListener("resize", function () {
+			baseline = Math.max(baseline, window.visualViewport.height);
+			syncKeyboard();
+		});
+	} else {
+		window.addEventListener("resize", syncKeyboard);
+	}
 })();
 </script>
 @endpush
