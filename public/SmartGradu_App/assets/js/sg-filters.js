@@ -244,8 +244,66 @@
 		return fallback;
 	}
 
+	/** True inside Flutter / Android / iOS in-app WebViews where blob downloads fail. */
+	function isEmbeddedWebView() {
+		var ua = navigator.userAgent || "";
+		if (window.flutter_inappwebview || window.FlutterWebView || window.Flutter) return true;
+		if (/; wv\)/i.test(ua)) return true;
+		if (/\bwv\b/i.test(ua) && /Android/i.test(ua)) return true;
+		if (/iPhone|iPod|iPad/i.test(ua) && !/Safari/i.test(ua)) return true;
+		return false;
+	}
+
+	/** Absolute PDF URL for native WebView download handlers. */
+	function absolutePdfUrl(url) {
+		try {
+			return new URL(url, window.location.href).href;
+		} catch (err) {
+			return url;
+		}
+	}
+
 	/**
-	 * Fetch PDF as a blob, show yellow status toast, then trigger browser download.
+	 * Notify Flutter (common channel names) so the host app can open/save the PDF.
+	 */
+	function notifyFlutterPdf(url) {
+		var payload = { type: "downloadPdf", url: url };
+		try {
+			if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) {
+				window.flutter_inappwebview.callHandler("downloadPdf", url);
+				return true;
+			}
+		} catch (err) {}
+		try {
+			if (window.DownloadPdfChannel && window.DownloadPdfChannel.postMessage) {
+				window.DownloadPdfChannel.postMessage(url);
+				return true;
+			}
+		} catch (err) {}
+		try {
+			if (window.Flutter && typeof window.Flutter.postMessage === "function") {
+				window.Flutter.postMessage(JSON.stringify(payload));
+				return true;
+			}
+		} catch (err) {}
+		return false;
+	}
+
+	/**
+	 * Open PDF via direct navigation (works in Flutter WebView download interceptors).
+	 */
+	function openPdfInWebView(link, url) {
+		var abs = absolutePdfUrl(url);
+		notifyFlutterPdf(abs);
+		showPdfStatus(pdfLang("downloadingPdf", "Downloading PDF..."), "pending");
+		window.setTimeout(function () {
+			window.location.assign(abs);
+			link.setAttribute("aria-busy", "false");
+		}, 280);
+	}
+
+	/**
+	 * Fetch PDF as a blob on normal browsers; in Flutter WebView navigate to the PDF URL.
 	 */
 	function startPdfDownload(link) {
 		if (!link || link.getAttribute("aria-busy") === "true") return;
@@ -258,6 +316,12 @@
 
 		link.setAttribute("aria-busy", "true");
 		showPdfStatus(pdfLang("downloadingPdf", "Downloading PDF..."), "pending");
+
+		// Blob + <a download> does not open files inside Flutter WebView.
+		if (isEmbeddedWebView()) {
+			openPdfInWebView(link, url);
+			return;
+		}
 
 		fetch(url, {
 			method: "GET",
@@ -315,7 +379,7 @@
 				showPdfStatus(pdfLang("downloadPdfFailed", "Could not download PDF"), "error");
 				hidePdfStatusSoon(2200);
 				window.setTimeout(function () {
-					window.location.assign(url);
+					window.location.assign(absolutePdfUrl(url));
 				}, 350);
 			})
 			.finally(function () {

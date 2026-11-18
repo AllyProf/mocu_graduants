@@ -182,6 +182,7 @@ class ListPdfController extends Controller
             'logoSrc' => $this->logoDataUri(),
         ])->setPaper('a4', 'portrait');
 
+        // Attachment helps Flutter / mobile WebViews intercept the file download.
         return $pdf->download($filename);
     }
 }
