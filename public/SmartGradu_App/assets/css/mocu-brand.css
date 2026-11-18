@@ -661,6 +661,7 @@ body.sg-body,
 
 .sg-app-pagehead {
 	position: relative;
+	z-index: 3;
 	min-height: 0 !important;
 	padding: calc(14px + env(safe-area-inset-top, 0px)) 0 34px !important;
 	background-color: var(--sg-blue) !important;
@@ -688,21 +689,26 @@ body.sg-body,
 	gap: 8px;
 	margin-left: auto;
 	flex: 0 0 auto;
+	position: relative;
+	z-index: 5;
 }
 
 .sg-pagehead-pdf {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	height: 36px;
-	padding: 0 8px 0 4px;
+	height: 38px;
+	padding: 0 9px 0 5px;
 	border-radius: 10px;
-	border: 0;
-	background: rgba(255, 255, 255, 0.16);
+	border: 1.5px solid rgba(255, 255, 255, 0.55);
+	background: rgba(255, 255, 255, 0.22);
 	color: #ffffff !important;
 	text-decoration: none !important;
 	line-height: 1;
-	box-shadow: none;
+	box-shadow: 0 3px 10px rgba(11, 18, 32, 0.18);
+	flex-shrink: 0;
+	position: relative;
+	z-index: 5;
 }
 
 .sg-pagehead-pdf-badge {
@@ -715,16 +721,18 @@ body.sg-body,
 	border: 1.5px solid #9f1239;
 	background: #ffffff;
 	color: #9f1239;
-	box-shadow: 0 2px 6px rgba(11, 18, 32, 0.12);
+	box-shadow: 0 2px 6px rgba(11, 18, 32, 0.14);
 }
 
 .sg-pagehead-pdf-doc {
 	display: block;
 	flex: 0 0 auto;
+	width: 17px;
+	height: 17px;
 }
 
 .sg-pagehead-pdf-label {
-	font-size: 0.78rem;
+	font-size: 0.8rem;
 	font-weight: 800;
 	letter-spacing: 0.04em;
 	line-height: 1;
@@ -736,7 +744,7 @@ body.sg-body,
 	justify-content: center;
 	width: 18px;
 	height: 18px;
-	color: #ffffff;
+	color: var(--sg-yellow);
 	animation: sg-pdf-download-bounce 1.15s ease-in-out infinite;
 }
 
@@ -751,7 +759,8 @@ body.sg-body,
 
 .sg-pagehead-pdf:hover,
 .sg-pagehead-pdf:focus {
-	background: rgba(255, 255, 255, 0.24);
+	background: rgba(255, 255, 255, 0.3);
+	border-color: rgba(255, 255, 255, 0.85);
 	color: #ffffff !important;
 	text-decoration: none !important;
 }
@@ -775,6 +784,7 @@ body.sg-body,
 
 .sg-status-alert.is-visible {
 	opacity: 1;
+	transform: translate(-50%, 64px);
 }
 
 .sg-status-alert-inner {
@@ -790,6 +800,12 @@ body.sg-body,
 	font-weight: 700;
 	letter-spacing: 0.01em;
 	white-space: nowrap;
+}
+
+.sg-status-alert.is-pending .sg-status-alert-inner {
+	background: var(--sg-yellow);
+	color: var(--sg-black);
+	box-shadow: 0 6px 18px rgba(237, 235, 4, 0.35);
 }
 
 .sg-status-alert.is-pending .sg-status-alert-inner i {
@@ -959,6 +975,11 @@ body.sg-body,
 	border-radius: 28px 28px 0 0;
 	position: relative;
 	z-index: 2;
+	pointer-events: none;
+}
+
+.sg-app-pagehead + .sg-section > .container {
+	pointer-events: auto;
 }
 
 .sg-section {
@@ -2632,95 +2653,69 @@ body.sg-body,
 		padding: 16px 14px 14px;
 	}
 
-	/* Keyboard / short viewport: free space, pin form to top, hide tabbar */
-	body.sg-login-shell.is-keyboard-open .sg-tabbar,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-tabbar {
+	/* Keyboard open: lock form into the visible viewport above the keyboard */
+	body.sg-login-shell.is-keyboard-open .sg-tabbar {
 		display: none !important;
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-main,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-main {
+	body.sg-login-shell.is-keyboard-open .sg-main {
 		height: 100vh;
 		height: 100dvh;
 		max-height: 100vh;
 		max-height: 100dvh;
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-login-page,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-page {
+	body.sg-login-shell.is-keyboard-open .sg-login-page {
+		position: fixed;
+		top: var(--sg-vv-top, 0px);
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: var(--sg-vv-height, 100dvh);
+		min-height: 0;
+		max-height: var(--sg-vv-height, 100dvh);
 		align-items: flex-start;
 		justify-content: flex-start;
-		padding: 8px 12px max(8px, env(safe-area-inset-bottom, 0px));
+		padding: 6px 10px 6px;
+		overflow-x: hidden;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
+		box-sizing: border-box;
+		z-index: 40;
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-login-card,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-card {
+	body.sg-login-shell.is-keyboard-open .sg-login-card {
 		max-width: 100%;
 		width: 100%;
 		padding: 12px 12px 10px;
-		margin: 0 auto;
+		margin: 0;
+		box-shadow: 0 8px 22px rgba(11, 18, 32, 0.28);
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-login-head,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-head {
+	body.sg-login-shell.is-keyboard-open .sg-login-head {
 		padding-bottom: 8px;
-		margin-bottom: 10px;
+		margin-bottom: 8px;
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-login-field,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-field {
+	body.sg-login-shell.is-keyboard-open .sg-login-field {
 		margin-bottom: 8px;
 	}
 
 	body.sg-login-shell.is-keyboard-open .sg-login-field .form-control,
-	body.sg-login-shell.is-keyboard-open .sg-login-password-toggle,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-field .form-control,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-password-toggle {
+	body.sg-login-shell.is-keyboard-open .sg-login-password-toggle {
 		height: 38px;
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-login-password-row,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-password-row {
+	body.sg-login-shell.is-keyboard-open .sg-login-password-row {
 		grid-template-columns: minmax(0, 1fr) 38px;
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-login-remember,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-remember {
-		margin: 0 0 10px;
+	body.sg-login-shell.is-keyboard-open .sg-login-remember {
+		margin: 0 0 8px;
 	}
 
-	body.sg-login-shell.is-keyboard-open .sg-login-submit,
-	body.sg-login-shell:has(.sg-login-page:focus-within) .sg-login-submit {
+	body.sg-login-shell.is-keyboard-open .sg-login-submit {
 		height: 40px;
-	}
-
-	@media (max-height: 560px) {
-		body.sg-login-shell .sg-tabbar {
-			display: none !important;
-		}
-
-		body.sg-login-shell .sg-main {
-			height: 100vh;
-			height: 100dvh;
-			max-height: 100vh;
-			max-height: 100dvh;
-		}
-
-		body.sg-login-shell .sg-login-page {
-			align-items: flex-start;
-			justify-content: flex-start;
-			padding: 8px 12px max(8px, env(safe-area-inset-bottom, 0px));
-			overflow-y: auto;
-			-webkit-overflow-scrolling: touch;
-		}
-
-		body.sg-login-shell .sg-login-card {
-			max-width: 100%;
-			width: 100%;
-			padding: 12px 12px 10px;
-		}
 	}
 
 	.sg-main {
@@ -2990,6 +2985,7 @@ body.sg-body,
 	/* Inner pages — solid header, clean sheet */
 	.sg-app-pagehead {
 		position: relative;
+		z-index: 3;
 		min-height: 0 !important;
 		padding: calc(20px + env(safe-area-inset-top, 0px)) 0 42px !important;
 		background: var(--sg-blue) !important;
@@ -3019,21 +3015,29 @@ body.sg-body,
 		font-size: 1.45rem;
 		font-weight: 800;
 		color: var(--sg-white);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.sg-pagehead-pdf {
-		height: 34px;
-		padding: 0 7px 0 3px;
+		height: 36px;
+		padding: 0 8px 0 4px;
 		border-radius: 9px;
 	}
 
 	.sg-pagehead-pdf-badge {
-		height: 26px;
+		height: 27px;
 		padding: 0 7px 0 5px;
 	}
 
+	.sg-pagehead-pdf-doc {
+		width: 16px;
+		height: 16px;
+	}
+
 	.sg-pagehead-pdf-label {
-		font-size: 0.74rem;
+		font-size: 0.76rem;
 	}
 
 	.sg-list-page .sg-filter {
@@ -3052,6 +3056,11 @@ body.sg-body,
 		border-radius: 22px 22px 0 0;
 		position: relative;
 		z-index: 2;
+		pointer-events: none;
+	}
+
+	.sg-app-pagehead + .sg-section > .container {
+		pointer-events: auto;
 	}
 
 	.sg-section {

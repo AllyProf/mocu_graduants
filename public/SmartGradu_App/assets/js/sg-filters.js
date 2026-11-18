@@ -147,13 +147,10 @@
 	}
 
 	function syncPdfLink(root) {
-		var link =
-			root.querySelector("[data-pdf-download]") ||
-			document.querySelector(".sg-pagehead-pdf[data-pdf-download], [data-pdf-download]");
-		if (!link) return;
-
-		var base = link.getAttribute("data-pdf-base") || link.getAttribute("href") || "";
-		if (!base || base === "#") return;
+		var links = Array.prototype.slice.call(
+			document.querySelectorAll(".sg-pagehead-pdf[data-pdf-download], [data-pdf-download]")
+		);
+		if (!links.length) return;
 
 		var params = new URLSearchParams();
 		var qEl = root.querySelector("[data-filter-q]");
@@ -167,7 +164,12 @@
 		if (yearEl && yearEl.value) params.set("year", yearEl.value);
 
 		var query = params.toString();
-		link.href = query ? base + (base.indexOf("?") === -1 ? "?" : "&") + query : base;
+
+		links.forEach(function (link) {
+			var base = link.getAttribute("data-pdf-base") || link.getAttribute("href") || "";
+			if (!base || base === "#") return;
+			link.href = query ? base + (base.indexOf("?") === -1 ? "?" : "&") + query : base;
+		});
 	}
 
 	function pdfLang(key, fallback) {
@@ -230,65 +232,109 @@
 		return fallback;
 	}
 
-	function bindPdfDownload() {
-		document.querySelectorAll("[data-pdf-download]").forEach(function (link) {
-			if (link.getAttribute("data-pdf-bound") === "1") return;
-			link.setAttribute("data-pdf-bound", "1");
+	function startPdfDownload(link) {
+		if (!link || link.getAttribute("aria-busy") === "true") return;
 
-			link.addEventListener("click", function (event) {
-				event.preventDefault();
-				if (link.getAttribute("aria-busy") === "true") return;
+		var root = document.querySelector("[data-filter-root]");
+		if (root) syncPdfLink(root);
 
-				var url = link.getAttribute("href") || link.getAttribute("data-pdf-base") || "";
-				if (!url || url === "#") return;
+		var url = link.getAttribute("href") || link.getAttribute("data-pdf-base") || "";
+		if (!url || url === "#") return;
 
-				link.setAttribute("aria-busy", "true");
-				showPdfStatus(pdfLang("downloadingPdf", "Downloading PDF..."), "pending");
+		link.setAttribute("aria-busy", "true");
+		showPdfStatus(pdfLang("downloadingPdf", "Downloading PDF..."), "pending");
 
-				fetch(url, {
-					method: "GET",
-					credentials: "same-origin",
-					headers: { Accept: "application/pdf" },
-				})
-					.then(function (res) {
-						if (!res.ok) throw new Error("download-failed");
-						var fallbackName =
-							url.indexOf("best-students") !== -1
-								? "mocu-best-students.pdf"
-								: "mocu-graduands.pdf";
-						var filename = filenameFromDisposition(
-							res.headers.get("content-disposition"),
-							fallbackName
-						);
-						return res.blob().then(function (blob) {
-							return { blob: blob, filename: filename };
-						});
-					})
-					.then(function (result) {
-						var objectUrl = URL.createObjectURL(result.blob);
-						var a = document.createElement("a");
-						a.href = objectUrl;
-						a.download = result.filename;
-						document.body.appendChild(a);
-						a.click();
-						a.remove();
-						window.setTimeout(function () {
-							URL.revokeObjectURL(objectUrl);
-						}, 1500);
+		fetch(url, {
+			method: "GET",
+			credentials: "same-origin",
+			headers: { Accept: "application/pdf" },
+			cache: "no-store",
+		})
+			.then(function (res) {
+				if (!res.ok) throw new Error("download-failed");
+				var ctype = String(res.headers.get("content-type") || "").toLowerCase();
+				var fallbackName =
+					url.indexOf("best-students") !== -1
+						? "mocu-best-students.pdf"
+						: "mocu-graduands.pdf";
+				var filename = filenameFromDisposition(
+					res.headers.get("content-disposition"),
+					fallbackName
+				);
+				return res.blob().then(function (blob) {
+					var type = String(blob.type || ctype || "").toLowerCase();
+					if (
+						type &&
+						type.indexOf("pdf") === -1 &&
+						type.indexOf("octet-stream") === -1
+					) {
+						throw new Error("not-pdf");
+					}
+					return {
+						blob:
+							type.indexOf("pdf") === -1
+								? new Blob([blob], { type: "application/pdf" })
+								: blob,
+						filename: filename,
+					};
+				});
+			})
+			.then(function (result) {
+				var objectUrl = URL.createObjectURL(result.blob);
+				var a = document.createElement("a");
+				a.href = objectUrl;
+				a.download = result.filename || "download.pdf";
+				a.rel = "noopener";
+				a.style.display = "none";
+				document.body.appendChild(a);
+				a.click();
+				a.remove();
+				window.setTimeout(function () {
+					URL.revokeObjectURL(objectUrl);
+				}, 2000);
 
-						showPdfStatus(pdfLang("downloadedPdf", "PDF downloaded"), "ok");
-						hidePdfStatusSoon(1600);
-					})
-					.catch(function () {
-						showPdfStatus(pdfLang("downloadPdfFailed", "Could not download PDF"), "error");
-						hidePdfStatusSoon(2200);
-						window.location.href = url;
-					})
-					.finally(function () {
-						link.setAttribute("aria-busy", "false");
-					});
+				showPdfStatus(pdfLang("downloadedPdf", "PDF downloaded"), "ok");
+				hidePdfStatusSoon(1600);
+			})
+			.catch(function () {
+				showPdfStatus(pdfLang("downloadPdfFailed", "Could not download PDF"), "error");
+				hidePdfStatusSoon(2200);
+				window.setTimeout(function () {
+					window.location.assign(url);
+				}, 350);
+			})
+			.finally(function () {
+				link.setAttribute("aria-busy", "false");
 			});
-		});
+	}
+
+	window.sgDownloadPdf = function (event, link) {
+		if (event) {
+			event.preventDefault();
+			if (event.stopPropagation) event.stopPropagation();
+		}
+		startPdfDownload(link || (event && event.currentTarget));
+		return false;
+	};
+
+	function bindPdfDownload() {
+		if (document.documentElement.getAttribute("data-pdf-download-bound") === "1") return;
+		document.documentElement.setAttribute("data-pdf-download-bound", "1");
+
+		document.addEventListener(
+			"click",
+			function (event) {
+				var link =
+					event.target && event.target.closest
+						? event.target.closest("[data-pdf-download]")
+						: null;
+				if (!link) return;
+				event.preventDefault();
+				event.stopPropagation();
+				startPdfDownload(link);
+			},
+			true
+		);
 	}
 
 	function bindPhoneDigits() {
@@ -610,19 +656,55 @@
 	}
 
 	function boot() {
-		bindFilters();
-		bindPhoneDigits();
-		bindComplaintForms();
-		bindPdfDownload();
-		bindVenueRouter();
-		bindLiveStreams();
-		bindAccordions();
+		// PDF first so download toast always works even if later boot steps fail.
+		try {
+			bindPdfDownload();
+		} catch (err) {
+			console.error("sg bindPdfDownload", err);
+		}
+		try {
+			bindFilters();
+		} catch (err) {
+			console.error("sg bindFilters", err);
+		}
+		try {
+			bindPhoneDigits();
+		} catch (err) {
+			console.error("sg bindPhoneDigits", err);
+		}
+		try {
+			bindComplaintForms();
+		} catch (err) {
+			console.error("sg bindComplaintForms", err);
+		}
+		try {
+			bindVenueRouter();
+		} catch (err) {
+			console.error("sg bindVenueRouter", err);
+		}
+		try {
+			bindLiveStreams();
+		} catch (err) {
+			console.error("sg bindLiveStreams", err);
+		}
+		try {
+			bindAccordions();
+		} catch (err) {
+			console.error("sg bindAccordions", err);
+		}
 
 		document.addEventListener("sg:langchange", function () {
 			document.querySelectorAll("[data-filter-root]").forEach(function (root) {
 				applyListFilter(root, false);
 			});
 		});
+	}
+
+	// Register PDF handler immediately (don't wait on other boot work).
+	try {
+		bindPdfDownload();
+	} catch (err) {
+		console.error("sg early bindPdfDownload", err);
 	}
 
 	if (document.readyState === "loading") {

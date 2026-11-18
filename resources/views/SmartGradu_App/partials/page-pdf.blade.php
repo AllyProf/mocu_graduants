@@ -8,6 +8,7 @@
 	data-pdf-base="{{ $pdfUrl }}"
 	aria-label="Download PDF"
 	title="Download PDF"
+	onclick="return window.sgDownloadPdf ? window.sgDownloadPdf(event, this) : true"
 >
 	<span class="sg-pagehead-pdf-badge" aria-hidden="true">
 		<svg class="sg-pagehead-pdf-doc" viewBox="0 0 24 24" width="16" height="16" focusable="false">

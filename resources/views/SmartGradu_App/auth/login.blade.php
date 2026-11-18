@@ -116,28 +116,46 @@
 	if (!body.classList.contains("sg-login-shell")) return;
 
 	var page = document.querySelector(".sg-login-page");
-	var baseline = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+	var baseline = Math.max(
+		window.innerHeight || 0,
+		window.visualViewport ? window.visualViewport.height : 0
+	);
+
+	function applyViewportVars() {
+		var vv = window.visualViewport;
+		var height = vv ? vv.height : window.innerHeight;
+		var top = vv ? vv.offsetTop : 0;
+		body.style.setProperty("--sg-vv-height", Math.round(height) + "px");
+		body.style.setProperty("--sg-vv-top", Math.round(top) + "px");
+		return height;
+	}
 
 	function setKeyboardOpen(open) {
 		body.classList.toggle("is-keyboard-open", !!open);
+		if (!open) {
+			body.style.removeProperty("--sg-vv-height");
+			body.style.removeProperty("--sg-vv-top");
+			return;
+		}
+		applyViewportVars();
+		if (page) {
+			window.requestAnimationFrame(function () {
+				page.scrollTop = 0;
+			});
+		}
 	}
 
 	function syncKeyboard() {
 		var focused = document.activeElement;
-		var onField = focused && focused.matches && focused.matches("input, textarea, select");
-		var height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-		var shrunk = height < baseline - 120;
+		var onField = !!(focused && focused.matches && focused.matches("input, textarea, select"));
+		var height = applyViewportVars();
+		var shrunk = height < baseline - 100;
 		setKeyboardOpen(onField || shrunk);
-		if (onField && page && typeof focused.scrollIntoView === "function") {
-			window.setTimeout(function () {
-				focused.scrollIntoView({ block: "center", inline: "nearest" });
-			}, 50);
-		}
 	}
 
 	["focusin", "focusout"].forEach(function (evt) {
 		document.addEventListener(evt, function () {
-			window.setTimeout(syncKeyboard, 50);
+			window.setTimeout(syncKeyboard, 80);
 		});
 	});
 
@@ -146,9 +164,16 @@
 			baseline = Math.max(baseline, window.visualViewport.height);
 			syncKeyboard();
 		});
+		window.visualViewport.addEventListener("scroll", function () {
+			if (body.classList.contains("is-keyboard-open")) {
+				applyViewportVars();
+			}
+		});
 	} else {
 		window.addEventListener("resize", syncKeyboard);
 	}
+
+	window.setTimeout(syncKeyboard, 0);
 })();
 </script>
 @endpush
