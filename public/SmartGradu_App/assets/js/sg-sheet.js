@@ -99,15 +99,29 @@
 			listEl.innerHTML = html || '<div class="sg-sheet-empty">No matches</div>';
 		}
 
+		function optionLabel(select, opt) {
+			if (!opt || opt.value === "") {
+				return select.getAttribute("data-placeholder") || "Select";
+			}
+
+			var text = opt.textContent.trim();
+			if (select.classList.contains("sg-country-select")) {
+				var parts = text.split(/\s+/);
+				if (parts.length >= 2) {
+					return parts[0] + " " + parts[1];
+				}
+			}
+
+			return text;
+		}
+
 		function syncTrigger(select) {
 			var trigger = select.closest(".sg-sheet-field");
 			if (!trigger) return;
 			var valueEl = trigger.querySelector(".sg-sheet-trigger-value");
 			if (!valueEl) return;
 			var opt = select.options[select.selectedIndex];
-			var placeholder = select.getAttribute("data-placeholder") || "Select";
-			var text = opt && opt.value !== "" ? opt.textContent.trim() : placeholder;
-			valueEl.textContent = text;
+			valueEl.textContent = optionLabel(select, opt);
 			trigger.classList.toggle("has-value", !!(opt && opt.value !== ""));
 		}
 
@@ -163,12 +177,23 @@
 					jQuery(selects).each(function () {
 						var $el = jQuery(this);
 						if ($el.hasClass("select2-hidden-accessible")) return;
-						$el.select2({
+						var canClear = $el.find('option[value=""]').length > 0;
+						var opts = {
 							width: "100%",
 							placeholder: $el.data("placeholder") || "Select an option",
-							allowClear: true,
+							allowClear: canClear,
 							minimumResultsForSearch: 0,
-						});
+						};
+
+						if ($el.hasClass("sg-country-select")) {
+							opts.templateSelection = function (data) {
+								if (!data || !data.id) return data && data.text ? data.text : "";
+								var parts = String(data.text || "").trim().split(/\s+/);
+								return parts.length >= 2 ? parts[0] + " " + parts[1] : data.text;
+							};
+						}
+
+						$el.select2(opts);
 					});
 				}
 			}

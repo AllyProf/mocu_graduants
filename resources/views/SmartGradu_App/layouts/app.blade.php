@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<title>@yield('title', config('app.name') . ' | MoCU')</title>
 	<meta name="theme-color" content="#056fe7">
 	<meta name="application-name" content="{{ config('app.name') }}">
@@ -19,19 +20,21 @@
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/fonts.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/menu.css?v=20') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/style.css?v=20') }}">
-	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=147') }}">
+	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=167') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/responsive.css') }}">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 	@stack('styles')
 </head>
 
-<body class="sg-body sg-app-shell {{ request()->routeIs('home') ? 'sg-home-lock' : '' }}" data-spy="scroll" data-offset="80">
+<body class="sg-body sg-app-shell {{ request()->routeIs('home') ? 'sg-home-lock' : '' }} {{ request()->routeIs('login') ? 'sg-login-shell' : '' }}" data-spy="scroll" data-offset="80">
 
-	@unless(request()->routeIs('home'))
+	@unless(request()->routeIs('home') || request()->routeIs('login'))
 		@include('SmartGradu_App.partials.preloader')
 	@endunless
 	@include('SmartGradu_App.partials.app-nav')
-	@include('SmartGradu_App.partials.header')
+	@unless(request()->routeIs('login'))
+		@include('SmartGradu_App.partials.header')
+	@endunless
 
 	<main class="sg-main">
 		@yield('content')
@@ -49,9 +52,9 @@
 	<script src="{{ asset('SmartGradu_App/assets/js/scrolltopcontrol.js') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/scripts.js?v=5') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/countdown.js?v=2') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=13') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=2') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=10') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=20') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=4') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=18') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-pull-refresh.js?v=1') }}"></script>
 	@stack('scripts')
 </body>

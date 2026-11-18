@@ -28,20 +28,67 @@ class GraduationData
     {
         return collect($this->read('graduands.json'))
             ->map(fn (array $row) => (object) $row)
-            ->sortBy('full_name', SORT_NATURAL | SORT_FLAG_CASE)
+            ->sort(function ($a, $b) {
+                $levelCmp = $this->studyLevelRank($a->study_level ?? '')
+                    <=> $this->studyLevelRank($b->study_level ?? '');
+
+                if ($levelCmp !== 0) {
+                    return $levelCmp;
+                }
+
+                return strnatcasecmp((string) ($a->full_name ?? ''), (string) ($b->full_name ?? ''));
+            })
             ->values();
     }
 
     public function studyLevels(): Collection
     {
         return collect([
-            'Certificate',
-            'Diploma',
-            'Bachelor Degree',
-            'Postgraduate Diploma',
-            'Masters',
             'PhD',
+            'Masters',
+            'Postgraduate Diploma',
+            'Bachelor Degree',
+            'Diploma',
+            'Certificate',
         ]);
+    }
+
+    public function studyLevelRank(?string $level): int
+    {
+        $rank = $this->studyLevels()->search($level);
+
+        return $rank === false ? 999 : (int) $rank;
+    }
+
+    public function complaintEmail(): string
+    {
+        $help = $this->help();
+        $email = $help->contacts
+            ->first(fn ($contact) => ($contact->type ?? '') === 'email');
+
+        return is_object($email) ? trim((string) ($email->value ?? '')) : '';
+    }
+
+    public function saveComplaint(array $complaint): void
+    {
+        $path = $this->path('complaints.json');
+        $existing = $this->read('complaints.json');
+
+        if (! is_array($existing)) {
+            $existing = [];
+        }
+
+        $existing[] = $complaint;
+
+        $dir = dirname($path);
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        file_put_contents(
+            $path,
+            json_encode($existing, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
     }
 
     public function yearsOfStudy(): Collection

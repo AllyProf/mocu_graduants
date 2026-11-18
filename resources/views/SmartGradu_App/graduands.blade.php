@@ -14,6 +14,9 @@
 				<span class="sg-caption" data-i18n="captionCeremony">Ceremony Lists</span>
 				<h1 data-i18n="graduands">Graduands</h1>
 			</div>
+			<div class="sg-pagehead-actions">
+				@include('SmartGradu_App.partials.page-pdf', ['pdfUrl' => route('graduands.pdf')])
+			</div>
 		</div>
 	</div>
 </section>
@@ -50,9 +53,16 @@
 					@endforeach
 				</select>
 			</div>
+			@include('SmartGradu_App.partials.list-actions', [
+				'listType' => 'graduands',
+				'studyLevels' => $studyLevels,
+				'programmes' => $programmes,
+			])
 		</div>
 
-		<div class="sg-empty" data-filter-empty style="display:none;">No graduands match your filters.</div>
+		<div class="sg-empty" data-filter-empty style="display:none;">
+			<p data-i18n="noGraduandsMatch">No graduands match your filters.</p>
+		</div>
 
 		@if($graduands->isNotEmpty())
 			<div class="sg-people-list">

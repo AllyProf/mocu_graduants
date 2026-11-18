@@ -118,7 +118,285 @@
 			empty.style.display = matched.length ? "none" : "";
 		}
 
+		syncComplaintPanel(root, matched.length, q);
+		syncPdfLink(root);
+
 		renderLoadMore(root, visibleCount, matched.length);
+	}
+
+	function syncComplaintPanel(root, matchedCount, q) {
+		var panel = root.querySelector("[data-complaint-panel]");
+		if (!panel) return;
+
+		var show = matchedCount === 0 && !!q;
+		panel.style.display = show ? "" : "none";
+
+		var searched = panel.querySelector("[data-complaint-searched]");
+		if (searched) {
+			var rawQ = root.querySelector("[data-filter-q]");
+			searched.value = rawQ ? String(rawQ.value || "").trim() : "";
+		}
+
+		if (show) {
+			var nameInput = panel.querySelector('input[name="full_name"]');
+			if (nameInput && !nameInput.value) {
+				var raw = root.querySelector("[data-filter-q]");
+				nameInput.value = raw ? String(raw.value || "").trim() : "";
+			}
+		}
+	}
+
+	function syncPdfLink(root) {
+		var link =
+			root.querySelector("[data-pdf-download]") ||
+			document.querySelector(".sg-pagehead-pdf[data-pdf-download], [data-pdf-download]");
+		if (!link) return;
+
+		var base = link.getAttribute("data-pdf-base") || link.getAttribute("href") || "";
+		if (!base || base === "#") return;
+
+		var params = new URLSearchParams();
+		var qEl = root.querySelector("[data-filter-q]");
+		var levelEl = root.querySelector("[data-filter-level]");
+		var programmeEl = root.querySelector("[data-filter-programme]");
+		var yearEl = root.querySelector("[data-filter-year]");
+
+		if (qEl && qEl.value.trim()) params.set("q", qEl.value.trim());
+		if (levelEl && levelEl.value) params.set("level", levelEl.value);
+		if (programmeEl && programmeEl.value) params.set("programme", programmeEl.value);
+		if (yearEl && yearEl.value) params.set("year", yearEl.value);
+
+		var query = params.toString();
+		link.href = query ? base + (base.indexOf("?") === -1 ? "?" : "&") + query : base;
+	}
+
+	function pdfLang(key, fallback) {
+		var pack = window.sgGetLangPack ? window.sgGetLangPack() : null;
+		return (pack && pack[key]) || fallback;
+	}
+
+	function ensurePdfStatusAlert() {
+		var el = document.getElementById("sg-pdf-status");
+		if (el) return el;
+
+		el = document.createElement("div");
+		el.id = "sg-pdf-status";
+		el.className = "sg-status-alert";
+		el.setAttribute("aria-live", "polite");
+		el.innerHTML =
+			'<span class="sg-status-alert-inner">' +
+			'<i class="fa fa-refresh" aria-hidden="true" data-pdf-status-icon></i>' +
+			'<span class="sg-status-alert-label" data-pdf-status-label></span>' +
+			"</span>";
+		document.body.appendChild(el);
+		return el;
+	}
+
+	function showPdfStatus(message, state) {
+		var el = ensurePdfStatusAlert();
+		var label = el.querySelector("[data-pdf-status-label]");
+		var icon = el.querySelector("[data-pdf-status-icon]");
+
+		el.className = "sg-status-alert is-visible" + (state ? " is-" + state : "");
+		el.style.transform = "translate(-50%, 64px)";
+		if (label) label.textContent = message;
+
+		if (icon) {
+			icon.className =
+				state === "ok"
+					? "fa fa-check"
+					: state === "error"
+						? "fa fa-exclamation-circle"
+						: "fa fa-refresh";
+		}
+	}
+
+	function hidePdfStatusSoon(delay) {
+		var el = document.getElementById("sg-pdf-status");
+		if (!el) return;
+		window.clearTimeout(window.__sgPdfStatusTimer);
+		window.__sgPdfStatusTimer = window.setTimeout(function () {
+			el.classList.remove("is-visible", "is-pending", "is-ok", "is-error");
+			el.style.transform = "";
+		}, delay || 1600);
+	}
+
+	function filenameFromDisposition(header, fallback) {
+		if (!header) return fallback;
+		var utf = header.match(/filename\*=UTF-8''([^;]+)/i);
+		if (utf && utf[1]) return decodeURIComponent(utf[1]);
+		var plain = header.match(/filename=\"?([^\";]+)\"?/i);
+		if (plain && plain[1]) return plain[1];
+		return fallback;
+	}
+
+	function bindPdfDownload() {
+		document.querySelectorAll("[data-pdf-download]").forEach(function (link) {
+			if (link.getAttribute("data-pdf-bound") === "1") return;
+			link.setAttribute("data-pdf-bound", "1");
+
+			link.addEventListener("click", function (event) {
+				event.preventDefault();
+				if (link.getAttribute("aria-busy") === "true") return;
+
+				var url = link.getAttribute("href") || link.getAttribute("data-pdf-base") || "";
+				if (!url || url === "#") return;
+
+				link.setAttribute("aria-busy", "true");
+				showPdfStatus(pdfLang("downloadingPdf", "Downloading PDF..."), "pending");
+
+				fetch(url, {
+					method: "GET",
+					credentials: "same-origin",
+					headers: { Accept: "application/pdf" },
+				})
+					.then(function (res) {
+						if (!res.ok) throw new Error("download-failed");
+						var fallbackName =
+							url.indexOf("best-students") !== -1
+								? "mocu-best-students.pdf"
+								: "mocu-graduands.pdf";
+						var filename = filenameFromDisposition(
+							res.headers.get("content-disposition"),
+							fallbackName
+						);
+						return res.blob().then(function (blob) {
+							return { blob: blob, filename: filename };
+						});
+					})
+					.then(function (result) {
+						var objectUrl = URL.createObjectURL(result.blob);
+						var a = document.createElement("a");
+						a.href = objectUrl;
+						a.download = result.filename;
+						document.body.appendChild(a);
+						a.click();
+						a.remove();
+						window.setTimeout(function () {
+							URL.revokeObjectURL(objectUrl);
+						}, 1500);
+
+						showPdfStatus(pdfLang("downloadedPdf", "PDF downloaded"), "ok");
+						hidePdfStatusSoon(1600);
+					})
+					.catch(function () {
+						showPdfStatus(pdfLang("downloadPdfFailed", "Could not download PDF"), "error");
+						hidePdfStatusSoon(2200);
+						window.location.href = url;
+					})
+					.finally(function () {
+						link.setAttribute("aria-busy", "false");
+					});
+			});
+		});
+	}
+
+	function bindPhoneDigits() {
+		document.querySelectorAll("[data-phone-digits]").forEach(function (input) {
+			if (input.getAttribute("data-phone-bound") === "1") return;
+			input.setAttribute("data-phone-bound", "1");
+
+			input.addEventListener("input", function () {
+				var digits = String(input.value || "").replace(/\D+/g, "").slice(0, 9);
+				if (input.value !== digits) input.value = digits;
+			});
+
+			input.addEventListener("keypress", function (event) {
+				if (event.ctrlKey || event.metaKey || event.altKey) return;
+				if (event.key && !/^[0-9]$/.test(event.key)) {
+					event.preventDefault();
+				}
+			});
+
+			input.addEventListener("paste", function (event) {
+				event.preventDefault();
+				var text = (event.clipboardData || window.clipboardData).getData("text") || "";
+				input.value = String(text).replace(/\D+/g, "").slice(0, 9);
+			});
+		});
+	}
+
+	function bindComplaintForms() {
+		document.querySelectorAll("[data-complaint-form]").forEach(function (form) {
+			if (form.getAttribute("data-bound") === "1") return;
+			form.setAttribute("data-bound", "1");
+
+			form.addEventListener("submit", function (event) {
+				event.preventDefault();
+
+				var status = form.querySelector("[data-complaint-status]");
+				var submitBtn = form.querySelector('button[type="submit"]');
+				var pack = window.sgGetLangPack ? window.sgGetLangPack() : {};
+				var sending = pack.sendingComplaint || "Sending...";
+				var success = pack.complaintSent || "Your complaint has been sent. The graduation desk will follow up.";
+				var failed = pack.complaintFailed || "Could not send your complaint. Please try again.";
+
+				if (status) {
+					status.hidden = false;
+					status.className = "sg-complaint-status is-pending";
+					status.textContent = sending;
+				}
+				if (submitBtn) submitBtn.disabled = true;
+
+				var token =
+					(form.querySelector('input[name="_token"]') && form.querySelector('input[name="_token"]').value) ||
+					(document.querySelector('meta[name="csrf-token"]') &&
+						document.querySelector('meta[name="csrf-token"]').getAttribute("content")) ||
+					"";
+
+				fetch(form.action, {
+					method: "POST",
+					headers: {
+						Accept: "application/json",
+						"X-Requested-With": "XMLHttpRequest",
+						"X-CSRF-TOKEN": token,
+					},
+					body: new FormData(form),
+					credentials: "same-origin",
+				})
+					.then(function (res) {
+						return res.json().then(function (data) {
+							return { ok: res.ok, data: data };
+						});
+					})
+					.then(function (result) {
+						if (!result.ok) {
+							var msg = failed;
+							if (result.data && result.data.message) msg = result.data.message;
+							if (result.data && result.data.errors) {
+								var firstKey = Object.keys(result.data.errors)[0];
+								if (firstKey) msg = result.data.errors[firstKey][0];
+							}
+							throw new Error(msg);
+						}
+
+						if (status) {
+							status.className = "sg-complaint-status is-ok";
+							status.textContent = (result.data && result.data.message) || success;
+						}
+						form.reset();
+						var country = form.querySelector('select[name="country_code"]');
+						if (country) {
+							country.value = "+255";
+							country.dispatchEvent(new Event("change", { bubbles: true }));
+							if (window.jQuery) jQuery(country).trigger("change");
+						}
+						var searched = form.querySelector("[data-complaint-searched]");
+						var root = form.closest("[data-filter-root]");
+						var qEl = root && root.querySelector("[data-filter-q]");
+						if (searched && qEl) searched.value = String(qEl.value || "").trim();
+					})
+					.catch(function (err) {
+						if (status) {
+							status.className = "sg-complaint-status is-error";
+							status.textContent = err && err.message ? err.message : failed;
+						}
+					})
+					.finally(function () {
+						if (submitBtn) submitBtn.disabled = false;
+					});
+			});
+		});
 	}
 
 	function loadMore(root) {
@@ -333,6 +611,9 @@
 
 	function boot() {
 		bindFilters();
+		bindPhoneDigits();
+		bindComplaintForms();
+		bindPdfDownload();
 		bindVenueRouter();
 		bindLiveStreams();
 		bindAccordions();

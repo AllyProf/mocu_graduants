@@ -21,7 +21,11 @@
     "faqs": [
         {
             "question": "How do I find my name on the graduands list?",
-            "answer": "Open Graduands, then filter by your study level and programme. You can also search by name in real time."
+            "answer": "Open Graduands, then filter by your study level (PhD down to Certificate) and programme. You can also search by name in real time. Download the filtered list as PDF from the same page."
+        },
+        {
+            "question": "What if my name is missing from the list?",
+            "answer": "Search your name on Graduands or Best Students. If nothing matches, a complaint form appears — send your details and the graduation desk will follow up."
         },
         {
             "question": "What time should I arrive?",

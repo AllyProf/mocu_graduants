@@ -1,9 +1,12 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Graduation\BestStudentController;
+use App\Http\Controllers\Graduation\ComplaintController;
 use App\Http\Controllers\Graduation\GraduandController;
 use App\Http\Controllers\Graduation\HelpController;
 use App\Http\Controllers\Graduation\HomeController;
+use App\Http\Controllers\Graduation\ListPdfController;
 use App\Http\Controllers\Graduation\LiveCeremonyController;
 use App\Http\Controllers\Graduation\TimetableController;
 use App\Http\Controllers\Graduation\VenueController;
@@ -20,8 +23,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/graduands', GraduandController::class)->name('graduands');
+Route::get('/graduands/pdf', [ListPdfController::class, 'graduands'])->name('graduands.pdf');
 Route::get('/best-students', BestStudentController::class)->name('best-students');
+Route::get('/best-students/pdf', [ListPdfController::class, 'bestStudents'])->name('best-students.pdf');
+Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
 Route::get('/timetable', TimetableController::class)->name('timetable');
 Route::get('/venues', VenueController::class)->name('venues');
 Route::get('/live', LiveCeremonyController::class)->name('live');
 Route::get('/help', HelpController::class)->name('help');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::post('/login', [LoginController::class, 'store']);
+});
+
+Route::post('/logout', [LoginController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');

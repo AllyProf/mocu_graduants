@@ -17,8 +17,18 @@
 		<i class="fa fa-map-marker" aria-hidden="true"></i>
 		<span data-i18n="venuesShort">Venues</span>
 	</a>
-	<a href="{{ route('help') }}" class="sg-tabbar-item {{ request()->routeIs('help') ? 'is-active' : '' }}">
-		<i class="fa fa-question-circle" aria-hidden="true"></i>
-		<span data-i18n="help">Help</span>
-	</a>
+	@auth
+		<form method="post" action="{{ route('logout') }}" class="sg-tabbar-auth-form">
+			@csrf
+			<button type="submit" class="sg-tabbar-item {{ request()->routeIs('login') ? 'is-active' : '' }}">
+				<i class="fa fa-sign-out" aria-hidden="true"></i>
+				<span data-i18n="logout">Logout</span>
+			</button>
+		</form>
+	@else
+		<a href="{{ route('login') }}" class="sg-tabbar-item {{ request()->routeIs('login') ? 'is-active' : '' }}">
+			<i class="fa fa-user" aria-hidden="true"></i>
+			<span data-i18n="login">Login</span>
+		</a>
+	@endauth
 </nav>

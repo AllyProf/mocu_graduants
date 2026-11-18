@@ -11,6 +11,16 @@
 		<a href="{{ route('venues') }}" class="{{ request()->routeIs('venues') ? 'is-active' : '' }}" data-i18n="venuesShort">Venues</a>
 		<a href="{{ route('live') }}" class="{{ request()->routeIs('live') ? 'is-active' : '' }}" data-i18n="liveShort">Live</a>
 		<a href="{{ route('help') }}" class="{{ request()->routeIs('help') ? 'is-active' : '' }}" data-i18n="help">Help</a>
+		@auth
+			<form method="post" action="{{ route('logout') }}" class="sg-nav-auth-form sg-nav-auth-inline">
+				@csrf
+				<button type="submit" class="{{ request()->routeIs('login') ? 'is-active' : '' }}" data-i18n="logout">Logout</button>
+			</form>
+		@else
+			<a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'is-active' : '' }}" data-i18n="login">Login</a>
+		@endauth
 	</nav>
-	@include('SmartGradu_App.partials.lang-switcher')
+	<div class="sg-app-nav-end">
+		@include('SmartGradu_App.partials.lang-switcher')
+	</div>
 </header>
