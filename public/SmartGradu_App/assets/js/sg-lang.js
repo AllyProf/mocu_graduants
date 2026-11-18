@@ -1,3 +1,7 @@
+/**
+ * MoCU Graduation Companion — English / Kiswahili language packs.
+ * Applies translations via [data-i18n] attributes and persists choice in localStorage.
+ */
 (function () {
 	"use strict";
 

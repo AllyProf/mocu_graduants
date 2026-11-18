@@ -9,8 +9,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * Generates downloadable PDF reports for graduands and best students.
+ *
+ * Query filters (q, level, programme, year) mirror the on-page list filters
+ * so the exported PDF matches what the user is viewing.
+ */
 class ListPdfController extends Controller
 {
+    /**
+     * Export the graduands list as PDF.
+     */
     public function graduands(Request $request, GraduationData $data)
     {
         $rows = $this->filterPeople($data->graduands(), $request);
@@ -27,6 +36,9 @@ class ListPdfController extends Controller
         );
     }
 
+    /**
+     * Export the best-students list as PDF (includes year of study).
+     */
     public function bestStudents(Request $request, GraduationData $data)
     {
         $rows = $this->filterPeople($data->bestStudents(), $request);
@@ -43,6 +55,9 @@ class ListPdfController extends Controller
         );
     }
 
+    /**
+     * Apply the same client-side filter rules on the server for PDF export.
+     */
     protected function filterPeople(Collection $rows, Request $request): Collection
     {
         $q = Str::lower(trim((string) $request->query('q', '')));
@@ -72,6 +87,7 @@ class ListPdfController extends Controller
                     return false;
                 }
 
+                // Overall best remains visible for Third Year when a programme is selected.
                 if ($programme !== '') {
                     $rowProgramme = (string) ($row->programme_short ?? '');
                     $isOverall = ($row->best_award ?? '') === 'overall';
@@ -88,6 +104,9 @@ class ListPdfController extends Controller
             ->values();
     }
 
+    /**
+     * Summary counters shown at the top of the PDF report.
+     */
     protected function buildStats(Collection $rows): array
     {
         return [
@@ -100,6 +119,9 @@ class ListPdfController extends Controller
         ];
     }
 
+    /**
+     * Human-readable filter line embedded in the PDF metadata.
+     */
     protected function filterSummary(Request $request): string
     {
         $parts = [];
@@ -114,6 +136,9 @@ class ListPdfController extends Controller
         return implode(' · ', $parts);
     }
 
+    /**
+     * Embed MoCU logo as a data-URI so DomPDF can render it offline.
+     */
     protected function logoDataUri(): string
     {
         $path = public_path('SmartGradu_App/assets/img/mocu_logo_clear.png');
@@ -131,6 +156,9 @@ class ListPdfController extends Controller
         return 'data:'.$mime.';base64,'.base64_encode((string) file_get_contents($path));
     }
 
+    /**
+     * Render the Blade PDF template and return a file download response.
+     */
     protected function downloadPdf(
         string $title,
         string $eventTitle,

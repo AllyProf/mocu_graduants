@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Graduation;
 use App\Http\Controllers\Controller;
 use App\Services\GraduationData;
 
+/**
+ * Home / dashboard: summary counts, next timetable event, and live status.
+ */
 class HomeController extends Controller
 {
     public function __invoke(GraduationData $data)

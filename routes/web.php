@@ -14,24 +14,36 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Graduation Companion
-| Data: storage/app/graduation/*.json
-| Views: resources/views/SmartGradu_App
-| Assets: public/SmartGradu_App/assets
+| MoCU Graduation Companion — web routes
 |--------------------------------------------------------------------------
+| Data   : storage/app/graduation/*.json
+| Views  : resources/views/SmartGradu_App
+| Assets : public/SmartGradu_App/assets
+|
+| Public pages are open for ceremony visitors.
+| Login is required only for authenticated admin actions (logout).
 */
 
+/* Home dashboard */
 Route::get('/', HomeController::class)->name('home');
+
+/* Ceremony lists + PDF export */
 Route::get('/graduands', GraduandController::class)->name('graduands');
 Route::get('/graduands/pdf', [ListPdfController::class, 'graduands'])->name('graduands.pdf');
+
 Route::get('/best-students', BestStudentController::class)->name('best-students');
 Route::get('/best-students/pdf', [ListPdfController::class, 'bestStudents'])->name('best-students.pdf');
+
+/* Missing-name complaints (AJAX POST) */
 Route::post('/complaints', [ComplaintController::class, 'store'])->name('complaints.store');
+
+/* Supporting ceremony pages */
 Route::get('/timetable', TimetableController::class)->name('timetable');
 Route::get('/venues', VenueController::class)->name('venues');
 Route::get('/live', LiveCeremonyController::class)->name('live');
 Route::get('/help', HelpController::class)->name('help');
 
+/* Authentication */
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);

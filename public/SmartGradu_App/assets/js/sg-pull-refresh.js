@@ -1,3 +1,7 @@
+/**
+ * MoCU Graduation Companion — mobile pull-to-refresh indicator.
+ * Reloads the current page when the user pulls down past the threshold.
+ */
 (function () {
 	"use strict";
 

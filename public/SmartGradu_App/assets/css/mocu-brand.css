@@ -1,4 +1,10 @@
-/* Smart Gradu App — MoCU brand */
+/*
+ |--------------------------------------------------------------------------
+ | MoCU Graduation Companion — brand stylesheet
+ |--------------------------------------------------------------------------
+ | Colours follow MoCU institutional blue (#056fe7) and yellow (#edeb04).
+ | Mobile app chrome (tabbar, sheets, pageheads) lives in the media queries below.
+ */
 :root {
 	--sg-blue: #056fe7;
 	--sg-yellow: #edeb04;
@@ -661,7 +667,7 @@ body.sg-body,
 
 .sg-app-pagehead {
 	position: relative;
-	z-index: 3;
+	z-index: 1;
 	min-height: 0 !important;
 	padding: calc(14px + env(safe-area-inset-top, 0px)) 0 34px !important;
 	background-color: var(--sg-blue) !important;
@@ -834,21 +840,6 @@ body.sg-body,
 		transform: translateY(3px);
 		opacity: 0.72;
 	}
-}
-
-.sg-header-logo {
-	display: none;
-	flex: 0 0 auto;
-	margin-left: auto;
-	line-height: 0;
-}
-
-.sg-header-logo img {
-	width: 92px;
-	height: 92px;
-	object-fit: contain;
-	object-position: center;
-	display: block;
 }
 
 .sg-dash-header-actions {
@@ -2824,10 +2815,6 @@ body.sg-body,
 		padding-top: 2px;
 	}
 
-	.sg-header-logo {
-		display: none !important;
-	}
-
 	.sg-dash-header .sg-lang {
 		display: inline-flex;
 	}
@@ -2985,7 +2972,7 @@ body.sg-body,
 	/* Inner pages — solid header, clean sheet */
 	.sg-app-pagehead {
 		position: relative;
-		z-index: 3;
+		z-index: 1;
 		min-height: 0 !important;
 		padding: calc(20px + env(safe-area-inset-top, 0px)) 0 42px !important;
 		background: var(--sg-blue) !important;
@@ -3810,7 +3797,6 @@ body.sg-body,
 
 	.sg-dash-header,
 	.sg-dash-copy,
-	.sg-header-logo,
 	.sg-dash-header-actions {
 		display: none !important;
 	}

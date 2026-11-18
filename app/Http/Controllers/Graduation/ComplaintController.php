@@ -10,10 +10,20 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Throwable;
 
+/**
+ * Handles “name not found” complaints from graduands / best-students lists.
+ *
+ * Complaints are stored in the complaints database table.
+ * Email notification to the graduation desk is best-effort.
+ */
 class ComplaintController extends Controller
 {
+    /**
+     * Validate, store, and optionally email a missing-name complaint.
+     */
     public function store(Request $request, GraduationData $data): JsonResponse
     {
+        // Validate inbound payload (AJAX form from list pages).
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:120'],
             'registration_number' => ['nullable', 'string', 'max:60'],
@@ -29,6 +39,7 @@ class ComplaintController extends Controller
         $phoneDigits = $validated['phone'];
         $contact = trim($validated['country_code'].' '.$phoneDigits);
 
+        // Persist structured record for graduation desk follow-up.
         $complaint = [
             'id' => (string) Str::uuid(),
             'full_name' => trim($validated['full_name']),
@@ -47,6 +58,7 @@ class ComplaintController extends Controller
 
         $data->saveComplaint($complaint);
 
+        // Notify support mailbox when configured in help.json.
         $this->notifySupport($complaint, $data);
 
         return response()->json([
@@ -55,6 +67,10 @@ class ComplaintController extends Controller
         ]);
     }
 
+    /**
+     * Send a plain-text email to the configured support address.
+     * Failures are swallowed so storage remains the source of truth.
+     */
     protected function notifySupport(array $complaint, GraduationData $data): void
     {
         $to = $data->complaintEmail();

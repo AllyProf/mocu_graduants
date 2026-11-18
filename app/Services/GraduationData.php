@@ -2,15 +2,34 @@
 
 namespace App\Services;
 
+use App\Models\AcademicLevel;
+use App\Models\Complaint;
+use App\Models\Programme;
+use App\Models\Student;
+use App\Models\YearOfStudy;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
+/**
+ * Graduation data access layer for MoCU Graduation Companion.
+ *
+ * Student / programme / academic lookups come from the database.
+ * Supporting content (timetable, venues, live, help) still reads JSON
+ * until those modules are migrated in a later step.
+ */
 class GraduationData
 {
+    /**
+     * Absolute path to a legacy JSON file (supporting modules only).
+     */
     protected function path(string $file): string
     {
         return storage_path('app/graduation/'.$file);
     }
 
+    /**
+     * Read and decode a legacy JSON file. Missing/invalid files return [].
+     */
     protected function read(string $file): mixed
     {
         $path = $this->path($file);
@@ -24,35 +43,44 @@ class GraduationData
         return $decoded ?? [];
     }
 
+    /**
+     * Full graduands list from students table, ordered by level then name.
+     */
     public function graduands(): Collection
     {
-        return collect($this->read('graduands.json'))
-            ->map(fn (array $row) => (object) $row)
+        return Student::query()
+            ->with(['programme', 'academicLevel', 'yearOfStudy', 'academicYear'])
+            ->where('is_active', true)
+            ->get()
             ->sort(function ($a, $b) {
-                $levelCmp = $this->studyLevelRank($a->study_level ?? '')
-                    <=> $this->studyLevelRank($b->study_level ?? '');
+                $levelCmp = $this->studyLevelRank($a->academicLevel?->name)
+                    <=> $this->studyLevelRank($b->academicLevel?->name);
 
                 if ($levelCmp !== 0) {
                     return $levelCmp;
                 }
 
-                return strnatcasecmp((string) ($a->full_name ?? ''), (string) ($b->full_name ?? ''));
+                return strnatcasecmp((string) $a->full_name, (string) $b->full_name);
             })
+            ->values()
+            ->map(fn (Student $student) => $student->toListObject());
+    }
+
+    /**
+     * Canonical study-level order used by filters and sorting (PhD → Certificate).
+     */
+    public function studyLevels(): Collection
+    {
+        return AcademicLevel::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->pluck('name')
             ->values();
     }
 
-    public function studyLevels(): Collection
-    {
-        return collect([
-            'PhD',
-            'Masters',
-            'Postgraduate Diploma',
-            'Bachelor Degree',
-            'Diploma',
-            'Certificate',
-        ]);
-    }
-
+    /**
+     * Numeric rank for study level sorting (unknown levels go last).
+     */
     public function studyLevelRank(?string $level): int
     {
         $rank = $this->studyLevels()->search($level);
@@ -60,6 +88,9 @@ class GraduationData
         return $rank === false ? 999 : (int) $rank;
     }
 
+    /**
+     * Support email from help.json (used for complaint notifications).
+     */
     public function complaintEmail(): string
     {
         $help = $this->help();
@@ -69,70 +100,85 @@ class GraduationData
         return is_object($email) ? trim((string) ($email->value ?? '')) : '';
     }
 
+    /**
+     * Persist a missing-name complaint in the complaints table.
+     */
     public function saveComplaint(array $complaint): void
     {
-        $path = $this->path('complaints.json');
-        $existing = $this->read('complaints.json');
-
-        if (! is_array($existing)) {
-            $existing = [];
+        $levelId = null;
+        if (! empty($complaint['study_level'])) {
+            $levelId = AcademicLevel::query()
+                ->where('name', $complaint['study_level'])
+                ->value('id');
         }
 
-        $existing[] = $complaint;
-
-        $dir = dirname($path);
-        if (! is_dir($dir)) {
-            mkdir($dir, 0755, true);
+        $programmeId = null;
+        if (! empty($complaint['programme'])) {
+            $programmeId = Programme::query()
+                ->where('short_code', $complaint['programme'])
+                ->when($levelId, fn ($q) => $q->where('academic_level_id', $levelId))
+                ->value('id');
         }
 
-        file_put_contents(
-            $path,
-            json_encode($existing, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
-        );
+        Complaint::query()->create([
+            'public_id' => $complaint['id'] ?? (string) Str::uuid(),
+            'full_name' => $complaint['full_name'],
+            'registration_number' => $complaint['registration_number'] ?: null,
+            'academic_level_id' => $levelId,
+            'programme_id' => $programmeId,
+            'study_level' => $complaint['study_level'] ?: null,
+            'programme' => $complaint['programme'] ?: null,
+            'country_code' => $complaint['country_code'],
+            'phone' => $complaint['phone'],
+            'contact' => $complaint['contact'],
+            'message' => $complaint['message'],
+            'list_type' => $complaint['list_type'] ?? 'graduands',
+            'searched_name' => $complaint['searched_name'] ?: null,
+            'status' => 'pending',
+            'ip_address' => $complaint['ip'] ?? null,
+        ]);
     }
 
+    /**
+     * Year-of-study options (used on Best Students filters).
+     */
     public function yearsOfStudy(): Collection
     {
-        return collect([
-            'First Year',
-            'Second Year',
-            'Third Year',
-        ]);
+        return YearOfStudy::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->pluck('name')
+            ->values();
     }
 
+    /**
+     * Programme short-code list for filter dropdowns.
+     */
     public function programmes(?string $studyLevel = null): Collection
     {
-        return collect([
-            'BBICT',
-            'BHRM',
-            'BME',
-            'BMFED',
-            'BPSCM',
-            'LL.B',
-            'BCMA',
-            'BA-CMA',
-            'BEC',
-            'BCED',
-            'BAF',
-            'BAT',
-            'DBEM',
-            'DBRM',
-            'DBICT',
-            'DMFM',
-            'DCMA',
-            'CMA',
-            'CAF',
-            'CHRM',
-            'CIT',
-            'CL',
-            'CMF',
-        ]);
+        $query = Programme::query()->where('is_active', true);
+
+        if ($studyLevel) {
+            $query->whereHas('academicLevel', fn ($q) => $q->where('name', $studyLevel));
+        }
+
+        return $query
+            ->orderBy('short_code')
+            ->pluck('short_code')
+            ->unique()
+            ->values();
     }
 
+    /**
+     * Best-student subset: overall award first, then by GPA descending.
+     */
     public function bestStudents(): Collection
     {
-        return $this->graduands()
+        return Student::query()
+            ->with(['programme', 'academicLevel', 'yearOfStudy', 'academicYear'])
+            ->where('is_active', true)
             ->where('is_best_student', true)
+            ->get()
             ->sort(function ($a, $b) {
                 $aOverall = ($a->best_award ?? '') === 'overall' ? 0 : 1;
                 $bOverall = ($b->best_award ?? '') === 'overall' ? 0 : 1;
@@ -143,9 +189,13 @@ class GraduationData
 
                 return ((float) ($b->gpa ?? 0)) <=> ((float) ($a->gpa ?? 0));
             })
-            ->values();
+            ->values()
+            ->map(fn (Student $student) => $student->toListObject());
     }
 
+    /**
+     * Ceremony timetable events sorted by start time (legacy JSON).
+     */
     public function timetable(): Collection
     {
         return collect($this->read('timetable.json'))
@@ -154,11 +204,17 @@ class GraduationData
             ->values();
     }
 
+    /**
+     * Distinct timetable event types for filters.
+     */
     public function eventTypes(): Collection
     {
         return $this->timetable()->pluck('event_type')->unique()->sort()->values();
     }
 
+    /**
+     * Campus / venue locations for the venue guide (legacy JSON).
+     */
     public function locations(): Collection
     {
         return collect($this->read('locations.json'))
@@ -166,6 +222,9 @@ class GraduationData
             ->values();
     }
 
+    /**
+     * Live ceremony stream configuration (legacy JSON).
+     */
     public function live(): object
     {
         $data = $this->read('live.json');
@@ -185,6 +244,9 @@ class GraduationData
         ];
     }
 
+    /**
+     * Help desk contacts and FAQs (legacy JSON).
+     */
     public function help(): object
     {
         $data = $this->read('help.json');

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Graduation;
 use App\Http\Controllers\Controller;
 use App\Services\GraduationData;
 
+/**
+ * Best students list page (filters include year of study).
+ */
 class BestStudentController extends Controller
 {
     public function __invoke(GraduationData $data)

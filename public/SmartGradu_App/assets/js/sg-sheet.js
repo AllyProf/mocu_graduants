@@ -1,3 +1,7 @@
+/**
+ * MoCU Graduation Companion — mobile bottom-sheet select UI.
+ * Replaces native <select> pickers on small screens with a searchable sheet.
+ */
 (function () {
 	var MOBILE_MAX = 991;
 

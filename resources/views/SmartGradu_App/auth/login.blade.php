@@ -1,3 +1,4 @@
+{{-- Staff/admin login — compact mobile layout with graduation background --}}
 @extends('SmartGradu_App.layouts.app')
 
 @section('title', 'Login | ' . config('app.name'))

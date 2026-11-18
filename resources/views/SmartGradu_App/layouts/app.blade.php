@@ -1,3 +1,4 @@
+{{-- MoCU Graduation Companion — main application layout --}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,16 +12,16 @@
 	<meta name="application-name" content="{{ config('app.name') }}">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
-	<link rel="icon" type="image/png" href="{{ asset('SmartGradu_App/assets/img/favicon.png') }}">
-	<link rel="shortcut icon" type="image/png" href="{{ asset('SmartGradu_App/assets/img/favicon.png') }}">
-	<link rel="apple-touch-icon" href="{{ asset('SmartGradu_App/assets/img/favicon.png') }}">
+	<link rel="icon" type="image/png" href="{{ asset('SmartGradu_App/assets/img/mocu_logo_nav.png') }}">
+	<link rel="shortcut icon" type="image/png" href="{{ asset('SmartGradu_App/assets/img/mocu_logo_nav.png') }}">
+	<link rel="apple-touch-icon" href="{{ asset('SmartGradu_App/assets/img/mocu_logo_nav.png') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/bootstrap/css/bootstrap.min.css') }}">
 	<link href="https://fonts.googleapis.com/css2?family=Exo:wght@300;400;500;600;700;800;900&family=Great+Vibes&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/fonts/font-awesome.min.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/fonts.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/menu.css?v=20') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/style.css?v=20') }}">
-	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=174') }}">
+	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=176') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/responsive.css') }}">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 	@stack('styles')
@@ -52,7 +53,7 @@
 	<script src="{{ asset('SmartGradu_App/assets/js/scrolltopcontrol.js') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/scripts.js?v=5') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/countdown.js?v=2') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=23') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=25') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=4') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=18') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-pull-refresh.js?v=1') }}"></script>

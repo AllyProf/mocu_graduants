@@ -1,10 +1,21 @@
+/**
+ * MoCU Graduation Companion — list filters, PDF download, complaints.
+ *
+ * Responsibilities:
+ * - Client-side filtering for graduands / best students / timetable
+ * - PDF download with “Downloading…” status alert
+ * - Missing-name complaint form submit (AJAX)
+ * - Venue distance helpers and live-stream selector
+ */
 (function () {
+	/** Normalise filter text for case-insensitive matching. */
 	function normalize(value) {
 		return String(value || "")
 			.toLowerCase()
 			.trim();
 	}
 
+	/** Return rows that match the current filter controls inside root. */
 	function getMatchedRows(root) {
 		var q = normalize(root.querySelector("[data-filter-q]") && root.querySelector("[data-filter-q]").value);
 		var year = normalize(root.querySelector("[data-filter-year]") && root.querySelector("[data-filter-year]").value);
@@ -146,6 +157,7 @@
 		}
 	}
 
+	/** Keep the pagehead PDF href in sync with active list filters. */
 	function syncPdfLink(root) {
 		var links = Array.prototype.slice.call(
 			document.querySelectorAll(".sg-pagehead-pdf[data-pdf-download], [data-pdf-download]")
@@ -232,6 +244,9 @@
 		return fallback;
 	}
 
+	/**
+	 * Fetch PDF as a blob, show yellow status toast, then trigger browser download.
+	 */
 	function startPdfDownload(link) {
 		if (!link || link.getAttribute("aria-busy") === "true") return;
 
@@ -308,6 +323,7 @@
 			});
 	}
 
+	/** Global entry used by the PDF anchor onclick attribute. */
 	window.sgDownloadPdf = function (event, link) {
 		if (event) {
 			event.preventDefault();
@@ -317,6 +333,7 @@
 		return false;
 	};
 
+	/** Capture-phase click listener for all [data-pdf-download] controls. */
 	function bindPdfDownload() {
 		if (document.documentElement.getAttribute("data-pdf-download-bound") === "1") return;
 		document.documentElement.setAttribute("data-pdf-download-bound", "1");
@@ -362,6 +379,7 @@
 		});
 	}
 
+	/** Wire missing-name complaint forms to POST /complaints. */
 	function bindComplaintForms() {
 		document.querySelectorAll("[data-complaint-form]").forEach(function (form) {
 			if (form.getAttribute("data-bound") === "1") return;
@@ -477,6 +495,7 @@
 		applyListFilter(root, true);
 	}
 
+	/** Attach input/change handlers for every [data-filter-root] on the page. */
 	function bindFilters() {
 		document.querySelectorAll("[data-filter-root]").forEach(function (root) {
 			root.setAttribute("data-visible-count", root.getAttribute("data-per-page") || "10");
@@ -655,43 +674,25 @@
 		});
 	}
 
+	/** Run a boot step without letting one failure block the rest. */
+	function safeBoot(fn) {
+		try {
+			fn();
+		} catch (err) {
+			/* Keep remaining boot steps running. */
+		}
+	}
+
+	/** Initialise page behaviours after DOM is ready. */
 	function boot() {
 		// PDF first so download toast always works even if later boot steps fail.
-		try {
-			bindPdfDownload();
-		} catch (err) {
-			console.error("sg bindPdfDownload", err);
-		}
-		try {
-			bindFilters();
-		} catch (err) {
-			console.error("sg bindFilters", err);
-		}
-		try {
-			bindPhoneDigits();
-		} catch (err) {
-			console.error("sg bindPhoneDigits", err);
-		}
-		try {
-			bindComplaintForms();
-		} catch (err) {
-			console.error("sg bindComplaintForms", err);
-		}
-		try {
-			bindVenueRouter();
-		} catch (err) {
-			console.error("sg bindVenueRouter", err);
-		}
-		try {
-			bindLiveStreams();
-		} catch (err) {
-			console.error("sg bindLiveStreams", err);
-		}
-		try {
-			bindAccordions();
-		} catch (err) {
-			console.error("sg bindAccordions", err);
-		}
+		safeBoot(bindPdfDownload);
+		safeBoot(bindFilters);
+		safeBoot(bindPhoneDigits);
+		safeBoot(bindComplaintForms);
+		safeBoot(bindVenueRouter);
+		safeBoot(bindLiveStreams);
+		safeBoot(bindAccordions);
 
 		document.addEventListener("sg:langchange", function () {
 			document.querySelectorAll("[data-filter-root]").forEach(function (root) {
@@ -701,11 +702,7 @@
 	}
 
 	// Register PDF handler immediately (don't wait on other boot work).
-	try {
-		bindPdfDownload();
-	} catch (err) {
-		console.error("sg early bindPdfDownload", err);
-	}
+	safeBoot(bindPdfDownload);
 
 	if (document.readyState === "loading") {
 		document.addEventListener("DOMContentLoaded", boot);

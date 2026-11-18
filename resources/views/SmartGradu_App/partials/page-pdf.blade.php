@@ -1,3 +1,4 @@
+{{-- Pagehead PDF download control (Graduands / Best Students) --}}
 @php
 	$pdfUrl = $pdfUrl ?? '#';
 @endphp

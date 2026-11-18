@@ -16,6 +16,8 @@
 /public/build
 /public/hot
 /public/storage
+/public/SmartGradu_App/assets/img/*-source.*
+/public/SmartGradu_App/assets/img/*.bak
 /storage/*.key
 /storage/pail
 /storage/framework/cache/data/*
