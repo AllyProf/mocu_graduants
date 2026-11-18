@@ -126,7 +126,8 @@
 
 		var empty = root.querySelector("[data-filter-empty]");
 		if (empty) {
-			empty.style.display = matched.length ? "none" : "";
+			// When a search finds nothing, only the complaint form is shown (no empty text below it).
+			empty.style.display = matched.length || q ? "none" : "";
 		}
 
 		syncComplaintPanel(root, matched.length, q);
