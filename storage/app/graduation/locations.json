@@ -2,91 +2,91 @@
     {
         "id": "moshi-town-centre",
         "name": "Moshi Town Centre",
-        "lat": -3.3398,
-        "lng": 37.3400
+        "lat": -3.33980,
+        "lng": 37.34040
     },
     {
         "id": "mocu-main-gate",
         "name": "MoCU Main Gate",
-        "lat": -3.3486,
-        "lng": 37.3455
+        "lat": -3.33490,
+        "lng": 37.33870
     },
     {
         "id": "nyerere-hall",
         "name": "Nyerere Hall",
-        "lat": -3.3492,
-        "lng": 37.3462
+        "lat": -3.33540,
+        "lng": 37.33910
     },
     {
         "id": "george-kahama-hall",
         "name": "George Kahama Hall",
-        "lat": -3.3498,
-        "lng": 37.3468
+        "lat": -3.33570,
+        "lng": 37.33940
     },
     {
         "id": "pius-msekwa-hall",
         "name": "Pius Msekwa Hall",
-        "lat": -3.3501,
-        "lng": 37.3471
+        "lat": -3.33595,
+        "lng": 37.33955
     },
     {
         "id": "ushirika-building",
         "name": "Ushirika Building",
-        "lat": -3.3490,
-        "lng": 37.3459
+        "lat": -3.33530,
+        "lng": 37.33880
     },
     {
         "id": "administration-block",
         "name": "Administration Block",
-        "lat": -3.3489,
-        "lng": 37.3464
+        "lat": -3.33520,
+        "lng": 37.33900
     },
     {
         "id": "block-b",
         "name": "Block B",
-        "lat": -3.3495,
-        "lng": 37.3452
+        "lat": -3.33560,
+        "lng": 37.33840
     },
     {
         "id": "library-building",
         "name": "Library Building",
-        "lat": -3.3494,
-        "lng": 37.3465
+        "lat": -3.33550,
+        "lng": 37.33925
     },
     {
         "id": "mucasa",
         "name": "MUCASA",
-        "lat": -3.3504,
-        "lng": 37.3456
+        "lat": -3.33620,
+        "lng": 37.33860
     },
     {
         "id": "wazalendo",
         "name": "WAZALENDO",
-        "lat": -3.3506,
-        "lng": 37.3460
+        "lat": -3.33635,
+        "lng": 37.33885
     },
     {
         "id": "dus",
         "name": "DUS",
-        "lat": -3.3488,
-        "lng": 37.3448
+        "lat": -3.33510,
+        "lng": 37.33820
     },
     {
         "id": "ushirika-stadium",
         "name": "Ushirika Stadium",
-        "lat": -3.3510,
-        "lng": 37.3475
+        "lat": -3.33670,
+        "lng": 37.33980
     },
     {
         "id": "packing-block-b",
         "name": "Packing Block B",
-        "lat": -3.3497,
-        "lng": 37.3449
+        "lat": -3.33580,
+        "lng": 37.33815
     },
     {
         "id": "hostel",
         "name": "Hostel",
-        "lat": -3.3508,
-        "lng": 37.3450
+        "lat": -3.33650,
+        "lng": 37.33830
     }
 ]

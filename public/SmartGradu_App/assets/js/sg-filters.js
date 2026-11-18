@@ -633,44 +633,64 @@
 		var mapBtn = document.getElementById("route-open-map");
 		if (!from || !to || !distanceEl || !timeEl || !mapBtn) return;
 
-		function selectedOption(select) {
-			return select.options[select.selectedIndex];
+		/** Read location point from the selected <option> (works with Select2/sheet). */
+		function selectedPoint(select) {
+			var opt = select.options[select.selectedIndex];
+			if (!opt || !opt.value) return null;
+			var lat = parseFloat(opt.getAttribute("data-lat"));
+			var lng = parseFloat(opt.getAttribute("data-lng"));
+			if (!isFinite(lat) || !isFinite(lng)) return null;
+			return {
+				id: opt.value,
+				name: String(opt.text || "").trim(),
+				lat: lat,
+				lng: lng,
+			};
 		}
 
 		function updateRoute() {
-			var a = selectedOption(from);
-			var b = selectedOption(to);
-			if (!a || !b || !a.value || !b.value || a.value === b.value) {
+			var a = selectedPoint(from);
+			var b = selectedPoint(to);
+			if (!a || !b || a.id === b.id) {
 				distanceEl.textContent = "—";
 				timeEl.textContent = "—";
 				if (summaryEl) summaryEl.textContent = "Select From and To to view the route.";
 				if (resultsEl) resultsEl.style.display = "none";
 				mapBtn.href = "#";
+				mapBtn.removeAttribute("data-map-ready");
 				mapBtn.classList.add("disabled");
 				return;
 			}
 
-			var meters = haversineMeters(
-				parseFloat(a.dataset.lat),
-				parseFloat(a.dataset.lng),
-				parseFloat(b.dataset.lat),
-				parseFloat(b.dataset.lng)
-			);
-
+			var meters = haversineMeters(a.lat, a.lng, b.lat, b.lng);
 			distanceEl.textContent = formatDistance(meters);
 			timeEl.textContent = formatDriveTime(meters);
 			if (summaryEl) {
-				summaryEl.textContent = "From " + a.text + " to " + b.text;
+				summaryEl.textContent = "From " + a.name + " to " + b.name;
 			}
 			if (resultsEl) resultsEl.style.display = "";
+
+			// Use exact lat,lng so Google Maps opens the selected points (not a name search).
 			mapBtn.href =
-				"https://www.google.com/maps/dir/?api=1&origin=" +
-				encodeURIComponent(a.dataset.lat + "," + a.dataset.lng) +
-				"&destination=" +
-				encodeURIComponent(b.dataset.lat + "," + b.dataset.lng) +
-				"&travelmode=driving";
+				"https://www.google.com/maps/dir/?api=1" +
+				"&origin=" + encodeURIComponent(a.lat + "," + a.lng) +
+				"&destination=" + encodeURIComponent(b.lat + "," + b.lng) +
+				"&travelmode=walking";
+			mapBtn.setAttribute("data-map-ready", "1");
 			mapBtn.classList.remove("disabled");
 		}
+
+		mapBtn.addEventListener("click", function (event) {
+			if (mapBtn.classList.contains("disabled") || mapBtn.getAttribute("data-map-ready") !== "1") {
+				event.preventDefault();
+				return;
+			}
+			// Flutter / in-app WebView often blocks target=_blank — open in same view.
+			if (isEmbeddedWebView()) {
+				event.preventDefault();
+				window.location.assign(mapBtn.href);
+			}
+		});
 
 		from.addEventListener("change", updateRoute);
 		to.addEventListener("change", updateRoute);
