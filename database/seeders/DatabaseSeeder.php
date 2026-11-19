@@ -37,5 +37,10 @@ class DatabaseSeeder extends Seeder
             StudentSeeder::class,
             StaffSeeder::class,
         ]);
+
+        // Warm full PDF reports so first download is already fast.
+        if ($this->command) {
+            $this->command->call('graduation:cache-pdfs', ['--clear' => true]);
+        }
     }
 }

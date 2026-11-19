@@ -42,6 +42,21 @@ Supporting pages (timetable, venues, live, help) still use JSON under `storage/a
 
 Seed import source for students/programmes: `database/seeders/data/graduands.json`.
 
+## PDF cache (fast downloads)
+
+Graduands / Best Students PDFs are stored on disk under `storage/app/graduation/pdf-cache`.
+The first request (or a warm command) builds the file; later taps reuse it until student data changes.
+
+```bash
+# Pre-generate full (unfiltered) reports
+php artisan graduation:cache-pdfs
+
+# Clear then rebuild
+php artisan graduation:cache-pdfs --clear
+```
+
+Filtered PDFs (level/programme/year/search) are also cached per filter combination.
+
 ## Local setup
 
 ```bash
