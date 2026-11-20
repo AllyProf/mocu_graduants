@@ -12,6 +12,12 @@
         "lng": 37.33870
     },
     {
+        "id": "main-campus-security-gate",
+        "name": "Main Campus Security Gate",
+        "lat": -3.33495,
+        "lng": 37.33855
+    },
+    {
         "id": "nyerere-hall",
         "name": "Nyerere Hall",
         "lat": -3.33540,
@@ -52,6 +58,60 @@
         "name": "Library Building",
         "lat": -3.33550,
         "lng": 37.33925
+    },
+    {
+        "id": "main-cafeteria",
+        "name": "Main Cafeteria",
+        "lat": -3.33585,
+        "lng": 37.33905
+    },
+    {
+        "id": "campus-food-point",
+        "name": "Campus Food Point",
+        "lat": -3.33605,
+        "lng": 37.33895
+    },
+    {
+        "id": "campus-shops",
+        "name": "Campus Shops",
+        "lat": -3.33575,
+        "lng": 37.33870
+    },
+    {
+        "id": "stationery-shop",
+        "name": "Stationery Shop",
+        "lat": -3.33565,
+        "lng": 37.33885
+    },
+    {
+        "id": "atm",
+        "name": "ATM",
+        "lat": -3.33515,
+        "lng": 37.33875
+    },
+    {
+        "id": "mocu-health-centre",
+        "name": "MoCU Health Centre",
+        "lat": -3.33610,
+        "lng": 37.33920
+    },
+    {
+        "id": "emergency-assembly-point",
+        "name": "Emergency Assembly Point",
+        "lat": -3.33545,
+        "lng": 37.33850
+    },
+    {
+        "id": "parking-area",
+        "name": "Parking Area",
+        "lat": -3.33580,
+        "lng": 37.33815
+    },
+    {
+        "id": "sports-grounds",
+        "name": "Sports Grounds",
+        "lat": -3.33655,
+        "lng": 37.33960
     },
     {
         "id": "mucasa",

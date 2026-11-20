@@ -2,25 +2,31 @@
 
 namespace App\Services;
 
-use App\Models\AcademicLevel;
-use App\Models\Complaint;
-use App\Models\Programme;
-use App\Models\Student;
-use App\Models\YearOfStudy;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
  * Graduation data access layer for MoCU Graduation Companion.
  *
- * Student / programme / academic lookups come from the database.
- * Supporting content (timetable, venues, live, help) still reads JSON
- * until those modules are migrated in a later step.
+ * All ceremony content is read from JSON under storage/app/graduation/.
  */
 class GraduationData
 {
+    /** @var list<string> */
+    protected array $preferredStudyLevels = [
+        'PhD',
+        'Masters',
+        'Postgraduate Diploma',
+        'Bachelor Degree',
+        'Ordinary Diploma',
+        'Certificate',
+    ];
+
+    /** @var Collection<int, object>|null */
+    protected ?Collection $graduandsCache = null;
+
     /**
-     * Absolute path to a legacy JSON file (supporting modules only).
+     * Absolute path to a graduation JSON file.
      */
     protected function path(string $file): string
     {
@@ -28,7 +34,7 @@ class GraduationData
     }
 
     /**
-     * Read and decode a legacy JSON file. Missing/invalid files return [].
+     * Read and decode a JSON file. Missing/invalid files return [].
      */
     protected function read(string $file): mixed
     {
@@ -44,26 +50,47 @@ class GraduationData
     }
 
     /**
-     * Full graduands list from students table, ordered by level then name.
+     * Write a JSON file atomically.
+     */
+    protected function write(string $file, mixed $data): void
+    {
+        $path = $this->path($file);
+        $dir = dirname($path);
+
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        file_put_contents(
+            $path,
+            json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+        );
+    }
+
+    /**
+     * Full graduands list from graduands.json, ordered by level then name.
      */
     public function graduands(): Collection
     {
-        return Student::query()
-            ->with(['programme', 'academicLevel', 'yearOfStudy', 'academicYear'])
-            ->where('is_active', true)
-            ->get()
+        if ($this->graduandsCache !== null) {
+            return $this->graduandsCache;
+        }
+
+        $this->graduandsCache = collect($this->read('graduands.json'))
+            ->map(fn (array $row) => (object) $row)
             ->sort(function ($a, $b) {
-                $levelCmp = $this->studyLevelRank($a->academicLevel?->name)
-                    <=> $this->studyLevelRank($b->academicLevel?->name);
+                $levelCmp = $this->studyLevelRank($a->study_level ?? null)
+                    <=> $this->studyLevelRank($b->study_level ?? null);
 
                 if ($levelCmp !== 0) {
                     return $levelCmp;
                 }
 
-                return strnatcasecmp((string) $a->full_name, (string) $b->full_name);
+                return strnatcasecmp((string) ($a->full_name ?? ''), (string) ($b->full_name ?? ''));
             })
-            ->values()
-            ->map(fn (Student $student) => $student->toListObject());
+            ->values();
+
+        return $this->graduandsCache;
     }
 
     /**
@@ -71,10 +98,16 @@ class GraduationData
      */
     public function studyLevels(): Collection
     {
-        return AcademicLevel::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->pluck('name')
+        $found = $this->graduands()
+            ->pluck('study_level')
+            ->filter()
+            ->unique()
+            ->values();
+
+        return collect($this->preferredStudyLevels)
+            ->filter(fn ($level) => $found->contains($level))
+            ->values()
+            ->merge($found->diff($this->preferredStudyLevels)->values())
             ->values();
     }
 
@@ -83,60 +116,9 @@ class GraduationData
      */
     public function studyLevelRank(?string $level): int
     {
-        $rank = $this->studyLevels()->search($level);
+        $rank = array_search($level, $this->preferredStudyLevels, true);
 
         return $rank === false ? 999 : (int) $rank;
-    }
-
-    /**
-     * Support email from help.json (used for complaint notifications).
-     */
-    public function complaintEmail(): string
-    {
-        $help = $this->help();
-        $email = $help->contacts
-            ->first(fn ($contact) => ($contact->type ?? '') === 'email');
-
-        return is_object($email) ? trim((string) ($email->value ?? '')) : '';
-    }
-
-    /**
-     * Persist a missing-name complaint in the complaints table.
-     */
-    public function saveComplaint(array $complaint): void
-    {
-        $levelId = null;
-        if (! empty($complaint['study_level'])) {
-            $levelId = AcademicLevel::query()
-                ->where('name', $complaint['study_level'])
-                ->value('id');
-        }
-
-        $programmeId = null;
-        if (! empty($complaint['programme'])) {
-            $programmeId = Programme::query()
-                ->where('short_code', $complaint['programme'])
-                ->when($levelId, fn ($q) => $q->where('academic_level_id', $levelId))
-                ->value('id');
-        }
-
-        Complaint::query()->create([
-            'public_id' => $complaint['id'] ?? (string) Str::uuid(),
-            'full_name' => $complaint['full_name'],
-            'registration_number' => $complaint['registration_number'] ?: null,
-            'academic_level_id' => $levelId,
-            'programme_id' => $programmeId,
-            'study_level' => $complaint['study_level'] ?: null,
-            'programme' => $complaint['programme'] ?: null,
-            'country_code' => $complaint['country_code'],
-            'phone' => $complaint['phone'],
-            'contact' => $complaint['contact'],
-            'message' => $complaint['message'],
-            'list_type' => $complaint['list_type'] ?? 'graduands',
-            'searched_name' => $complaint['searched_name'] ?: null,
-            'status' => 'pending',
-            'ip_address' => $complaint['ip'] ?? null,
-        ]);
     }
 
     /**
@@ -144,29 +126,57 @@ class GraduationData
      */
     public function yearsOfStudy(): Collection
     {
-        return YearOfStudy::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->pluck('name')
+        $preferred = ['First Year', 'Second Year', 'Third Year', 'Fourth Year'];
+
+        $found = $this->graduands()
+            ->pluck('year_of_study')
+            ->filter()
+            ->unique()
+            ->values();
+
+        return collect($preferred)
+            ->filter(fn ($year) => $found->contains($year))
+            ->values()
+            ->merge($found->diff($preferred)->sort()->values())
             ->values();
     }
 
     /**
-     * Programme short-code list for filter dropdowns.
+     * Programme short-code list for filter dropdowns / gallery picker.
      */
     public function programmes(?string $studyLevel = null): Collection
     {
-        $query = Programme::query()->where('is_active', true);
+        $rows = $this->graduands();
 
         if ($studyLevel) {
-            $query->whereHas('academicLevel', fn ($q) => $q->where('name', $studyLevel));
+            $rows = $rows->filter(
+                fn ($row) => strcasecmp((string) ($row->study_level ?? ''), $studyLevel) === 0
+            );
         }
 
-        return $query
-            ->orderBy('short_code')
-            ->pluck('short_code')
+        return $rows
+            ->pluck('programme_short')
+            ->filter()
             ->unique()
+            ->sort()
             ->values();
+    }
+
+    /**
+     * Programme options with short code + full name (for gallery picker labels).
+     */
+    public function programmeOptions(): Collection
+    {
+        return $this->graduands()
+            ->map(fn ($row) => [
+                'short' => (string) ($row->programme_short ?? ''),
+                'name' => (string) ($row->programme ?? ''),
+            ])
+            ->filter(fn ($row) => $row['short'] !== '')
+            ->unique('short')
+            ->sortBy('short')
+            ->values()
+            ->map(fn ($row) => (object) $row);
     }
 
     /**
@@ -174,11 +184,8 @@ class GraduationData
      */
     public function bestStudents(): Collection
     {
-        return Student::query()
-            ->with(['programme', 'academicLevel', 'yearOfStudy', 'academicYear'])
-            ->where('is_active', true)
-            ->where('is_best_student', true)
-            ->get()
+        return $this->graduands()
+            ->filter(fn ($row) => ! empty($row->is_best_student))
             ->sort(function ($a, $b) {
                 $aOverall = ($a->best_award ?? '') === 'overall' ? 0 : 1;
                 $bOverall = ($b->best_award ?? '') === 'overall' ? 0 : 1;
@@ -189,12 +196,11 @@ class GraduationData
 
                 return ((float) ($b->gpa ?? 0)) <=> ((float) ($a->gpa ?? 0));
             })
-            ->values()
-            ->map(fn (Student $student) => $student->toListObject());
+            ->values();
     }
 
     /**
-     * Ceremony timetable events sorted by start time (legacy JSON).
+     * Ceremony timetable events sorted by start time.
      */
     public function timetable(): Collection
     {
@@ -213,7 +219,7 @@ class GraduationData
     }
 
     /**
-     * Campus / venue locations for the venue guide (legacy JSON).
+     * Campus / venue locations for the venue guide.
      */
     public function locations(): Collection
     {
@@ -223,7 +229,82 @@ class GraduationData
     }
 
     /**
-     * Live ceremony stream configuration (legacy JSON).
+     * University leaders for the Leaders page.
+     */
+    public function leaders(): Collection
+    {
+        return collect($this->read('leaders.json'))
+            ->map(fn (array $row) => (object) $row)
+            ->values();
+    }
+
+    /**
+     * Gallery memories (newest first).
+     */
+    public function gallery(): Collection
+    {
+        return collect($this->read('gallery.json'))
+            ->map(fn (array $row) => (object) $row)
+            ->sortByDesc(fn ($row) => $row->created_at ?? '')
+            ->values();
+    }
+
+    /**
+     * Gallery memories grouped by programme (uploads for the same programme merge).
+     */
+    public function galleryByProgramme(): Collection
+    {
+        return $this->gallery()
+            ->groupBy(fn ($row) => (string) ($row->programme ?? ''))
+            ->filter(fn ($items, $programme) => $programme !== '')
+            ->map(function (Collection $items, string $programme) {
+                $images = $items
+                    ->flatMap(fn ($row) => collect($row->images ?? []))
+                    ->filter()
+                    ->values()
+                    ->all();
+
+                return (object) [
+                    'programme' => $programme,
+                    'programme_name' => (string) ($items->first()->programme_name ?? ''),
+                    'images' => $images,
+                    'count' => count($images),
+                    'updated_at' => (string) ($items->first()->created_at ?? ''),
+                ];
+            })
+            ->sortBy('programme', SORT_NATURAL | SORT_FLAG_CASE)
+            ->values();
+    }
+
+    /**
+     * Persist a new gallery memory entry.
+     *
+     * @param  array{programme: string, programme_name?: string, caption?: string, images: array<int, string>}  $memory
+     */
+    public function saveGalleryMemory(array $memory): object
+    {
+        $entry = [
+            'id' => (string) Str::uuid(),
+            'programme' => $memory['programme'],
+            'programme_name' => $memory['programme_name'] ?? '',
+            'caption' => $memory['caption'] ?? '',
+            'images' => array_values($memory['images']),
+            'created_at' => now()->toIso8601String(),
+        ];
+
+        $items = $this->read('gallery.json');
+        if (! is_array($items)) {
+            $items = [];
+        }
+
+        array_unshift($items, $entry);
+        $this->write('gallery.json', $items);
+
+        return (object) $entry;
+    }
+
+    /**
+     * Live ceremony stream configuration.
      */
     public function live(): object
     {
@@ -245,7 +326,7 @@ class GraduationData
     }
 
     /**
-     * Help desk contacts and FAQs (legacy JSON).
+     * Help desk contacts and FAQs.
      */
     public function help(): object
     {

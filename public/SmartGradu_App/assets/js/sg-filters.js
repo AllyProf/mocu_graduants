@@ -126,11 +126,9 @@
 
 		var empty = root.querySelector("[data-filter-empty]");
 		if (empty) {
-			// When a search finds nothing, only the complaint form is shown (no empty text below it).
-			empty.style.display = matched.length || q ? "none" : "";
+			empty.style.display = matched.length ? "none" : "";
 		}
 
-		syncComplaintPanel(root, matched.length, q);
 		syncPdfLink(root);
 
 		renderLoadMore(root, visibleCount, matched.length);
@@ -612,15 +610,16 @@
 
 	function formatDistance(meters) {
 		if (meters < 1000) return Math.round(meters) + " m";
-		return (meters / 1000).toFixed(1) + " km";
+		return (meters / 1000).toFixed(2) + " km";
 	}
 
-	function formatDriveTime(meters) {
-		var minutes = Math.max(1, Math.round((meters / 1000 / 25) * 60));
-		if (minutes < 60) return minutes + " min";
+	/** Walking time from straight-line meters (≈ 4.5 km/h campus pace). */
+	function formatWalkTime(meters) {
+		var minutes = Math.max(1, Math.round((meters / 1000 / 4.5) * 60));
+		if (minutes < 60) return "~" + minutes + " min walk";
 		var h = Math.floor(minutes / 60);
 		var m = minutes % 60;
-		return h + " h " + m + " min";
+		return "~" + h + " h " + m + " min walk";
 	}
 
 	function bindVenueRouter() {
@@ -664,9 +663,9 @@
 
 			var meters = haversineMeters(a.lat, a.lng, b.lat, b.lng);
 			distanceEl.textContent = formatDistance(meters);
-			timeEl.textContent = formatDriveTime(meters);
+			timeEl.textContent = formatWalkTime(meters);
 			if (summaryEl) {
-				summaryEl.textContent = "From " + a.name + " to " + b.name;
+				summaryEl.textContent = "From " + a.name + " to " + b.name + " · based on map coordinates";
 			}
 			if (resultsEl) resultsEl.style.display = "";
 

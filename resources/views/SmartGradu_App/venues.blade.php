@@ -46,19 +46,19 @@
 			<div id="route-results" class="row mt-3" style="display:none;">
 				<div class="col-md-6">
 					<div class="sg-route-stat">
-						<span>Route distance</span>
+						<span data-i18n="routeDistance">Straight-line distance</span>
 						<strong id="route-distance">—</strong>
 					</div>
 				</div>
 				<div class="col-md-6">
 					<div class="sg-route-stat">
-						<span>Est. drive time</span>
+						<span data-i18n="routeWalkTime">Est. walking time</span>
 						<strong id="route-time">—</strong>
 					</div>
 				</div>
 				<div class="col-md-12 mt-3">
 					<div class="sg-route-stat">
-						<span>Directions</span>
+						<span data-i18n="directions">Directions</span>
 						<strong id="route-summary">Select From and To to view the route.</strong>
 					</div>
 				</div>

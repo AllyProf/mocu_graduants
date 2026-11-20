@@ -14,9 +14,6 @@
 				<span class="sg-caption" data-i18n="captionBest">Top Performers</span>
 				<h1 data-i18n="bestStudents">Best Students</h1>
 			</div>
-			<div class="sg-pagehead-actions">
-				@include('SmartGradu_App.partials.page-pdf', ['pdfUrl' => route('best-students.pdf')])
-			</div>
 		</div>
 	</div>
 </section>
@@ -59,11 +56,6 @@
 					@endforeach
 				</select>
 			</div>
-			@include('SmartGradu_App.partials.list-actions', [
-				'listType' => 'best-students',
-				'studyLevels' => $studyLevels,
-				'programmes' => $programmes,
-			])
 		</div>
 
 		<div class="sg-empty" data-filter-empty style="display:none;">

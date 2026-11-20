@@ -26,32 +26,7 @@
 			</div>
 		</div>
 
-		<div class="sg-dash-grid">
-			<a class="sg-dash-card" href="{{ route('graduands') }}">
-				<span class="sg-dash-icon sg-dash-icon-blue"><i class="fa fa-graduation-cap"></i></span>
-				<span class="sg-dash-label" data-i18n="graduands">Graduands</span>
-			</a>
-			<a class="sg-dash-card" href="{{ route('best-students') }}">
-				<span class="sg-dash-icon sg-dash-icon-yellow"><i class="fa fa-trophy"></i></span>
-				<span class="sg-dash-label" data-i18n="bestStudents">Best Students</span>
-			</a>
-			<a class="sg-dash-card" href="{{ route('timetable') }}">
-				<span class="sg-dash-icon sg-dash-icon-navy"><i class="fa fa-calendar"></i></span>
-				<span class="sg-dash-label" data-i18n="timetable">Timetable</span>
-			</a>
-			<a class="sg-dash-card" href="{{ route('help') }}">
-				<span class="sg-dash-icon sg-dash-icon-gray"><i class="fa fa-question-circle"></i></span>
-				<span class="sg-dash-label" data-i18n="help">Help</span>
-			</a>
-			<a class="sg-dash-card" href="{{ route('live') }}">
-				<span class="sg-dash-icon sg-dash-icon-red"><i class="fa fa-video-camera"></i></span>
-				<span class="sg-dash-label" data-i18n="liveShort">Live Ceremony</span>
-			</a>
-			<a class="sg-dash-card" href="{{ route('venues') }}">
-				<span class="sg-dash-icon sg-dash-icon-teal"><i class="fa fa-map-marker"></i></span>
-				<span class="sg-dash-label" data-i18n="venuesShort">Venue Guide</span>
-			</a>
-		</div>
+		@include('SmartGradu_App.partials.menu-cards', ['homeOnly' => true])
 	</div>
 </section>
 @endsection
