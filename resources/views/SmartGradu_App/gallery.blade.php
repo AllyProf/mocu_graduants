@@ -41,15 +41,9 @@
 				@foreach($groups as $group)
 					<section class="sg-gallery-group" data-gallery-group data-programme="{{ $group->programme }}">
 						<div class="sg-gallery-group-head">
-							<div>
-								<strong>{{ $group->programme }}</strong>
-								<span>{{ $group->count }} {{ $group->count === 1 ? 'photo' : 'photos' }}</span>
-							</div>
-							<a
-								class="sg-gallery-download-all"
-								href="{{ route('gallery.download.programme', ['programme' => $group->programme]) }}"
-								data-i18n="downloadAll"
-							>Download all</a>
+							<strong>{{ $group->programme }}</strong>
+							<span class="sg-gallery-group-sep" aria-hidden="true">-</span>
+							<span>{{ $group->count }} {{ $group->count === 1 ? 'photo' : 'photos' }}</span>
 						</div>
 						<div class="sg-gallery-photos">
 							@foreach($group->images as $image)
@@ -59,19 +53,10 @@
 										class="sg-gallery-photo-open"
 										data-gallery-view
 										data-gallery-src="{{ asset($image) }}"
-										data-gallery-download="{{ route('gallery.download', ['file' => $image]) }}"
 										aria-label="View photo"
 									>
 										<img src="{{ asset($image) }}" alt="{{ $group->programme }}" loading="lazy">
 									</button>
-									<a
-										class="sg-gallery-download"
-										href="{{ route('gallery.download', ['file' => $image]) }}"
-										aria-label="Download photo"
-										title="Download"
-									>
-										<i class="fa fa-download" aria-hidden="true"></i>
-									</a>
 								</figure>
 							@endforeach
 						</div>
@@ -99,7 +84,6 @@
 		<i class="fa fa-chevron-right" aria-hidden="true"></i>
 	</button>
 	<img class="sg-gallery-lightbox-img" data-gallery-lightbox-img alt="">
-	<a class="sg-gallery-lightbox-download" data-gallery-lightbox-download href="#" data-i18n="downloadPhoto">Download</a>
 </div>
 
 {{-- Filter programme sheet --}}
@@ -185,5 +169,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=4') }}"></script>
+<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=5') }}"></script>
 @endpush

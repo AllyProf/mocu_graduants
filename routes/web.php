@@ -39,8 +39,6 @@ Route::get('/venues', VenueController::class)->name('venues');
 Route::get('/leaders', LeaderController::class)->name('leaders');
 Route::get('/gallery', [GalleryController::class, 'index'])->name('gallery');
 Route::post('/gallery', [GalleryController::class, 'store'])->name('gallery.store');
-Route::get('/gallery/download', [GalleryController::class, 'download'])->name('gallery.download');
-Route::get('/gallery/download/{programme}', [GalleryController::class, 'downloadProgramme'])->name('gallery.download.programme');
 Route::get('/live', LiveCeremonyController::class)->name('live');
 Route::get('/help', HelpController::class)->name('help');
 

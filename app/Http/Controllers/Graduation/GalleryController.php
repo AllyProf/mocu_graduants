@@ -8,8 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use ZipArchive;
 
 /**
  * Graduation gallery / memories page and upload endpoint.
@@ -79,63 +77,6 @@ class GalleryController extends Controller
         return redirect()
             ->route('gallery')
             ->with('status', 'Memory added.');
-    }
-
-    /**
-     * Force-download a single gallery photo.
-     */
-    public function download(Request $request): BinaryFileResponse
-    {
-        $relative = ltrim(str_replace('\\', '/', (string) $request->query('file', '')), '/');
-
-        if ($relative === '' || str_contains($relative, '..') || ! str_starts_with($relative, 'SmartGradu_App/uploads/gallery/')) {
-            abort(404);
-        }
-
-        $path = public_path($relative);
-        if (! is_file($path)) {
-            abort(404);
-        }
-
-        return response()->download($path, basename($path), [
-            'Content-Type' => 'image/jpeg',
-        ]);
-    }
-
-    /**
-     * Download all photos for a programme as a ZIP.
-     */
-    public function downloadProgramme(string $programme, GraduationData $data)
-    {
-        $group = $data->galleryByProgramme()
-            ->first(fn ($row) => strcasecmp((string) $row->programme, $programme) === 0);
-
-        if (! $group || empty($group->images)) {
-            abort(404);
-        }
-
-        if (! class_exists(ZipArchive::class)) {
-            return redirect()->to(asset($group->images[0]));
-        }
-
-        $zipName = Str::slug($group->programme).'-gallery.zip';
-        $zipPath = storage_path('app/temp/'.$zipName);
-        File::ensureDirectoryExists(dirname($zipPath));
-
-        $zip = new ZipArchive();
-        if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
-            abort(500, 'Could not create download.');
-        }
-
-        foreach ($group->images as $index => $relative) {
-            $full = public_path($relative);
-            if (is_file($full)) {
-                $zip->addFile($full, sprintf('%s-%02d%s', $group->programme, $index + 1, '.'.pathinfo($full, PATHINFO_EXTENSION)));
-            }
-        }
-        $zip->close();
-
-        return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
     }
 
     /**

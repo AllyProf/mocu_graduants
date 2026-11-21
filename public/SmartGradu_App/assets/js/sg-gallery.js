@@ -13,7 +13,6 @@
 		if (!lightbox) return;
 
 		var img = lightbox.querySelector("[data-gallery-lightbox-img]");
-		var download = lightbox.querySelector("[data-gallery-lightbox-download]");
 		var items = [];
 		var index = 0;
 
@@ -30,12 +29,10 @@
 			index = (i + items.length) % items.length;
 			var el = items[index];
 			var src = el.getAttribute("data-gallery-src") || "";
-			var href = el.getAttribute("data-gallery-download") || src;
 			if (img) {
 				img.src = src;
 				img.alt = el.querySelector("img") ? el.querySelector("img").alt || "" : "";
 			}
-			if (download) download.href = href;
 			lightbox.hidden = false;
 			lightbox.setAttribute("aria-hidden", "false");
 			document.body.classList.add("sg-gallery-lightbox-open");
