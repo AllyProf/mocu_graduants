@@ -7,13 +7,14 @@ use Afaya\EdgeTTS\Service\EdgeTTS;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
- * Free Kiswahili TTS — one voice per choice (no mix).
- * Girl = Zuri only. Boy = Daudi only.
- * Speed is baked into the audio (Flutter WebView breaks HTML playbackRate).
+ * Kiswahili TTS for lists.
+ * Prefer Edge neural voices (Zuri girl / Daudi boy).
+ * Fall back to Google Translate TTS when Edge/WebSocket is blocked (common on cPanel).
  */
 class VoiceTtsController extends Controller
 {
@@ -48,55 +49,91 @@ class VoiceTtsController extends Controller
         }
 
         $cacheDir = storage_path('app/graduation/tts-cache');
-        File::ensureDirectoryExists($cacheDir);
-        $cacheFile = $cacheDir.DIRECTORY_SEPARATOR.hash('sha256', 'edge-v7|'.$voice.'|'.$speed.'|'.$text).'.mp3';
+        try {
+            File::ensureDirectoryExists($cacheDir);
+        } catch (\Throwable $e) {
+            Log::error('TTS cache dir failed', ['message' => $e->getMessage()]);
+            abort(503, 'TTS cache unavailable');
+        }
 
-        if (is_file($cacheFile) && filesize($cacheFile) > 0) {
-            return response()->file($cacheFile, [
-                'Content-Type' => 'audio/mpeg',
-                'Cache-Control' => 'public, max-age=604800',
-                'X-SG-Voice' => $voice,
-                'X-SG-Gender' => $gender,
-                'X-SG-Speed' => $speed,
-            ]);
+        // Prefer Edge cache; also accept Google fallback cache so replays work offline from Edge.
+        $edgeCache = $cacheDir.DIRECTORY_SEPARATOR.hash('sha256', 'edge-v7|'.$voice.'|'.$speed.'|'.$text).'.mp3';
+        $googleCache = $cacheDir.DIRECTORY_SEPARATOR.hash('sha256', 'google-v1|'.$gender.'|'.$speed.'|'.$text).'.mp3';
+
+        foreach ([$edgeCache => 'edge', $googleCache => 'google'] as $cached => $src) {
+            if (is_file($cached) && filesize($cached) > 0) {
+                return response()->file($cached, [
+                    'Content-Type' => 'audio/mpeg',
+                    'Cache-Control' => 'public, max-age=604800',
+                    'X-SG-Voice' => $src === 'google' ? 'google-sw' : $voice,
+                    'X-SG-Gender' => $gender,
+                    'X-SG-Speed' => $speed,
+                    'X-SG-Source' => $src,
+                ]);
+            }
         }
 
         $lock = $this->acquireLock($cacheDir);
+        $binary = null;
+        $source = null;
+        $usedVoice = $voice;
+
         try {
-            if (is_file($cacheFile) && filesize($cacheFile) > 0) {
-                return response()->file($cacheFile, [
-                    'Content-Type' => 'audio/mpeg',
-                    'Cache-Control' => 'public, max-age=604800',
-                    'X-SG-Voice' => $voice,
-                    'X-SG-Gender' => $gender,
-                    'X-SG-Speed' => $speed,
-                ]);
+            foreach ([$edgeCache => 'edge', $googleCache => 'google'] as $cached => $src) {
+                if (is_file($cached) && filesize($cached) > 0) {
+                    return response()->file($cached, [
+                        'Content-Type' => 'audio/mpeg',
+                        'Cache-Control' => 'public, max-age=604800',
+                        'X-SG-Voice' => $src === 'google' ? 'google-sw' : $voice,
+                        'X-SG-Gender' => $gender,
+                        'X-SG-Speed' => $speed,
+                        'X-SG-Source' => $src,
+                    ]);
+                }
             }
 
-            $binary = null;
-            for ($attempt = 1; $attempt <= 3; $attempt++) {
+            // 1) Edge neural (best quality / real girl-boy). Often blocked on shared hosting.
+            for ($attempt = 1; $attempt <= 2; $attempt++) {
                 $binary = $this->synthesizeEdge($text, $voice, $gender, $speed);
                 if ($binary !== null && $binary !== '') {
+                    $source = 'edge';
+                    $usedVoice = $voice;
                     break;
                 }
-                usleep(300000 * $attempt);
+                usleep(200000 * $attempt);
+            }
+
+            // 2) Google Translate TTS — HTTPS GET, works on most cPanel hosts.
+            if ($binary === null || $binary === '') {
+                $binary = $this->synthesizeGoogle($text, $speed);
+                if ($binary !== null && $binary !== '') {
+                    $source = 'google';
+                    $usedVoice = 'google-sw';
+                }
             }
         } finally {
             $this->releaseLock($lock);
         }
 
         if ($binary === null || $binary === '') {
-            abort(503, 'TTS busy — try again');
+            Log::error('TTS unavailable after Edge + Google', [
+                'text' => $text,
+                'gender' => $gender,
+                'voice' => $voice,
+            ]);
+            abort(503, 'TTS unavailable');
         }
 
-        file_put_contents($cacheFile, $binary);
+        $cacheFile = $source === 'google' ? $googleCache : $edgeCache;
+        @file_put_contents($cacheFile, $binary);
 
         return response($binary, 200, [
             'Content-Type' => 'audio/mpeg',
             'Cache-Control' => 'public, max-age=604800',
-            'X-SG-Voice' => $voice,
+            'X-SG-Voice' => $usedVoice,
             'X-SG-Gender' => $gender,
             'X-SG-Speed' => $speed,
+            'X-SG-Source' => $source ?? 'unknown',
         ]);
     }
 
@@ -110,15 +147,14 @@ class VoiceTtsController extends Controller
         if ($fh === false) {
             return null;
         }
-        $deadline = microtime(true) + 20;
+        $deadline = microtime(true) + 8;
         while (! flock($fh, LOCK_EX | LOCK_NB)) {
             if (microtime(true) >= $deadline) {
                 fclose($fh);
 
                 return null;
             }
-            // Wait for the previous TTS job; re-check cache after lock in caller.
-            usleep(100000);
+            usleep(80000);
         }
 
         return $fh;
@@ -141,33 +177,90 @@ class VoiceTtsController extends Controller
         return match ($speed) {
             'slow' => '-20%',
             'fast' => '+12%',
-            default => '-5%', // slightly calm for ceremony / WebView
+            default => '-5%',
         };
     }
 
     protected function synthesizeEdge(string $text, string $voice, string $gender, string $speed): ?string
     {
+        if (! class_exists(EdgeTTS::class)) {
+            Log::error('afaya/edge-tts not installed — run composer install on server');
+
+            return null;
+        }
+
         try {
-            $tts = new EdgeTTS(['timeout' => 14]);
+            $tts = new EdgeTTS(['timeout' => 12]);
             $result = $tts->generate($text, $voice, [
                 'volume' => '+100%',
                 'rate' => $this->edgeRate($speed),
                 'pitch' => $gender === 'female' ? '+8Hz' : '+0Hz',
                 'outputFormat' => Constants::OUTPUT_FORMAT['AUDIO_24KHZ_48KBITRATE_MONO_MP3'],
-                'timeout' => 14,
+                'timeout' => 12,
             ]);
 
             return $result->audio !== '' ? $result->audio : null;
         } catch (\Throwable $e) {
             Log::warning('Edge TTS failed', [
                 'voice' => $voice,
-                'gender' => $gender,
-                'speed' => $speed,
                 'message' => $e->getMessage(),
             ]);
 
             return null;
         }
+    }
+
+    /**
+     * Free HTTPS fallback — single Swahili voice, but keeps the site working on cPanel.
+     */
+    protected function synthesizeGoogle(string $text, string $speed): ?string
+    {
+        $ttsspeed = match ($speed) {
+            'slow' => '0.5',
+            'fast' => '1',
+            default => '0.8',
+        };
+
+        $chunks = $this->chunkText($text, 160);
+        $binary = '';
+
+        foreach ($chunks as $index => $chunk) {
+            $url = 'https://translate.google.com/translate_tts?'.http_build_query([
+                'ie' => 'UTF-8',
+                'client' => 'gtx',
+                'tl' => 'sw',
+                'ttsspeed' => $ttsspeed,
+                'q' => $chunk,
+                'textlen' => (string) mb_strlen($chunk),
+                'idx' => (string) $index,
+                'total' => (string) count($chunks),
+            ]);
+
+            try {
+                $response = Http::timeout(12)
+                    ->withHeaders([
+                        'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept' => '*/*',
+                        'Accept-Language' => 'sw,en;q=0.8',
+                        'Referer' => 'https://translate.google.com/',
+                    ])
+                    ->get($url);
+            } catch (\Throwable $e) {
+                Log::warning('Google TTS failed', ['message' => $e->getMessage()]);
+
+                return null;
+            }
+
+            if (! $response->successful() || $response->body() === '') {
+                Log::warning('Google TTS bad response', ['status' => $response->status()]);
+
+                return null;
+            }
+
+            $binary .= $response->body();
+        }
+
+        return $binary !== '' ? $binary : null;
     }
 
     protected function prepareSwahiliText(string $text): string
@@ -177,5 +270,35 @@ class VoiceTtsController extends Controller
             ->replaceMatches('/\s+/u', ' ')
             ->trim()
             ->toString();
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function chunkText(string $text, int $max): array
+    {
+        if (mb_strlen($text) <= $max) {
+            return [$text];
+        }
+
+        $parts = preg_split('/\s+/u', $text) ?: [$text];
+        $chunks = [];
+        $current = '';
+
+        foreach ($parts as $part) {
+            $next = $current === '' ? $part : $current.' '.$part;
+            if (mb_strlen($next) > $max && $current !== '') {
+                $chunks[] = $current;
+                $current = $part;
+            } else {
+                $current = $next;
+            }
+        }
+
+        if ($current !== '') {
+            $chunks[] = $current;
+        }
+
+        return $chunks ?: [$text];
     }
 }
