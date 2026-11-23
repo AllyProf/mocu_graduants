@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 /**
  * Free Kiswahili TTS — one voice per choice (no mix).
  * Girl = Zuri only. Boy = Daudi only.
+ * Speed is baked into the audio (Flutter WebView breaks HTML playbackRate).
  */
 class VoiceTtsController extends Controller
 {
@@ -28,13 +29,18 @@ class VoiceTtsController extends Controller
 
         $gender = strtolower((string) $request->query('g', 'female'));
         $voicePin = strtolower((string) $request->query('voice', ''));
+        $speed = strtolower((string) $request->query('s', 'normal'));
 
         if (in_array($gender, ['male', 'boy', 'mwanaume', 'm'], true) || $voicePin === 'daudi') {
             $gender = 'male';
             $voice = self::VOICE_BOY;
         } else {
             $gender = 'female';
-            $voice = self::VOICE_GIRL; // Zuri only — never Daudi / Rehema mix
+            $voice = self::VOICE_GIRL;
+        }
+
+        if (! in_array($speed, ['slow', 'normal', 'fast'], true)) {
+            $speed = 'normal';
         }
 
         if ($text === '' || mb_strlen($text) > 180) {
@@ -43,7 +49,7 @@ class VoiceTtsController extends Controller
 
         $cacheDir = storage_path('app/graduation/tts-cache');
         File::ensureDirectoryExists($cacheDir);
-        $cacheFile = $cacheDir.DIRECTORY_SEPARATOR.hash('sha256', 'edge-v6|'.$voice.'|'.$text).'.mp3';
+        $cacheFile = $cacheDir.DIRECTORY_SEPARATOR.hash('sha256', 'edge-v7|'.$voice.'|'.$speed.'|'.$text).'.mp3';
 
         if (is_file($cacheFile) && filesize($cacheFile) > 0) {
             return response()->file($cacheFile, [
@@ -51,6 +57,7 @@ class VoiceTtsController extends Controller
                 'Cache-Control' => 'public, max-age=604800',
                 'X-SG-Voice' => $voice,
                 'X-SG-Gender' => $gender,
+                'X-SG-Speed' => $speed,
             ]);
         }
 
@@ -62,10 +69,11 @@ class VoiceTtsController extends Controller
                     'Cache-Control' => 'public, max-age=604800',
                     'X-SG-Voice' => $voice,
                     'X-SG-Gender' => $gender,
+                    'X-SG-Speed' => $speed,
                 ]);
             }
 
-            $binary = $this->synthesizeEdge($text, $voice, $gender);
+            $binary = $this->synthesizeEdge($text, $voice, $gender, $speed);
         } finally {
             $this->releaseLock($lock);
         }
@@ -81,6 +89,7 @@ class VoiceTtsController extends Controller
             'Cache-Control' => 'public, max-age=604800',
             'X-SG-Voice' => $voice,
             'X-SG-Gender' => $gender,
+            'X-SG-Speed' => $speed,
         ]);
     }
 
@@ -119,14 +128,23 @@ class VoiceTtsController extends Controller
         fclose($fh);
     }
 
-    protected function synthesizeEdge(string $text, string $voice, string $gender): ?string
+    protected function edgeRate(string $speed): string
+    {
+        return match ($speed) {
+            'slow' => '-20%',
+            'fast' => '+12%',
+            default => '-5%', // slightly calm for ceremony / WebView
+        };
+    }
+
+    protected function synthesizeEdge(string $text, string $voice, string $gender, string $speed): ?string
     {
         try {
             $tts = new EdgeTTS(['timeout' => 14]);
             $result = $tts->generate($text, $voice, [
                 'volume' => '+100%',
-                'rate' => '+0%',
-                'pitch' => $gender === 'female' ? '+20Hz' : '+0Hz',
+                'rate' => $this->edgeRate($speed),
+                'pitch' => $gender === 'female' ? '+8Hz' : '+0Hz',
                 'outputFormat' => Constants::OUTPUT_FORMAT['AUDIO_24KHZ_48KBITRATE_MONO_MP3'],
                 'timeout' => 14,
             ]);
@@ -136,6 +154,7 @@ class VoiceTtsController extends Controller
             Log::warning('Edge TTS failed', [
                 'voice' => $voice,
                 'gender' => $gender,
+                'speed' => $speed,
                 'message' => $e->getMessage(),
             ]);
 
