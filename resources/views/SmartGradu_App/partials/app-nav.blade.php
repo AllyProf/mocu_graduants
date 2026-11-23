@@ -14,12 +14,12 @@
 		<a href="{{ route('live') }}" class="{{ request()->routeIs('live') ? 'is-active' : '' }}" data-i18n="liveShort">Live</a>
 		<a href="{{ route('help') }}" class="{{ request()->routeIs('help') ? 'is-active' : '' }}" data-i18n="help">Help</a>
 		@auth
-			<form method="post" action="{{ route('logout') }}" class="sg-nav-auth-form sg-nav-auth-inline">
+			<form method="post" action="{{ route('logout') }}" class="sg-nav-auth-form sg-nav-auth-inline sg-hide-in-webview">
 				@csrf
 				<button type="submit" class="{{ request()->routeIs('login') ? 'is-active' : '' }}" data-i18n="logout">Logout</button>
 			</form>
 		@else
-			<a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'is-active' : '' }}" data-i18n="login">Login</a>
+			<a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'is-active' : '' }} sg-hide-in-webview" data-i18n="login">Login</a>
 		@endauth
 	</nav>
 	<div class="sg-app-nav-end">

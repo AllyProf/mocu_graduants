@@ -1865,6 +1865,12 @@ body.sg-body,
 	cursor: pointer;
 }
 
+/* Hide staff Login / Logout inside Flutter / in-app WebView */
+html.sg-webview .sg-hide-in-webview,
+body.sg-webview .sg-hide-in-webview {
+	display: none !important;
+}
+
 .sg-login-shell {
 	overflow: hidden;
 }

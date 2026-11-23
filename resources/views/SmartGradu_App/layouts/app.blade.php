@@ -12,6 +12,36 @@
 	<meta name="application-name" content="{{ config('app.name') }}">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
+	<script>
+		(function () {
+			try {
+				var ua = navigator.userAgent || "";
+				var params = new URLSearchParams(window.location.search || "");
+				if (params.get("webview") === "1" || params.get("app") === "1") {
+					try { sessionStorage.setItem("sg_webview", "1"); } catch (e) {}
+				}
+				var flagged = false;
+				try { flagged = sessionStorage.getItem("sg_webview") === "1"; } catch (e) {}
+				var isWebView =
+					flagged ||
+					!!window.flutter_inappwebview ||
+					!!window.FlutterWebView ||
+					!!window.Flutter ||
+					/; wv\)/i.test(ua) ||
+					(/\bwv\b/i.test(ua) && /Android/i.test(ua)) ||
+					(/Flutter|WebView/i.test(ua)) ||
+					(/iPhone|iPod|iPad/i.test(ua) && !/Safari/i.test(ua));
+				if (!isWebView) return;
+				document.documentElement.classList.add("sg-webview");
+				document.addEventListener("DOMContentLoaded", function () {
+					document.body.classList.add("sg-webview");
+					@if(request()->routeIs('login'))
+					window.location.replace(@json(url('/')));
+					@endif
+				});
+			} catch (e) {}
+		})();
+	</script>
 	<link rel="icon" type="image/png" href="{{ asset('SmartGradu_App/assets/img/mocu_logo_nav.png') }}">
 	<link rel="shortcut icon" type="image/png" href="{{ asset('SmartGradu_App/assets/img/mocu_logo_nav.png') }}">
 	<link rel="apple-touch-icon" href="{{ asset('SmartGradu_App/assets/img/mocu_logo_nav.png') }}">
@@ -21,7 +51,7 @@
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/fonts.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/menu.css?v=20') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/style.css?v=20') }}">
-	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=200') }}">
+	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=201') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/responsive.css') }}">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 	@stack('styles')
