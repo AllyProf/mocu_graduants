@@ -24,9 +24,19 @@ class VoiceTtsController extends Controller
 
     public function __invoke(Request $request)
     {
-        $text = trim((string) $request->query('q', ''));
-        $text = preg_replace('/\s+/u', ' ', $text) ?? '';
-        $text = $this->prepareSwahiliText($text);
+        // App sends ?q=Name. Opening /voice/tts alone (no q) is not a valid play request.
+        $raw = $request->query('q', $request->query('text', ''));
+        if ($raw === null) {
+            $raw = '';
+        }
+        $raw = trim((string) $raw);
+        $raw = preg_replace('/\s+/u', ' ', $raw) ?? '';
+        $text = $this->prepareSwahiliText($raw);
+        // If cleanup removed everything but letters existed, keep a safe raw form.
+        if ($text === '' && $raw !== '') {
+            $text = preg_replace('/[^\p{L}\p{N}\s\-]/u', ' ', $raw) ?? '';
+            $text = trim(preg_replace('/\s+/u', ' ', $text) ?? '');
+        }
 
         $gender = strtolower((string) $request->query('g', 'female'));
         $voicePin = strtolower((string) $request->query('voice', ''));
@@ -44,8 +54,18 @@ class VoiceTtsController extends Controller
             $speed = 'normal';
         }
 
-        if ($text === '' || mb_strlen($text) > 180) {
-            abort(422, 'Invalid text');
+        if ($text === '') {
+            return response(
+                "Missing text. Use: /voice/tts?q=Karibu&g=female&voice=zuri&s=normal",
+                400,
+                ['Content-Type' => 'text/plain; charset=UTF-8']
+            );
+        }
+
+        if (mb_strlen($text) > 180) {
+            return response('Text too long (max 180 characters).', 422, [
+                'Content-Type' => 'text/plain; charset=UTF-8',
+            ]);
         }
 
         $cacheDir = storage_path('app/graduation/tts-cache');
