@@ -73,7 +73,14 @@ class VoiceTtsController extends Controller
                 ]);
             }
 
-            $binary = $this->synthesizeEdge($text, $voice, $gender, $speed);
+            $binary = null;
+            for ($attempt = 1; $attempt <= 3; $attempt++) {
+                $binary = $this->synthesizeEdge($text, $voice, $gender, $speed);
+                if ($binary !== null && $binary !== '') {
+                    break;
+                }
+                usleep(300000 * $attempt);
+            }
         } finally {
             $this->releaseLock($lock);
         }
@@ -103,14 +110,15 @@ class VoiceTtsController extends Controller
         if ($fh === false) {
             return null;
         }
-        $deadline = microtime(true) + 6;
+        $deadline = microtime(true) + 20;
         while (! flock($fh, LOCK_EX | LOCK_NB)) {
             if (microtime(true) >= $deadline) {
                 fclose($fh);
 
                 return null;
             }
-            usleep(50000);
+            // Wait for the previous TTS job; re-check cache after lock in caller.
+            usleep(100000);
         }
 
         return $fh;
