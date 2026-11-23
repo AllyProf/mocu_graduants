@@ -9,7 +9,7 @@
 		<a href="{{ route('best-students') }}" class="{{ request()->routeIs('best-students') ? 'is-active' : '' }}" data-i18n="bestStudents">Best Students</a>
 		<a href="{{ route('timetable') }}" class="{{ request()->routeIs('timetable') ? 'is-active' : '' }}" data-i18n="timetable">Timetable</a>
 		<a href="{{ route('venues') }}" class="{{ request()->routeIs('venues') ? 'is-active' : '' }}" data-i18n="venuesShort">Venues</a>
-		<a href="{{ route('leaders') }}" class="{{ request()->routeIs('leaders') ? 'is-active' : '' }}" data-i18n="leaders">Governance & Leadership</a>
+		<a href="{{ route('leaders') }}" class="{{ request()->routeIs('leaders') ? 'is-active' : '' }}" data-i18n="leaders">Leadership Gallery</a>
 		<a href="{{ route('gallery') }}" class="{{ request()->routeIs('gallery') ? 'is-active' : '' }}" data-i18n="gallery">Gallery</a>
 		<a href="{{ route('live') }}" class="{{ request()->routeIs('live') ? 'is-active' : '' }}" data-i18n="liveShort">Live</a>
 		<a href="{{ route('help') }}" class="{{ request()->routeIs('help') ? 'is-active' : '' }}" data-i18n="help">Help</a>
