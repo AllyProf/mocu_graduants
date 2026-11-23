@@ -52,12 +52,7 @@
 					return true;
 				}
 				if (apply()) {
-					document.addEventListener("DOMContentLoaded", function () {
-						apply();
-						@if(request()->routeIs('login'))
-						window.location.replace(@json(url('/')));
-						@endif
-					});
+					document.addEventListener("DOMContentLoaded", apply);
 				} else {
 					// Flutter bridge often appears a moment after first paint.
 					var tries = 0;
@@ -84,15 +79,13 @@
 	@stack('styles')
 </head>
 
-<body class="sg-body sg-app-shell {{ request()->routeIs('home') ? 'sg-home-lock' : '' }} {{ request()->routeIs('login') ? 'sg-login-shell' : '' }}" data-spy="scroll" data-offset="80">
+<body class="sg-body sg-app-shell {{ request()->routeIs('home') ? 'sg-home-lock' : '' }}" data-spy="scroll" data-offset="80">
 
-	@unless(request()->routeIs('home') || request()->routeIs('login'))
+	@unless(request()->routeIs('home'))
 		@include('SmartGradu_App.partials.preloader')
 	@endunless
 	@include('SmartGradu_App.partials.app-nav')
-	@unless(request()->routeIs('login'))
-		@include('SmartGradu_App.partials.header')
-	@endunless
+	@include('SmartGradu_App.partials.header')
 
 	<main class="sg-main">
 		@yield('content')

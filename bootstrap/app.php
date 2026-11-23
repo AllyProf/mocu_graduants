@@ -9,7 +9,7 @@ use Illuminate\Foundation\Configuration\Middleware;
  *
  * - Web routes: routes/web.php
  * - Health check: /up
- * - Guests are sent to login; authenticated users to home.
+ * - Ceremony companion is public; auth redirects go home.
  */
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -18,8 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Auth redirects used by login/logout middleware.
-        $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->redirectGuestsTo(fn () => route('home'));
         $middleware->redirectUsersTo(fn () => route('home'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {

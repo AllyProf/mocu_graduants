@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Graduation\BestStudentController;
 use App\Http\Controllers\Graduation\GalleryController;
 use App\Http\Controllers\Graduation\GraduandController;
@@ -23,8 +22,7 @@ use Illuminate\Support\Facades\Route;
 | Views  : resources/views/SmartGradu_App
 | Assets : public/SmartGradu_App/assets
 |
-| Public pages are open for ceremony visitors.
-| Login is required only for authenticated admin actions (logout).
+| Public pages are open for ceremony visitors (no staff login).
 */
 
 /* Home dashboard */
@@ -47,12 +45,6 @@ Route::get('/live', LiveCeremonyController::class)->name('live');
 Route::get('/help', HelpController::class)->name('help');
 Route::get('/voice/tts', VoiceTtsController::class)->name('voice.tts');
 
-/* Authentication */
-Route::middleware('guest')->group(function () {
-    Route::get('/login', [LoginController::class, 'create'])->name('login');
-    Route::post('/login', [LoginController::class, 'store']);
-});
-
-Route::post('/logout', [LoginController::class, 'destroy'])
-    ->middleware('auth')
-    ->name('logout');
+/* Old auth URLs → home (login removed) */
+Route::redirect('/login', '/')->name('login');
+Route::match(['get', 'post'], '/logout', fn () => redirect()->route('home'))->name('logout');
