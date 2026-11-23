@@ -124,7 +124,7 @@ class VoiceTtsController extends Controller
             }
 
             if ($binary === null || $binary === '') {
-                $binary = $this->synthesizeGoogle($text, $speed, $gender);
+                $binary = $this->synthesizeGoogle($text, $speed);
                 if ($binary !== null && $binary !== '') {
                     $source = 'google';
                     $usedVoice = 'google-sw-'.$gender;
@@ -250,15 +250,13 @@ class VoiceTtsController extends Controller
     /**
      * Google Swahili TTS (single voice) — used only when Edge neural voices fail.
      */
-    protected function synthesizeGoogle(string $text, string $speed, string $gender): ?string
+    protected function synthesizeGoogle(string $text, string $speed): ?string
     {
         $ttsspeed = match ($speed) {
             'slow' => '0.5',
             'fast' => '1',
             default => '0.8',
         };
-
-        unset($gender); // reserved for future gendered fallback without shell tools
 
         $chunks = $this->chunkText($text, 160);
         $binary = '';
