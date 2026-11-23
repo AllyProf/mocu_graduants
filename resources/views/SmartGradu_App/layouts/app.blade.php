@@ -53,10 +53,10 @@
 	<script src="{{ asset('SmartGradu_App/assets/js/scrolltopcontrol.js') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/scripts.js?v=5') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/countdown.js?v=3') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=34') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=35') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-voice.js?v=16') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=4') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=28') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=29') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-pull-refresh.js?v=1') }}"></script>
 	@stack('scripts')
 </body>

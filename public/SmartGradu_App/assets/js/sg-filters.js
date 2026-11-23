@@ -461,6 +461,53 @@
 		}, 280);
 	}
 
+	function formatPdfProgress(percent) {
+		var template = pdfLang("downloadingPdfPercent", "Downloading PDF… {percent}%");
+		return String(template).replace("{percent}", String(percent));
+	}
+
+	/**
+	 * Read a fetch Response body while updating percent progress when Content-Length is known.
+	 */
+	function readResponseWithProgress(res, onProgress) {
+		var total = parseInt(res.headers.get("content-length") || "0", 10);
+		if (!res.body || typeof res.body.getReader !== "function") {
+			return res.blob().then(function (blob) {
+				if (typeof onProgress === "function") onProgress(100);
+				return blob;
+			});
+		}
+
+		var reader = res.body.getReader();
+		var chunks = [];
+		var received = 0;
+		var lastPercent = -1;
+
+		function pump() {
+			return reader.read().then(function (result) {
+				if (result.done) {
+					if (typeof onProgress === "function") onProgress(100);
+					return new Blob(chunks);
+				}
+
+				chunks.push(result.value);
+				received += result.value ? result.value.byteLength : 0;
+
+				if (typeof onProgress === "function") {
+					var percent = total > 0 ? Math.min(99, Math.floor((received / total) * 100)) : -1;
+					if (percent !== lastPercent) {
+						lastPercent = percent;
+						onProgress(percent);
+					}
+				}
+
+				return pump();
+			});
+		}
+
+		return pump();
+	}
+
 	/**
 	 * Fetch PDF as a blob on normal browsers; in Flutter WebView navigate to the PDF URL.
 	 */
@@ -499,7 +546,14 @@
 					res.headers.get("content-disposition"),
 					fallbackName
 				);
-				return res.blob().then(function (blob) {
+
+				return readResponseWithProgress(res, function (percent) {
+					if (percent < 0) {
+						showPdfStatus(pdfLang("downloadingPdf", "Downloading PDF..."), "pending");
+						return;
+					}
+					showPdfStatus(formatPdfProgress(percent), "pending");
+				}).then(function (blob) {
 					var type = String(blob.type || ctype || "").toLowerCase();
 					if (
 						type &&
