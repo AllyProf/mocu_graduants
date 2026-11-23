@@ -13,14 +13,24 @@
 		<a href="{{ route('gallery') }}" class="{{ request()->routeIs('gallery') ? 'is-active' : '' }}" data-i18n="gallery">Gallery</a>
 		<a href="{{ route('live') }}" class="{{ request()->routeIs('live') ? 'is-active' : '' }}" data-i18n="liveShort">Live</a>
 		<a href="{{ route('help') }}" class="{{ request()->routeIs('help') ? 'is-active' : '' }}" data-i18n="help">Help</a>
-		@auth
-			<form method="post" action="{{ route('logout') }}" class="sg-nav-auth-form sg-nav-auth-inline sg-hide-in-webview">
-				@csrf
-				<button type="submit" class="{{ request()->routeIs('login') ? 'is-active' : '' }}" data-i18n="logout">Logout</button>
-			</form>
-		@else
-			<a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'is-active' : '' }} sg-hide-in-webview" data-i18n="login">Login</a>
-		@endauth
+		@php
+			$ua = (string) request()->userAgent();
+			$isWebViewApp =
+				request()->boolean('app')
+				|| request()->boolean('webview')
+				|| request()->cookie('sg_app') === '1'
+				|| (bool) preg_match('/Flutter|; wv\)|\bwv\b|WebView|InAppWebView/i', $ua);
+		@endphp
+		@unless($isWebViewApp)
+			@auth
+				<form method="post" action="{{ route('logout') }}" class="sg-nav-auth-form sg-nav-auth-inline sg-hide-in-webview">
+					@csrf
+					<button type="submit" class="{{ request()->routeIs('login') ? 'is-active' : '' }}" data-i18n="logout">Logout</button>
+				</form>
+			@else
+				<a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'is-active' : '' }} sg-hide-in-webview" data-i18n="login">Login</a>
+			@endauth
+		@endunless
 	</nav>
 	<div class="sg-app-nav-end">
 		@include('SmartGradu_App.partials.lang-switcher')

@@ -17,28 +17,55 @@
 			try {
 				var ua = navigator.userAgent || "";
 				var params = new URLSearchParams(window.location.search || "");
-				if (params.get("webview") === "1" || params.get("app") === "1") {
+				function markApp() {
 					try { sessionStorage.setItem("sg_webview", "1"); } catch (e) {}
+					try {
+						document.cookie = "sg_app=1;path=/;max-age=31536000;SameSite=Lax";
+					} catch (e) {}
 				}
+				if (params.get("webview") === "1" || params.get("app") === "1") markApp();
 				var flagged = false;
 				try { flagged = sessionStorage.getItem("sg_webview") === "1"; } catch (e) {}
-				var isWebView =
-					flagged ||
-					!!window.flutter_inappwebview ||
-					!!window.FlutterWebView ||
-					!!window.Flutter ||
-					/; wv\)/i.test(ua) ||
-					(/\bwv\b/i.test(ua) && /Android/i.test(ua)) ||
-					(/Flutter|WebView/i.test(ua)) ||
-					(/iPhone|iPod|iPad/i.test(ua) && !/Safari/i.test(ua));
-				if (!isWebView) return;
-				document.documentElement.classList.add("sg-webview");
-				document.addEventListener("DOMContentLoaded", function () {
-					document.body.classList.add("sg-webview");
-					@if(request()->routeIs('login'))
-					window.location.replace(@json(url('/')));
-					@endif
-				});
+				try { flagged = flagged || /(?:^|;\s*)sg_app=1(?:;|$)/.test(document.cookie || ""); } catch (e) {}
+				function detect() {
+					return (
+						flagged ||
+						!!window.flutter_inappwebview ||
+						!!window.FlutterWebView ||
+						!!window.Flutter ||
+						!!(window.webkit && window.webkit.messageHandlers) ||
+						/; wv\)/i.test(ua) ||
+						(/\bwv\b/i.test(ua) && /Android/i.test(ua)) ||
+						(/Flutter|InAppWebView|WebView/i.test(ua)) ||
+						(/iPhone|iPod|iPad/i.test(ua) && !/Safari\//i.test(ua))
+					);
+				}
+				function apply() {
+					if (!detect()) return false;
+					markApp();
+					document.documentElement.classList.add("sg-webview");
+					if (document.body) document.body.classList.add("sg-webview");
+					document.querySelectorAll(".sg-hide-in-webview").forEach(function (el) {
+						el.style.display = "none";
+						el.setAttribute("hidden", "hidden");
+					});
+					return true;
+				}
+				if (apply()) {
+					document.addEventListener("DOMContentLoaded", function () {
+						apply();
+						@if(request()->routeIs('login'))
+						window.location.replace(@json(url('/')));
+						@endif
+					});
+				} else {
+					// Flutter bridge often appears a moment after first paint.
+					var tries = 0;
+					var timer = window.setInterval(function () {
+						tries += 1;
+						if (apply() || tries > 20) window.clearInterval(timer);
+					}, 150);
+				}
 			} catch (e) {}
 		})();
 	</script>
@@ -51,7 +78,7 @@
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/fonts.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/menu.css?v=20') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/style.css?v=20') }}">
-	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=201') }}">
+	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=202') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/responsive.css') }}">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 	@stack('styles')
