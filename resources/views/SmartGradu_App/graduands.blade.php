@@ -22,7 +22,14 @@
 </section>
 
 <section class="sg-section sg-list-page">
-	<div class="container" data-filter-root data-per-page="10" data-total-all="{{ $total }}" data-voice-root>
+	<div
+		class="container"
+		data-filter-root
+		data-per-page="10"
+		data-total-all="{{ $total }}"
+		data-voice-root
+		data-programmes-by-level='@json($programmesByLevel ?? [])'
+	>
 		<div class="sg-list-summary">
 			<span class="sg-list-summary-icon"><i class="fa fa-graduation-cap"></i></span>
 			<div class="sg-list-summary-main">

@@ -4462,7 +4462,7 @@ body.sg-gallery-lightbox-open {
 	position: fixed;
 	right: 16px;
 	bottom: calc(78px + env(safe-area-inset-bottom, 0px));
-	z-index: 1050;
+	z-index: 1260;
 	height: 44px;
 	min-width: 44px;
 	padding: 0 12px 0 10px;
@@ -4477,6 +4477,9 @@ body.sg-gallery-lightbox-open {
 	align-items: center;
 	justify-content: center;
 	gap: 6px;
+	pointer-events: auto;
+	touch-action: manipulation;
+	-webkit-tap-highlight-color: transparent;
 	transition: width 0.2s ease, padding 0.2s ease, border-radius 0.2s ease;
 }
 
@@ -4695,14 +4698,16 @@ body.sg-voice-sheet-open {
 .sg-gallery-sheet:not([hidden]) {
 	position: fixed;
 	inset: 0;
-	z-index: 1100;
+	z-index: 1280;
 	display: block;
+	pointer-events: auto;
 }
 
 .sg-gallery-sheet-backdrop {
 	position: absolute;
 	inset: 0;
 	background: rgba(11, 18, 32, 0.45);
+	pointer-events: auto;
 }
 
 .sg-gallery-sheet-panel {
@@ -4710,12 +4715,30 @@ body.sg-voice-sheet-open {
 	left: 0;
 	right: 0;
 	bottom: 0;
+	z-index: 1;
 	max-height: min(88vh, 720px);
 	overflow: auto;
+	-webkit-overflow-scrolling: touch;
 	padding: 8px 16px calc(18px + env(safe-area-inset-bottom, 0px));
 	background: #fff;
 	border-radius: 22px 22px 0 0;
+	pointer-events: auto;
 	animation: sg-sheet-up 0.28s ease;
+}
+
+.sg-gallery-programme-select {
+	display: block;
+	width: 100%;
+	height: 46px;
+	padding: 10px 12px;
+	border: 1px solid #d5dde8;
+	border-radius: 12px;
+	background: #fff;
+	color: #1e293b;
+	font-size: 0.95rem;
+	appearance: auto;
+	-webkit-appearance: menulist;
+	pointer-events: auto;
 }
 
 .sg-gallery-sheet-handle {
@@ -4872,6 +4895,11 @@ body.sg-voice-sheet-open {
 
 body.sg-gallery-sheet-open {
 	overflow: hidden;
+}
+
+body.sg-gallery-sheet-open .sg-gallery-fab {
+	visibility: hidden;
+	pointer-events: none;
 }
 
 @media (min-width: 768px) {

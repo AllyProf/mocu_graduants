@@ -20,7 +20,7 @@
 		certificate: ["First Year"],
 		diploma: ["First Year", "Second Year"],
 		"ordinary diploma": ["First Year", "Second Year"],
-		"bachelor degree": ["First Year", "Second Year", "Third Year"],
+		"bachelor degree": ["First Year", "Second Year", "Third Year", "Fourth Year"],
 		"postgraduate diploma": ["First Year", "Second Year"],
 		masters: ["First Year", "Second Year"],
 		phd: ["First Year", "Second Year", "Third Year"],
@@ -42,56 +42,136 @@
 		if (window.jQuery && jQuery(select).data("select2")) {
 			jQuery(select).trigger("change.select2");
 		}
+
+		var wrap = select.closest(".sg-sheet-field");
+		if (wrap) {
+			var valueEl = wrap.querySelector(".sg-sheet-trigger-value");
+			var placeholder = select.getAttribute("data-placeholder") || emptyLabel || "Select";
+			var label = select.value
+				? (select.options[select.selectedIndex] && select.options[select.selectedIndex].text) || select.value
+				: placeholder;
+			if (valueEl) valueEl.textContent = label;
+			wrap.classList.toggle("has-value", !!select.value);
+		}
 	}
 
-	/** When level changes, limit year + programme options to matching data. */
+	/** MoCU catalogue programmes for a study level (from data-programmes-by-level). */
+	function catalogueProgrammesForLevel(root, levelRaw) {
+		var attr = root.getAttribute("data-programmes-by-level");
+		if (!attr) return [];
+		var map = null;
+		try {
+			map = JSON.parse(attr);
+		} catch (e) {
+			return [];
+		}
+		if (!map || typeof map !== "object") return [];
+
+		if (!levelRaw) {
+			var all = {};
+			Object.keys(map).forEach(function (key) {
+				(map[key] || []).forEach(function (code) {
+					if (code) all[code] = true;
+				});
+			});
+			return Object.keys(all).sort(function (a, b) {
+				return a.localeCompare(b, undefined, { sensitivity: "base" });
+			});
+		}
+
+		var wanted = normalize(levelRaw);
+		var matchKey = Object.keys(map).find(function (key) {
+			return normalize(key) === wanted;
+		});
+		if (!matchKey) return [];
+		return (map[matchKey] || []).slice().sort(function (a, b) {
+			return a.localeCompare(b, undefined, { sensitivity: "base" });
+		});
+	}
+
+	var smartSyncLock = false;
+
+	/**
+	 * Cascading level ↔ year ↔ programme options.
+	 * Programmes follow the MoCU catalogue for the selected level (like years).
+	 */
 	function syncSmartFilters(root) {
+		if (smartSyncLock) return;
 		var levelEl = root.querySelector("[data-filter-level]");
 		var programmeEl = root.querySelector("[data-filter-programme]");
 		var yearEl = root.querySelector("[data-filter-year]");
-		if (!levelEl) return;
+		if (!levelEl && !programmeEl && !yearEl) return;
 
-		var level = normalize(levelEl.value);
-		var items = Array.prototype.slice.call(root.querySelectorAll("[data-filter-item]"));
-		var programmes = {};
-		var yearsInData = {};
+		smartSyncLock = true;
+		try {
+			var levelRaw = levelEl ? String(levelEl.value || "").trim() : "";
+			var level = normalize(levelRaw);
+			var year = normalize(yearEl && yearEl.value);
+			var programme = String((programmeEl && programmeEl.value) || "").trim();
+			var programmeNorm = normalize(programme);
+			var items = Array.prototype.slice.call(root.querySelectorAll("[data-filter-item]"));
+			var programmesInData = {};
+			var yearsInData = {};
 
-		items.forEach(function (row) {
-			var rowLevel = normalize(row.getAttribute("data-level"));
-			if (level && rowLevel !== level) return;
-			var p = String(row.getAttribute("data-programme") || "").trim();
-			var y = String(row.getAttribute("data-year") || "").trim();
-			if (p) programmes[p] = true;
-			if (y) yearsInData[y] = true;
-		});
-
-		var programmeList = Object.keys(programmes).sort(function (a, b) {
-			return a.localeCompare(b, undefined, { sensitivity: "base" });
-		});
-
-		var allowedYears = level && LEVEL_YEARS[level] ? LEVEL_YEARS[level].slice() : null;
-		var yearList = Object.keys(yearsInData).sort(function (a, b) {
-			var order = ["First Year", "Second Year", "Third Year", "Fourth Year"];
-			var ai = order.indexOf(a);
-			var bi = order.indexOf(b);
-			if (ai === -1 && bi === -1) return a.localeCompare(b);
-			if (ai === -1) return 1;
-			if (bi === -1) return -1;
-			return ai - bi;
-		});
-
-		if (allowedYears) {
-			yearList = yearList.filter(function (y) {
-				return allowedYears.indexOf(y) !== -1;
+			items.forEach(function (row) {
+				var rowLevel = normalize(row.getAttribute("data-level"));
+				var rowYear = normalize(row.getAttribute("data-year"));
+				if (level && rowLevel !== level) return;
+				if (year && rowYear !== year) return;
+				var p = String(row.getAttribute("data-programme") || "").trim();
+				if (p) programmesInData[p] = true;
 			});
-			// If data is sparse, still show the expected years for that level.
-			if (!yearList.length) yearList = allowedYears.slice();
-		}
 
-		var pack = window.sgGetLangPack ? window.sgGetLangPack() : null;
-		setSelectOptions(programmeEl, programmeList, (pack && pack.allProgrammes) || "All programmes");
-		if (yearEl) {
-			setSelectOptions(yearEl, yearList, (pack && pack.allYears) || "All years");
+			items.forEach(function (row) {
+				var rowLevel = normalize(row.getAttribute("data-level"));
+				var rowProgramme = normalize(row.getAttribute("data-programme"));
+				if (level && rowLevel !== level) return;
+				if (programmeNorm && rowProgramme !== programmeNorm) return;
+				var y = String(row.getAttribute("data-year") || "").trim();
+				if (y) yearsInData[y] = true;
+			});
+
+			// Prefer official catalogue for the chosen level; fall back to row data.
+			var programmeList = catalogueProgrammesForLevel(root, levelRaw);
+			if (!programmeList.length) {
+				programmeList = Object.keys(programmesInData).sort(function (a, b) {
+					return a.localeCompare(b, undefined, { sensitivity: "base" });
+				});
+			} else if (year) {
+				// When a year is chosen, keep catalogue codes that also appear in that year of data.
+				var narrowed = programmeList.filter(function (code) {
+					return programmesInData[code];
+				});
+				if (narrowed.length) programmeList = narrowed;
+			}
+
+			var allowedYears = level && LEVEL_YEARS[level] ? LEVEL_YEARS[level].slice() : null;
+			var yearList = Object.keys(yearsInData).sort(function (a, b) {
+				var order = ["First Year", "Second Year", "Third Year", "Fourth Year"];
+				var ai = order.indexOf(a);
+				var bi = order.indexOf(b);
+				if (ai === -1 && bi === -1) return a.localeCompare(b);
+				if (ai === -1) return 1;
+				if (bi === -1) return -1;
+				return ai - bi;
+			});
+
+			if (allowedYears) {
+				yearList = yearList.filter(function (y) {
+					return allowedYears.indexOf(y) !== -1;
+				});
+				if (!yearList.length && !programmeNorm) yearList = allowedYears.slice();
+			}
+
+			var pack = window.sgGetLangPack ? window.sgGetLangPack() : null;
+			if (programmeEl) {
+				setSelectOptions(programmeEl, programmeList, (pack && pack.allProgrammes) || "All programmes");
+			}
+			if (yearEl) {
+				setSelectOptions(yearEl, yearList, (pack && pack.allYears) || "All years");
+			}
+		} finally {
+			smartSyncLock = false;
 		}
 	}
 
@@ -650,20 +730,21 @@
 			});
 
 			root.querySelectorAll("[data-filter-year], [data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
-				el.addEventListener("change", function () {
-					if (el.hasAttribute("data-filter-level")) {
+				function onFilterChange() {
+					if (
+						el.hasAttribute("data-filter-level") ||
+						el.hasAttribute("data-filter-year") ||
+						el.hasAttribute("data-filter-programme")
+					) {
 						syncSmartFilters(root);
 					}
 					applyListFilter(root, true);
-				});
+				}
+
+				el.addEventListener("change", onFilterChange);
 
 				if (window.jQuery) {
-					jQuery(el).on("select2:select select2:clear select2:unselect change", function () {
-						if (el.hasAttribute("data-filter-level")) {
-							syncSmartFilters(root);
-						}
-						applyListFilter(root, true);
-					});
+					jQuery(el).on("select2:select select2:clear select2:unselect change", onFilterChange);
 				}
 			});
 

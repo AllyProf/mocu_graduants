@@ -17,6 +17,7 @@ class BestStudentController extends Controller
         return view('SmartGradu_App.best-students', [
             'students' => $students,
             'programmes' => $data->programmes(),
+            'programmesByLevel' => $data->programmesByLevel(),
             'studyLevels' => $data->studyLevels(),
             'yearsOfStudy' => $data->yearsOfStudy(),
         ]);

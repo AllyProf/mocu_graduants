@@ -1,0 +1,314 @@
+[
+    {
+        "short": "PhD",
+        "name": "Doctor of Philosophy",
+        "level": "PhD",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "Jan-Dec-intake"
+    },
+    {
+        "short": "MBM/HD",
+        "name": "Master of Business Management",
+        "level": "Masters",
+        "duration": "2 Years",
+        "delivery": "Full-time and Evening",
+        "session": "October intake"
+    },
+    {
+        "short": "MHRM/HD",
+        "name": "Master of Human Resource Management",
+        "level": "Masters",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "MA-PSM/HD",
+        "name": "Master of Arts in Procurement and Supply Management",
+        "level": "Masters",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "MPPM",
+        "name": "Master of Project Planning and Management",
+        "level": "Masters",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "MA-CCD",
+        "name": "Master of Arts in Co-operative and Community Development",
+        "level": "Masters",
+        "duration": "2 Years",
+        "delivery": "Full-time and Evening",
+        "session": "October intake"
+    },
+    {
+        "short": "MDP",
+        "name": "Master in Development Planning",
+        "level": "Masters",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "MCD",
+        "name": "Master in Community Development",
+        "level": "Masters",
+        "duration": "2 Years",
+        "delivery": "Full-time and Evening",
+        "session": "October intake"
+    },
+    {
+        "short": "PGD-AF",
+        "name": "Postgraduate Diploma in Accounting and Finance",
+        "level": "Postgraduate Diploma",
+        "duration": "1 Year",
+        "delivery": "Full-time and Evening",
+        "session": "October intake"
+    },
+    {
+        "short": "PGD-CBM",
+        "name": "Postgraduate Diploma in Co-operative Business Management",
+        "level": "Postgraduate Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time and Evening",
+        "session": "October intake"
+    },
+    {
+        "short": "PGD-CD",
+        "name": "Postgraduate Diploma in Community Development",
+        "level": "Postgraduate Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time and Evening",
+        "session": "October intake"
+    },
+    {
+        "short": "PGD-SCM",
+        "name": "Postgraduate Diploma in Savings and Credit Management",
+        "level": "Postgraduate Diploma",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BBICT",
+        "name": "Bachelor of Business Information and Communication Technology",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BSDS",
+        "name": "Bachelor of Science in Data Science",
+        "level": "Bachelor Degree",
+        "duration": "4 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BAF",
+        "name": "Bachelor of Accounting and Finance",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BAT",
+        "name": "Bachelor of Accounting and Taxation",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BHRM",
+        "name": "Bachelor of Human Resource Management",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BBMF",
+        "name": "Bachelor of Banking and Microfinance",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BMM",
+        "name": "Bachelor of Marketing Management",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BPSCM",
+        "name": "Bachelor of Procurement and Supply Chain Management",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "LL.B",
+        "name": "Bachelor of Laws",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BEC",
+        "name": "Bachelor of Economics",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BCED",
+        "name": "Bachelor of Community Economic Development",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BCMA",
+        "name": "Bachelor of Co-operative Management and Accounting",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time and Evening",
+        "session": "October intake"
+    },
+    {
+        "short": "BSA",
+        "name": "Bachelor of Statistics and Analytics",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BCMAG",
+        "name": "Bachelor of Co-operative Management with Agriculture",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BACM",
+        "name": "Bachelor of Accounting with Co-operative Management",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BSW",
+        "name": "Bachelor of Social Work",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "DBICT",
+        "name": "Diploma in Business Information and Communication Technology",
+        "level": "Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "DMFM",
+        "name": "Diploma in Microfinance Management",
+        "level": "Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "DBEM",
+        "name": "Diploma in Business Enterprise Management",
+        "level": "Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "DHRM",
+        "name": "Diploma in Human Resource Management",
+        "level": "Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "DCMA",
+        "name": "Diploma in Co-operative Management and Accounting",
+        "level": "Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CIT",
+        "name": "Certificate in Information Technology",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CAF",
+        "name": "Certificate in Accounting and Finance",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CMF",
+        "name": "Certificate in Microfinance Management",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CL",
+        "name": "Certificate in Law",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CHRM",
+        "name": "Certificate in Human Resource Management",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CMA",
+        "name": "Certificate in Co-operative Management and Accounting",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    }
+]

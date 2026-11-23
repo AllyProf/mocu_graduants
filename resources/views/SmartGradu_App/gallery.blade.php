@@ -125,22 +125,21 @@
 				<select
 					name="programme"
 					id="gallery_programme"
-					class="form-control sg-select2"
+					class="form-control sg-gallery-programme-select"
 					required
-					data-placeholder="Select programme"
-					data-sheet-title="Programme"
 					data-i18n-data-placeholder="selectProgramme"
-					data-i18n-sheet-title="programme"
 					data-gallery-programme
 				>
 					<option value="">Select programme</option>
 					@foreach($programmes as $programme)
-						<option value="{{ $programme->short }}">{{ $programme->short }}</option>
+						<option value="{{ $programme->short }}">
+							{{ $programme->short }}{{ $programme->name && $programme->name !== $programme->short ? ' — '.$programme->name : '' }}
+						</option>
 					@endforeach
 				</select>
 			</label>
 
-			<div class="sg-gallery-upload-wrap" data-gallery-upload-wrap hidden>
+			<div class="sg-gallery-upload-wrap" data-gallery-upload-wrap>
 				<div class="sg-gallery-field">
 					<span data-i18n="uploadPhotos">Photos (max 3)</span>
 					<div class="sg-gallery-slots" data-gallery-slots>
@@ -173,5 +172,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=8') }}"></script>
+<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=9') }}"></script>
 @endpush

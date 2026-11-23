@@ -96,6 +96,7 @@ class GraduationData
 
     /**
      * Canonical study-level order used by filters and sorting (PhD → Certificate).
+     * Includes levels from the MoCU catalogue even when no graduands are loaded yet.
      */
     public function studyLevels(): Collection
     {
@@ -105,11 +106,48 @@ class GraduationData
             ->unique()
             ->values();
 
-        return collect($this->preferredStudyLevels)
-            ->filter(fn ($level) => $found->contains($level))
-            ->values()
-            ->merge($found->diff($this->preferredStudyLevels)->values())
+        $fromCatalogue = $this->programmeCatalogue()
+            ->pluck('level')
+            ->filter()
+            ->unique()
             ->values();
+
+        $available = $found->merge($fromCatalogue)->unique()->values();
+
+        return collect($this->preferredStudyLevels)
+            ->filter(fn ($level) => $available->contains($level))
+            ->values()
+            ->merge($available->diff($this->preferredStudyLevels)->values())
+            ->values();
+    }
+
+    /**
+     * Programme short codes grouped by study level (for cascading filters).
+     *
+     * @return array<string, list<string>>
+     */
+    public function programmesByLevel(): array
+    {
+        $grouped = [];
+
+        foreach ($this->programmeCatalogue() as $row) {
+            $level = trim((string) ($row->level ?? ''));
+            $short = trim((string) ($row->short ?? ''));
+            if ($level === '' || $short === '') {
+                continue;
+            }
+            $grouped[$level] ??= [];
+            if (! in_array($short, $grouped[$level], true)) {
+                $grouped[$level][] = $short;
+            }
+        }
+
+        foreach ($grouped as $level => $codes) {
+            natcasesort($codes);
+            $grouped[$level] = array_values($codes);
+        }
+
+        return $grouped;
     }
 
     /**
@@ -143,23 +181,67 @@ class GraduationData
     }
 
     /**
+     * Official MoCU programme catalogue (programmes.json), merged with any
+     * codes found only in graduands.json so filters/gallery stay complete.
+     */
+    public function programmeCatalogue(?string $studyLevel = null): Collection
+    {
+        $fromFile = collect($this->read('programmes.json'))
+            ->filter(fn ($row) => is_array($row))
+            ->map(fn (array $row) => (object) [
+                'short' => trim((string) ($row['short'] ?? '')),
+                'name' => trim((string) ($row['name'] ?? '')),
+                'level' => trim((string) ($row['level'] ?? '')),
+                'duration' => trim((string) ($row['duration'] ?? '')),
+                'delivery' => trim((string) ($row['delivery'] ?? '')),
+                'session' => trim((string) ($row['session'] ?? '')),
+            ])
+            ->filter(fn ($row) => $row->short !== '');
+
+        $fromGraduands = $this->graduands()
+            ->map(fn ($row) => (object) [
+                'short' => trim((string) ($row->programme_short ?? '')),
+                'name' => trim((string) ($row->programme ?? '')),
+                'level' => trim((string) ($row->study_level ?? '')),
+                'duration' => '',
+                'delivery' => '',
+                'session' => '',
+            ])
+            ->filter(fn ($row) => $row->short !== '');
+
+        $merged = $fromFile
+            ->concat($fromGraduands)
+            ->unique(fn ($row) => strtolower($row->short))
+            ->values();
+
+        if ($studyLevel) {
+            $merged = $merged->filter(
+                fn ($row) => strcasecmp((string) $row->level, $studyLevel) === 0
+            )->values();
+        }
+
+        $levelRank = fn ($row) => $this->studyLevelRank($row->level ?: null);
+
+        return $merged
+            ->sort(function ($a, $b) use ($levelRank) {
+                $cmp = $levelRank($a) <=> $levelRank($b);
+                if ($cmp !== 0) {
+                    return $cmp;
+                }
+
+                return strnatcasecmp((string) $a->short, (string) $b->short);
+            })
+            ->values();
+    }
+
+    /**
      * Programme short-code list for filter dropdowns / gallery picker.
      */
     public function programmes(?string $studyLevel = null): Collection
     {
-        $rows = $this->graduands();
-
-        if ($studyLevel) {
-            $rows = $rows->filter(
-                fn ($row) => strcasecmp((string) ($row->study_level ?? ''), $studyLevel) === 0
-            );
-        }
-
-        return $rows
-            ->pluck('programme_short')
+        return $this->programmeCatalogue($studyLevel)
+            ->pluck('short')
             ->filter()
-            ->unique()
-            ->sort()
             ->values();
     }
 
@@ -168,16 +250,12 @@ class GraduationData
      */
     public function programmeOptions(): Collection
     {
-        return $this->graduands()
-            ->map(fn ($row) => [
-                'short' => (string) ($row->programme_short ?? ''),
-                'name' => (string) ($row->programme ?? ''),
+        return $this->programmeCatalogue()
+            ->map(fn ($row) => (object) [
+                'short' => (string) $row->short,
+                'name' => (string) ($row->name !== '' ? $row->name : $row->short),
             ])
-            ->filter(fn ($row) => $row['short'] !== '')
-            ->unique('short')
-            ->sortBy('short')
-            ->values()
-            ->map(fn ($row) => (object) $row);
+            ->values();
     }
 
     /**

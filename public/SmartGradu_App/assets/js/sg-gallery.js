@@ -1,11 +1,22 @@
 /**
- * Gallery: programme filter sheet, add-memory upload, downloads.
+ * Gallery: programme filter sheet, add-memory upload, lightbox.
  */
 (function () {
 	"use strict";
 
 	var MAX_PHOTOS = 3;
 	var activeFilter = "";
+
+	function mountToBody(el) {
+		if (el && el.parentNode !== document.body) {
+			document.body.appendChild(el);
+		}
+	}
+
+	/* Keep overlays above page/tabbar stacking contexts */
+	mountToBody(document.getElementById("sg-gallery-lightbox"));
+	mountToBody(document.getElementById("sg-gallery-filter-sheet"));
+	mountToBody(document.getElementById("sg-gallery-sheet"));
 
 	/* ---------- Load more (4 at a time) ---------- */
 	(function bindLoadMore() {
@@ -40,7 +51,6 @@
 			fab.classList.remove("is-compact");
 		}
 
-		// Default: show "Add memory" label.
 		expand();
 
 		function onScroll() {
@@ -221,28 +231,28 @@
 		if (!sheet || !form) return;
 
 		var openBtn = document.querySelector("[data-gallery-open]");
-		var uploadWrap = form.querySelector("[data-gallery-upload-wrap]");
 		var programme = form.querySelector("[data-gallery-programme]");
 		var hint = form.querySelector("[data-gallery-hint]");
 		var status = form.querySelector("[data-gallery-status]");
 		var submitBtn = form.querySelector(".sg-gallery-submit");
+		var panel = sheet.querySelector(".sg-gallery-sheet-panel");
 		var slotFiles = [null, null, null];
 
 		function openSheet() {
 			sheet.hidden = false;
 			sheet.setAttribute("aria-hidden", "false");
 			document.body.classList.add("sg-gallery-sheet-open");
+			if (programme) {
+				window.setTimeout(function () {
+					try { programme.focus(); } catch (e) { /* ignore */ }
+				}, 80);
+			}
 		}
 
 		function closeSheet() {
 			sheet.hidden = true;
 			sheet.setAttribute("aria-hidden", "true");
 			document.body.classList.remove("sg-gallery-sheet-open");
-		}
-
-		function syncUploadVisibility() {
-			var hasProgramme = programme && String(programme.value || "").trim() !== "";
-			if (uploadWrap) uploadWrap.hidden = !hasProgramme;
 		}
 
 		function setStatus(message, kind) {
@@ -339,9 +349,10 @@
 		});
 
 		if (openBtn) {
-			openBtn.addEventListener("click", function () {
+			openBtn.addEventListener("click", function (event) {
+				event.preventDefault();
+				event.stopPropagation();
 				openSheet();
-				syncUploadVisibility();
 			});
 		}
 
@@ -349,11 +360,11 @@
 			el.addEventListener("click", closeSheet);
 		});
 
-		if (programme) {
-			programme.addEventListener("change", syncUploadVisibility);
-			if (window.jQuery) {
-				window.jQuery(programme).on("change select2:select", syncUploadVisibility);
-			}
+		/* Backdrop closes; panel interactions stay on the form */
+		if (panel) {
+			panel.addEventListener("click", function (event) {
+				event.stopPropagation();
+			});
 		}
 
 		form.addEventListener("submit", function (event) {
@@ -362,6 +373,7 @@
 
 			if (!programme || !String(programme.value || "").trim()) {
 				setStatus("Please select a programme.", "error");
+				if (programme) programme.focus();
 				return;
 			}
 
@@ -423,6 +435,5 @@
 		});
 
 		clearSlots();
-		syncUploadVisibility();
 	})();
 })();

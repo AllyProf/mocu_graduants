@@ -38,6 +38,7 @@ class AcademicLookupSeeder extends Seeder
             ['name' => 'First Year', 'year_number' => 1, 'sort_order' => 1],
             ['name' => 'Second Year', 'year_number' => 2, 'sort_order' => 2],
             ['name' => 'Third Year', 'year_number' => 3, 'sort_order' => 3],
+            ['name' => 'Fourth Year', 'year_number' => 4, 'sort_order' => 4],
         ];
 
         foreach ($years as $year) {
