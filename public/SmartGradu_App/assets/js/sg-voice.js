@@ -1,10 +1,17 @@
 /**
- * Kiswahili name playback for browser + Flutter WebView.
- * Girl=Zuri, Boy=Daudi. Speed is applied on the server (not playbackRate —
- * WebView often speeds up / chips speech if client rate ≠ 1).
+ * Kiswahili name playback — Girl=Zuri, Boy=Daudi.
+ * Flutter WebView: play direct /voice/tts URLs (blob: ObjectURLs often silent).
+ * Speed is baked server-side; client playbackRate stays 1.
  */
 (function () {
 	"use strict";
+
+	var ua = navigator.userAgent || "";
+	var isWebView =
+		/\bwv\b/i.test(ua) ||
+		/Flutter|; wv\)|WebView/i.test(ua) ||
+		(typeof window.flutter_inappwebview !== "undefined") ||
+		(typeof window.FlutterWebView !== "undefined");
 
 	function pack(key, fallback) {
 		var p = window.sgGetLangPack ? window.sgGetLangPack() : null;
@@ -45,14 +52,14 @@
 		var playing = false;
 		var warmBusy = false;
 		var primeToken = 0;
-		var prefetch = Object.create(null); // key -> { url, gender, speed }
+		var prefetch = Object.create(null);
 
 		function cacheKey(g, name, s) {
 			return g + "|" + speedKey(s) + "|" + name;
 		}
 
 		function ttsUrl(g, text, s) {
-			return (
+			var path =
 				"/voice/tts?q=" +
 				encodeURIComponent(text) +
 				"&g=" +
@@ -60,15 +67,23 @@
 				"&voice=" +
 				encodeURIComponent(g === "male" ? "daudi" : "zuri") +
 				"&s=" +
-				encodeURIComponent(speedKey(s))
-			);
+				encodeURIComponent(speedKey(s));
+			// Absolute URL is more reliable inside Flutter WebView.
+			try {
+				return new URL(path, window.location.origin).href;
+			} catch (e) {
+				return path;
+			}
 		}
 
 		function revokePrefetch() {
 			Object.keys(prefetch).forEach(function (k) {
-				try {
-					URL.revokeObjectURL(prefetch[k].url);
-				} catch (e) {}
+				var u = prefetch[k] && prefetch[k].url;
+				if (u && String(u).indexOf("blob:") === 0) {
+					try {
+						URL.revokeObjectURL(u);
+					} catch (e) {}
+				}
 			});
 			prefetch = Object.create(null);
 		}
@@ -99,92 +114,6 @@
 				window.sgRevealAllMatched(root);
 			}
 			return visibleItems();
-		}
-
-		function assertVoiceHeaders(res, g) {
-			var gotGender = (res.headers.get("X-SG-Gender") || "").toLowerCase();
-			var gotVoice = (res.headers.get("X-SG-Voice") || "").toLowerCase();
-			if (g === "female") {
-				if (gotGender === "male" || /daudi|rafiki/.test(gotVoice) || !/zuri|rehema/.test(gotVoice)) {
-					throw new Error("not girl voice");
-				}
-			} else if (gotGender === "female" || /zuri|rehema/.test(gotVoice) || !/daudi|rafiki/.test(gotVoice)) {
-				throw new Error("not boy voice");
-			}
-		}
-
-		function fetchBlob(g, name, s) {
-			return fetch(ttsUrl(g, name, s))
-				.then(function (res) {
-					if (!res.ok) throw new Error("tts");
-					assertVoiceHeaders(res, g);
-					return res.blob();
-				})
-				.then(function (blob) {
-					return URL.createObjectURL(blob);
-				});
-		}
-
-		function remember(key, url, g, s) {
-			if (prefetch[key] && prefetch[key].url && prefetch[key].url !== url) {
-				try {
-					URL.revokeObjectURL(prefetch[key].url);
-				} catch (e) {}
-			}
-			prefetch[key] = { url: url, gender: g, speed: speedKey(s) };
-			return url;
-		}
-
-		function getReadyUrl(g, name, s) {
-			var key = cacheKey(g, name, s);
-			var hit = prefetch[key];
-			if (hit && hit.gender === g && hit.speed === speedKey(s) && hit.url) {
-				return Promise.resolve(hit.url);
-			}
-			return fetchBlob(g, name, s).then(function (url) {
-				return remember(key, url, g, s);
-			});
-		}
-
-		function primeStart(count) {
-			var g = readGenderFromUi();
-			gender = g;
-			var s = speed;
-			var names = visibleItems()
-				.slice(0, count || 2)
-				.map(itemName)
-				.filter(Boolean);
-			if (!names.length) return;
-
-			var token = ++primeToken;
-			var i = 0;
-
-			function next() {
-				if (token !== primeToken || playing) return;
-				if (i >= names.length) return;
-				var name = names[i++];
-				var key = cacheKey(g, name, s);
-				if (prefetch[key] && prefetch[key].gender === g && prefetch[key].speed === speedKey(s)) {
-					next();
-					return;
-				}
-				fetchBlob(g, name, s)
-					.then(function (url) {
-						if (token !== primeToken) {
-							try {
-								URL.revokeObjectURL(url);
-							} catch (e) {}
-							return;
-						}
-						remember(key, url, g, s);
-					})
-					.catch(function () {})
-					.then(function () {
-						if (token === primeToken) next();
-					});
-			}
-
-			next();
 		}
 
 		function openSheet() {
@@ -243,6 +172,7 @@
 				try {
 					audio.onended = null;
 					audio.onerror = null;
+					audio.oncanplay = null;
 					audio.oncanplaythrough = null;
 					audio.pause();
 					audio.removeAttribute("src");
@@ -263,6 +193,64 @@
 			index = 0;
 		}
 
+		/** Warm by hitting the URL (server cache). No blob in WebView. */
+		function primeStart(count) {
+			var g = readGenderFromUi();
+			gender = g;
+			var s = speed;
+			var names = visibleItems()
+				.slice(0, count || 2)
+				.map(itemName)
+				.filter(Boolean);
+			if (!names.length) return;
+
+			var token = ++primeToken;
+			var i = 0;
+
+			function next() {
+				if (token !== primeToken || playing) return;
+				if (i >= names.length) return;
+				var name = names[i++];
+				var url = ttsUrl(g, name, s);
+				var key = cacheKey(g, name, s);
+
+				if (isWebView) {
+					// Preload into HTTP cache with a throwaway Audio element.
+					var a = new Audio();
+					a.preload = "auto";
+					a.src = url;
+					a.load();
+					prefetch[key] = { url: url, gender: g, speed: speedKey(s), direct: true };
+					window.setTimeout(function () {
+						if (token === primeToken) next();
+					}, 80);
+					return;
+				}
+
+				fetch(url)
+					.then(function (res) {
+						if (!res.ok) throw new Error("tts");
+						return res.blob();
+					})
+					.then(function (blob) {
+						if (token !== primeToken) return;
+						var obj = URL.createObjectURL(blob);
+						if (prefetch[key] && prefetch[key].url && !prefetch[key].direct) {
+							try {
+								URL.revokeObjectURL(prefetch[key].url);
+							} catch (e) {}
+						}
+						prefetch[key] = { url: obj, gender: g, speed: speedKey(s), direct: false };
+					})
+					.catch(function () {})
+					.then(function () {
+						if (token === primeToken) next();
+					});
+			}
+
+			next();
+		}
+
 		function warmNext(fromIndex, myRun) {
 			if (warmBusy || myRun !== runId) return;
 			if (fromIndex >= queue.length) return;
@@ -272,22 +260,41 @@
 				return;
 			}
 			var key = cacheKey(runGender, name, runSpeed);
-			if (prefetch[key] && prefetch[key].gender === runGender && prefetch[key].speed === speedKey(runSpeed)) {
+			if (prefetch[key] && prefetch[key].gender === runGender) {
 				warmNext(fromIndex + 1, myRun);
 				return;
 			}
 			var g = runGender;
 			var s = runSpeed;
+			var url = ttsUrl(g, name, s);
 			warmBusy = true;
-			fetchBlob(g, name, s)
-				.then(function (url) {
-					if (myRun !== runId || g !== runGender) {
-						try {
-							URL.revokeObjectURL(url);
-						} catch (e) {}
-						return;
-					}
-					remember(key, url, g, s);
+
+			if (isWebView) {
+				var a = new Audio();
+				a.preload = "auto";
+				a.src = url;
+				a.load();
+				prefetch[key] = { url: url, gender: g, speed: speedKey(s), direct: true };
+				warmBusy = false;
+				window.setTimeout(function () {
+					if (myRun === runId) warmNext(fromIndex + 1, myRun);
+				}, 60);
+				return;
+			}
+
+			fetch(url)
+				.then(function (res) {
+					if (!res.ok) throw new Error("tts");
+					return res.blob();
+				})
+				.then(function (blob) {
+					if (myRun !== runId) return;
+					prefetch[key] = {
+						url: URL.createObjectURL(blob),
+						gender: g,
+						speed: speedKey(s),
+						direct: false,
+					};
 				})
 				.catch(function () {})
 				.then(function () {
@@ -301,44 +308,44 @@
 			audio = new Audio();
 			audio.preload = "auto";
 			audio.volume = 1;
-			// Critical for Flutter WebView: never change playbackRate.
 			audio.defaultPlaybackRate = 1;
 			audio.playbackRate = 1;
 			if ("preservesPitch" in audio) audio.preservesPitch = true;
 			audio.src = url;
 
 			var finished = false;
+			var started = false;
+
 			function finish() {
 				if (finished || myRun !== runId) return;
 				finished = true;
 				audio = null;
 				window.setTimeout(function () {
 					if (myRun === runId && onDone) onDone();
-				}, 120);
+				}, 100);
+			}
+
+			function tryPlay() {
+				if (started || finished || myRun !== runId || !audio) return;
+				started = true;
+				var p = audio.play();
+				if (p && p.catch) {
+					p.catch(function () {
+						// WebView autoplay block: one more try after a tick.
+						window.setTimeout(function () {
+							if (!audio || finished || myRun !== runId) return;
+							audio.play().catch(finish);
+						}, 50);
+					});
+				}
 			}
 
 			audio.onended = finish;
 			audio.onerror = finish;
-
-			function tryPlay() {
-				var p = audio.play();
-				if (p && p.catch) p.catch(finish);
-			}
-
-			// Wait until buffered so WebView does not "ramp up" speed while streaming.
-			if (typeof audio.oncanplaythrough !== "undefined") {
-				audio.oncanplaythrough = function () {
-					audio.oncanplaythrough = null;
-					tryPlay();
-				};
-				audio.load();
-				// Fallback if event never fires (some WebViews).
-				window.setTimeout(function () {
-					if (!finished && myRun === runId && audio) tryPlay();
-				}, 2500);
-			} else {
-				tryPlay();
-			}
+			audio.oncanplay = tryPlay;
+			audio.load();
+			// Safety if canplay never fires in WebView.
+			window.setTimeout(tryPlay, 400);
 		}
 
 		function speakOne(item, queuePos, myRun, onDone) {
@@ -362,18 +369,22 @@
 
 			warmNext(queuePos + 1, myRun);
 
-			getReadyUrl(runGender, name, runSpeed)
-				.then(function (url) {
-					if (myRun !== runId) return;
-					playUrl(url, myRun, function () {
-						item.classList.remove("is-speaking");
-						if (onDone) onDone();
-					});
-				})
-				.catch(function () {
-					item.classList.remove("is-speaking");
-					if (myRun === runId && onDone) onDone();
-				});
+			var key = cacheKey(runGender, name, runSpeed);
+			var warmed = prefetch[key];
+			var url =
+				warmed && warmed.gender === runGender && warmed.url
+					? warmed.url
+					: ttsUrl(runGender, name, runSpeed);
+
+			// In WebView always prefer the direct absolute URL (never blob:).
+			if (isWebView || (warmed && warmed.direct) || String(url).indexOf("blob:") === 0 && isWebView) {
+				url = ttsUrl(runGender, name, runSpeed);
+			}
+
+			playUrl(url, myRun, function () {
+				item.classList.remove("is-speaking");
+				if (onDone) onDone();
+			});
 		}
 
 		function speakNext(myRun) {
