@@ -16,6 +16,7 @@ class GraduandController extends Controller
             'graduands' => $data->graduands(),
             'studyLevels' => $data->studyLevels(),
             'programmes' => $data->programmes(),
+            'yearsOfStudy' => $data->yearsOfStudy(),
         ]);
     }
 }

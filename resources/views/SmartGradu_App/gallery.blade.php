@@ -45,9 +45,9 @@
 							<span class="sg-gallery-group-sep" aria-hidden="true">-</span>
 							<span>{{ $group->count }} {{ $group->count === 1 ? 'photo' : 'photos' }}</span>
 						</div>
-						<div class="sg-gallery-photos">
-							@foreach($group->images as $image)
-								<figure class="sg-gallery-photo">
+						<div class="sg-gallery-photos" data-gallery-photos>
+							@foreach($group->images as $index => $image)
+								<figure class="sg-gallery-photo" data-gallery-photo @if($index >= 4) hidden @endif>
 									<button
 										type="button"
 										class="sg-gallery-photo-open"
@@ -60,6 +60,9 @@
 								</figure>
 							@endforeach
 						</div>
+						@if($group->count > 4)
+							<button type="button" class="sg-gallery-load-more" data-gallery-load-more data-step="4" data-i18n="loadMore">Load more</button>
+						@endif
 					</section>
 				@endforeach
 			</div>
@@ -72,6 +75,7 @@
 
 <button type="button" class="sg-gallery-fab" data-gallery-open aria-label="Add memory">
 	<i class="fa fa-plus" aria-hidden="true"></i>
+	<span class="sg-gallery-fab-label" data-i18n="addMemory">Add memory</span>
 </button>
 
 {{-- Fullscreen photo viewer --}}
@@ -169,5 +173,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=5') }}"></script>
+<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=8') }}"></script>
 @endpush

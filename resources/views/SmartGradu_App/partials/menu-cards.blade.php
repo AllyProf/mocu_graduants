@@ -6,7 +6,7 @@
 		['route' => 'graduands', 'icon' => 'fa-graduation-cap', 'tone' => 'blue', 'i18n' => 'graduands', 'label' => 'Graduands'],
 		['route' => 'best-students', 'icon' => 'fa-trophy', 'tone' => 'blue', 'i18n' => 'bestStudents', 'label' => 'Best Students'],
 		['route' => 'timetable', 'icon' => 'fa-calendar', 'tone' => 'blue', 'i18n' => 'timetable', 'label' => 'Timetable'],
-		['route' => 'leaders', 'icon' => 'fa-users', 'tone' => 'blue', 'i18n' => 'leaders', 'label' => 'University Leaders'],
+		['route' => 'leaders', 'icon' => 'fa-users', 'tone' => 'blue', 'i18n' => 'leaders', 'label' => 'Governance & Leadership'],
 		['route' => 'gallery', 'icon' => 'fa-camera', 'tone' => 'blue', 'i18n' => 'gallery', 'label' => 'Gallery'],
 		['route' => 'venues', 'icon' => 'fa-map-marker', 'tone' => 'blue', 'i18n' => 'venuesShort', 'label' => 'Venue Guide'],
 		['route' => 'live', 'icon' => 'fa-video-camera', 'tone' => 'blue', 'i18n' => 'liveShort', 'label' => 'Live Ceremony'],

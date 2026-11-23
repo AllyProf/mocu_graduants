@@ -11,7 +11,9 @@
 		var diff = Math.max(0, target - now);
 
 		var days = Math.floor(diff / 86400000);
-		var hours = Math.floor((diff % 86400000) / 3600000);
+		// 12-hour unit (0–11), as requested for the home countdown display.
+		var hours24 = Math.floor((diff % 86400000) / 3600000);
+		var hours = hours24 % 12;
 		var minutes = Math.floor((diff % 3600000) / 60000);
 		var seconds = Math.floor((diff % 60000) / 1000);
 

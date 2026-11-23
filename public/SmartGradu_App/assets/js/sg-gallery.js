@@ -7,6 +7,55 @@
 	var MAX_PHOTOS = 3;
 	var activeFilter = "";
 
+	/* ---------- Load more (4 at a time) ---------- */
+	(function bindLoadMore() {
+		document.querySelectorAll("[data-gallery-load-more]").forEach(function (btn) {
+			btn.addEventListener("click", function () {
+				var group = btn.closest("[data-gallery-group]");
+				if (!group) return;
+				var step = parseInt(btn.getAttribute("data-step") || "4", 10);
+				var hidden = Array.prototype.slice.call(group.querySelectorAll("[data-gallery-photo][hidden]"));
+				hidden.slice(0, step).forEach(function (el) {
+					el.hidden = false;
+				});
+				if (group.querySelectorAll("[data-gallery-photo][hidden]").length === 0) {
+					btn.hidden = true;
+				}
+			});
+		});
+	})();
+
+	/* ---------- FAB: label by default, icon-only while scrolling ---------- */
+	(function bindFabScroll() {
+		var fab = document.querySelector("[data-gallery-open]");
+		if (!fab) return;
+		var timer = null;
+		var scrollRoot = document.scrollingElement || document.documentElement;
+
+		function collapse() {
+			fab.classList.add("is-compact");
+		}
+
+		function expand() {
+			fab.classList.remove("is-compact");
+		}
+
+		// Default: show "Add memory" label.
+		expand();
+
+		function onScroll() {
+			collapse();
+			if (timer) window.clearTimeout(timer);
+			timer = window.setTimeout(expand, 700);
+		}
+
+		window.addEventListener("scroll", onScroll, { passive: true });
+		if (scrollRoot && scrollRoot !== document.body) {
+			scrollRoot.addEventListener("scroll", onScroll, { passive: true });
+		}
+		document.addEventListener("scroll", onScroll, { passive: true, capture: true });
+	})();
+
 	/* ---------- Fullscreen photo viewer ---------- */
 	(function bindLightbox() {
 		var lightbox = document.getElementById("sg-gallery-lightbox");
@@ -19,7 +68,10 @@
 		function collectVisible() {
 			return Array.prototype.slice.call(document.querySelectorAll("[data-gallery-view]")).filter(function (el) {
 				var group = el.closest("[data-gallery-group]");
-				return !group || !group.hidden;
+				var photo = el.closest("[data-gallery-photo]");
+				if (group && group.hidden) return false;
+				if (photo && photo.hidden) return false;
+				return true;
 			});
 		}
 

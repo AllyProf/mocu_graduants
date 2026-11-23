@@ -14,12 +14,15 @@
 				<span class="sg-caption" data-i18n="captionBest">Top Performers</span>
 				<h1 data-i18n="bestStudents">Best Students</h1>
 			</div>
+			<div class="sg-pagehead-actions">
+				@include('SmartGradu_App.partials.page-pdf', ['pdfUrl' => route('best-students.pdf')])
+			</div>
 		</div>
 	</div>
 </section>
 
 <section class="sg-section sg-list-page">
-	<div class="container" data-filter-root data-per-page="10" data-total-all="{{ $total }}">
+	<div class="container" data-filter-root data-per-page="10" data-total-all="{{ $total }}" data-voice-root>
 		<div class="sg-list-summary">
 			<span class="sg-list-summary-icon"><i class="fa fa-star"></i></span>
 			<div class="sg-list-summary-main">
@@ -27,6 +30,8 @@
 				<span><span data-i18n="showing">Showing</span> <b data-filter-count>{{ $total }}</b> · <span data-i18n="bestAll">Best Students All</span> <b data-filter-total>{{ $total }}</b></span>
 			</div>
 		</div>
+
+		@include('SmartGradu_App.partials.list-voice')
 
 		<div class="sg-list-tools">
 			<div class="sg-list-search-row">
@@ -71,6 +76,8 @@
 				<article
 					class="sg-people-item sg-people-item-plain"
 					data-filter-item
+					data-voice-item
+					data-name="{{ $student->full_name }}"
 					data-year="{{ $year }}"
 					data-level="{{ $student->study_level }}"
 					data-programme="{{ $student->programme_short }}"
@@ -79,7 +86,7 @@
 				>
 					<span class="sg-people-rank" data-row-num>{{ $index + 1 }}</span>
 					<div class="sg-people-info">
-						<strong class="sg-people-name">{{ $student->full_name }}</strong>
+						<strong class="sg-people-name" data-voice-name>{{ $student->full_name }}</strong>
 						<span class="sg-people-meta">{{ $student->programme_short }} · {{ $year }} · {{ $student->study_level }}</span>
 						@if($isOverall)
 							<span class="sg-people-award" data-i18n="overall">Overall</span>

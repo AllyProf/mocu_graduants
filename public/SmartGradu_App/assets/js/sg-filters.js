@@ -15,6 +15,86 @@
 			.trim();
 	}
 
+	/** Expected years by study level (smart cascading). */
+	var LEVEL_YEARS = {
+		certificate: ["First Year"],
+		diploma: ["First Year", "Second Year"],
+		"ordinary diploma": ["First Year", "Second Year"],
+		"bachelor degree": ["First Year", "Second Year", "Third Year"],
+		"postgraduate diploma": ["First Year", "Second Year"],
+		masters: ["First Year", "Second Year"],
+		phd: ["First Year", "Second Year", "Third Year"],
+	};
+
+	function setSelectOptions(select, values, emptyLabel) {
+		if (!select) return;
+		var current = select.value || "";
+		var html = '<option value="">' + (emptyLabel || "—") + "</option>";
+		values.forEach(function (value) {
+			html += '<option value="' + String(value).replace(/"/g, "&quot;") + '">' + value + "</option>";
+		});
+		select.innerHTML = html;
+		if (current && values.indexOf(current) !== -1) {
+			select.value = current;
+		} else {
+			select.value = "";
+		}
+		if (window.jQuery && jQuery(select).data("select2")) {
+			jQuery(select).trigger("change.select2");
+		}
+	}
+
+	/** When level changes, limit year + programme options to matching data. */
+	function syncSmartFilters(root) {
+		var levelEl = root.querySelector("[data-filter-level]");
+		var programmeEl = root.querySelector("[data-filter-programme]");
+		var yearEl = root.querySelector("[data-filter-year]");
+		if (!levelEl) return;
+
+		var level = normalize(levelEl.value);
+		var items = Array.prototype.slice.call(root.querySelectorAll("[data-filter-item]"));
+		var programmes = {};
+		var yearsInData = {};
+
+		items.forEach(function (row) {
+			var rowLevel = normalize(row.getAttribute("data-level"));
+			if (level && rowLevel !== level) return;
+			var p = String(row.getAttribute("data-programme") || "").trim();
+			var y = String(row.getAttribute("data-year") || "").trim();
+			if (p) programmes[p] = true;
+			if (y) yearsInData[y] = true;
+		});
+
+		var programmeList = Object.keys(programmes).sort(function (a, b) {
+			return a.localeCompare(b, undefined, { sensitivity: "base" });
+		});
+
+		var allowedYears = level && LEVEL_YEARS[level] ? LEVEL_YEARS[level].slice() : null;
+		var yearList = Object.keys(yearsInData).sort(function (a, b) {
+			var order = ["First Year", "Second Year", "Third Year", "Fourth Year"];
+			var ai = order.indexOf(a);
+			var bi = order.indexOf(b);
+			if (ai === -1 && bi === -1) return a.localeCompare(b);
+			if (ai === -1) return 1;
+			if (bi === -1) return -1;
+			return ai - bi;
+		});
+
+		if (allowedYears) {
+			yearList = yearList.filter(function (y) {
+				return allowedYears.indexOf(y) !== -1;
+			});
+			// If data is sparse, still show the expected years for that level.
+			if (!yearList.length) yearList = allowedYears.slice();
+		}
+
+		var pack = window.sgGetLangPack ? window.sgGetLangPack() : null;
+		setSelectOptions(programmeEl, programmeList, (pack && pack.allProgrammes) || "All programmes");
+		if (yearEl) {
+			setSelectOptions(yearEl, yearList, (pack && pack.allYears) || "All years");
+		}
+	}
+
 	/** Return rows that match the current filter controls inside root. */
 	function getMatchedRows(root) {
 		var q = normalize(root.querySelector("[data-filter-q]") && root.querySelector("[data-filter-q]").value);
@@ -571,11 +651,17 @@
 
 			root.querySelectorAll("[data-filter-year], [data-filter-level], [data-filter-programme], [data-filter-type]").forEach(function (el) {
 				el.addEventListener("change", function () {
+					if (el.hasAttribute("data-filter-level")) {
+						syncSmartFilters(root);
+					}
 					applyListFilter(root, true);
 				});
 
 				if (window.jQuery) {
 					jQuery(el).on("select2:select select2:clear select2:unselect change", function () {
+						if (el.hasAttribute("data-filter-level")) {
+							syncSmartFilters(root);
+						}
 						applyListFilter(root, true);
 					});
 				}
@@ -584,6 +670,7 @@
 			root.querySelectorAll("[data-filter-clear]").forEach(function (btn) {
 				btn.addEventListener("click", function () {
 					clearFilters(root);
+					syncSmartFilters(root);
 				});
 			});
 
@@ -594,6 +681,7 @@
 				});
 			}
 
+			syncSmartFilters(root);
 			applyListFilter(root, true);
 		});
 	}
@@ -787,6 +875,13 @@
 
 	// Register PDF handler immediately (don't wait on other boot work).
 	safeBoot(bindPdfDownload);
+
+	/** Reveal every currently matched row (used by voice playback). */
+	window.sgRevealAllMatched = function (root) {
+		if (!root) return;
+		root.setAttribute("data-visible-count", "99999");
+		applyListFilter(root, false);
+	};
 
 	if (document.readyState === "loading") {
 		document.addEventListener("DOMContentLoaded", boot);

@@ -1,6 +1,6 @@
 @extends('SmartGradu_App.layouts.app')
 
-@section('title', 'University Leaders | ' . config('app.name'))
+@section('title', 'Governance & Leadership | ' . config('app.name'))
 
 @section('content')
 <section class="sg-page-top sg-hero-leaders sg-app-pagehead">
@@ -9,7 +9,7 @@
 			@include('SmartGradu_App.partials.page-back')
 			<div class="sg-section-title">
 				<span class="sg-caption" data-i18n="captionLeaders">Leadership</span>
-				<h1 data-i18n="leaders">University Leaders</h1>
+				<h1 data-i18n="leaders">Governance & Leadership</h1>
 			</div>
 		</div>
 	</div>

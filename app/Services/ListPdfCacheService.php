@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Student;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -96,13 +95,13 @@ class ListPdfCacheService
     }
 
     /**
-     * Data version changes when student rows change, invalidating old cache keys.
+     * Data version changes when graduands.json changes, invalidating old cache keys.
      */
     public function dataVersion(): string
     {
-        $stamp = Student::query()->max('updated_at');
+        $path = storage_path('app/graduation/graduands.json');
 
-        return $stamp ? (string) strtotime((string) $stamp) : '0';
+        return is_file($path) ? (string) filemtime($path) : '0';
     }
 
     protected function cacheRoot(): string

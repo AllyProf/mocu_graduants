@@ -18,6 +18,7 @@ class GraduationData
         'Masters',
         'Postgraduate Diploma',
         'Bachelor Degree',
+        'Diploma',
         'Ordinary Diploma',
         'Certificate',
     ];

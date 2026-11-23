@@ -14,12 +14,15 @@
 				<span class="sg-caption" data-i18n="captionCeremony">Ceremony Lists</span>
 				<h1 data-i18n="graduands">Graduands</h1>
 			</div>
+			<div class="sg-pagehead-actions">
+				@include('SmartGradu_App.partials.page-pdf', ['pdfUrl' => route('graduands.pdf')])
+			</div>
 		</div>
 	</div>
 </section>
 
 <section class="sg-section sg-list-page">
-	<div class="container" data-filter-root data-per-page="10" data-total-all="{{ $total }}">
+	<div class="container" data-filter-root data-per-page="10" data-total-all="{{ $total }}" data-voice-root>
 		<div class="sg-list-summary">
 			<span class="sg-list-summary-icon"><i class="fa fa-graduation-cap"></i></span>
 			<div class="sg-list-summary-main">
@@ -27,6 +30,8 @@
 				<span><span data-i18n="showing">Showing</span> <b data-filter-count>{{ $total }}</b> · <span data-i18n="graduandsAll">Graduands All</span> <b data-filter-total>{{ $total }}</b></span>
 			</div>
 		</div>
+
+		@include('SmartGradu_App.partials.list-voice')
 
 		<div class="sg-list-tools">
 			<div class="sg-list-search-row">
@@ -36,7 +41,7 @@
 				</div>
 				<button type="button" class="sg-list-clear" data-filter-clear data-i18n="clear">Clear</button>
 			</div>
-			<div class="sg-list-filters">
+			<div class="sg-list-filters sg-list-filters-3">
 				<select id="study_level" class="form-control sg-select2" data-filter-level data-placeholder="All levels" data-sheet-title="Study level" data-i18n-data-placeholder="allLevels" data-i18n-sheet-title="studyLevel">
 					<option value="">All levels</option>
 					@foreach($studyLevels as $level)
@@ -47,6 +52,12 @@
 					<option value="">All programmes</option>
 					@foreach($programmes as $programme)
 						<option value="{{ $programme }}">{{ $programme }}</option>
+					@endforeach
+				</select>
+				<select id="year_of_study" class="form-control sg-select2" data-filter-year data-placeholder="All years" data-sheet-title="Year of study" data-i18n-data-placeholder="allYears" data-i18n-sheet-title="yearOfStudy">
+					<option value="">All years</option>
+					@foreach($yearsOfStudy as $year)
+						<option value="{{ $year }}">{{ $year }}</option>
 					@endforeach
 				</select>
 			</div>
@@ -62,13 +73,16 @@
 					<article
 						class="sg-people-item sg-people-item-plain"
 						data-filter-item
+						data-voice-item
+						data-name="{{ $graduand->full_name }}"
 						data-level="{{ $graduand->study_level }}"
 						data-programme="{{ $graduand->programme_short }}"
-						data-search="{{ $graduand->full_name }} {{ $graduand->programme_short }} {{ $graduand->programme }} {{ $graduand->gender }}"
+						data-year="{{ $graduand->year_of_study ?? '' }}"
+						data-search="{{ $graduand->full_name }} {{ $graduand->programme_short }} {{ $graduand->programme }} {{ $graduand->gender }} {{ $graduand->year_of_study ?? '' }}"
 					>
 						<span class="sg-people-rank" data-row-num>{{ $index + 1 }}</span>
 						<div class="sg-people-info">
-							<strong class="sg-people-name">{{ $graduand->full_name }}</strong>
+							<strong class="sg-people-name" data-voice-name>{{ $graduand->full_name }}</strong>
 							<span class="sg-people-meta">{{ $graduand->programme_short }} · {{ $graduand->study_level }}</span>
 							@if(!empty($graduand->is_best_student))
 								<span class="sg-people-award">Best student</span>
