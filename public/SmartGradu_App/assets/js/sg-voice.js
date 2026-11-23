@@ -59,8 +59,10 @@
 		}
 
 		function ttsUrl(g, text, s, bust) {
-			var path =
-				"/voice/tts?q=" +
+			// Relative to the current page so subdirectory installs and LAN IPs work
+			// (origin + "/voice/tts" breaks under /Smart_GraduApp/public/…).
+			var qs =
+				"q=" +
 				encodeURIComponent(text) +
 				"&g=" +
 				encodeURIComponent(g) +
@@ -68,11 +70,11 @@
 				encodeURIComponent(g === "male" ? "daudi" : "zuri") +
 				"&s=" +
 				encodeURIComponent(speedKey(s));
-			if (bust) path += "&r=" + encodeURIComponent(String(bust));
+			if (bust) qs += "&r=" + encodeURIComponent(String(bust));
 			try {
-				return new URL(path, window.location.origin).href;
+				return new URL("voice/tts?" + qs, window.location.href).href;
 			} catch (e) {
-				return path;
+				return "voice/tts?" + qs;
 			}
 		}
 
@@ -363,7 +365,11 @@
 			var myRun = runId;
 			queue = items;
 			index = Math.max(0, startAt || 0);
-			if (!queue.length || index >= queue.length) return;
+			if (!queue.length || index >= queue.length) {
+				closeSheet();
+				window.alert(pack("noNamesToRead", "No names to read. Clear filters and try again."));
+				return;
+			}
 			setSpeakingUi(true);
 			closeSheet();
 			speakNext(myRun);

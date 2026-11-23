@@ -242,11 +242,6 @@
 			sheet.hidden = false;
 			sheet.setAttribute("aria-hidden", "false");
 			document.body.classList.add("sg-gallery-sheet-open");
-			if (programme) {
-				window.setTimeout(function () {
-					try { programme.focus(); } catch (e) { /* ignore */ }
-				}, 80);
-			}
 		}
 
 		function closeSheet() {

@@ -120,21 +120,22 @@
 
 		<form class="sg-gallery-form" data-gallery-form action="{{ route('gallery.store') }}" method="post" enctype="multipart/form-data">
 			@csrf
-			<label class="sg-gallery-field">
+			<label class="sg-gallery-field" for="gallery_programme">
 				<span data-i18n="programme">Programme</span>
 				<select
 					name="programme"
 					id="gallery_programme"
-					class="form-control sg-gallery-programme-select"
+					class="form-control sg-select2"
 					required
+					data-placeholder="Select programme"
+					data-sheet-title="Programme"
 					data-i18n-data-placeholder="selectProgramme"
+					data-i18n-sheet-title="programme"
 					data-gallery-programme
 				>
 					<option value="">Select programme</option>
 					@foreach($programmes as $programme)
-						<option value="{{ $programme->short }}">
-							{{ $programme->short }}{{ $programme->name && $programme->name !== $programme->short ? ' — '.$programme->name : '' }}
-						</option>
+						<option value="{{ $programme->short }}">{{ $programme->short }}</option>
 					@endforeach
 				</select>
 			</label>
@@ -172,5 +173,5 @@
 @endsection
 
 @push('scripts')
-<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=9') }}"></script>
+<script src="{{ asset('SmartGradu_App/assets/js/sg-gallery.js?v=10') }}"></script>
 @endpush

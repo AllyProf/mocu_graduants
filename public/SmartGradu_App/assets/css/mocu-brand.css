@@ -4698,9 +4698,18 @@ body.sg-voice-sheet-open {
 .sg-gallery-sheet:not([hidden]) {
 	position: fixed;
 	inset: 0;
-	z-index: 1280;
+	/* Below .sg-sheet (1200) so the programme bottom-sheet picker stacks on top */
+	z-index: 1100;
 	display: block;
 	pointer-events: auto;
+}
+
+body.sg-gallery-sheet-open .sg-sheet:not([hidden]) {
+	z-index: 1300;
+}
+
+body.sg-gallery-sheet-open .select2-container--open {
+	z-index: 1400 !important;
 }
 
 .sg-gallery-sheet-backdrop {
@@ -4726,19 +4735,14 @@ body.sg-voice-sheet-open {
 	animation: sg-sheet-up 0.28s ease;
 }
 
-.sg-gallery-programme-select {
-	display: block;
+.sg-gallery-field .sg-sheet-field,
+.sg-gallery-field .sg-sheet-trigger {
 	width: 100%;
-	height: 46px;
-	padding: 10px 12px;
-	border: 1px solid #d5dde8;
+}
+
+.sg-gallery-field .sg-sheet-trigger {
+	min-height: 46px;
 	border-radius: 12px;
-	background: #fff;
-	color: #1e293b;
-	font-size: 0.95rem;
-	appearance: auto;
-	-webkit-appearance: menulist;
-	pointer-events: auto;
 }
 
 .sg-gallery-sheet-handle {

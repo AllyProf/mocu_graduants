@@ -187,6 +187,7 @@
 							placeholder: $el.data("placeholder") || "Select an option",
 							allowClear: canClear,
 							minimumResultsForSearch: 0,
+							dropdownParent: jQuery(document.body),
 						};
 
 						if ($el.hasClass("sg-country-select")) {
