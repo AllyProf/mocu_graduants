@@ -95,13 +95,23 @@ class ListPdfCacheService
     }
 
     /**
-     * Data version changes when graduands.json changes, invalidating old cache keys.
+     * Data version changes when list JSON files change, invalidating old cache keys.
      */
     public function dataVersion(): string
     {
-        $path = storage_path('app/graduation/graduands.json');
+        $paths = [
+            storage_path('app/graduation/graduands.json'),
+            storage_path('app/graduation/best-students.json'),
+        ];
 
-        return is_file($path) ? (string) filemtime($path) : '0';
+        $stamp = '0';
+        foreach ($paths as $path) {
+            if (is_file($path)) {
+                $stamp .= '-'.filemtime($path);
+            }
+        }
+
+        return $stamp;
     }
 
     protected function cacheRoot(): string

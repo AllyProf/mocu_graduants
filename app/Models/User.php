@@ -9,7 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * Authenticated system user. Passwords belong here (staff/admin only).
+ * Optional Eloquent user (seeders/migrations only).
+ * The public companion does not use login.
  */
 class User extends Authenticatable
 {

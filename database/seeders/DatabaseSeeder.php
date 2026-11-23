@@ -8,10 +8,11 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 /**
- * Seeds admin user, academic lookups, programmes, students, and staff.
+ * Optional DB seeders. The live companion serves ceremony data from
+ * storage/app/graduation/*.json and does not require these tables.
  *
- * Password is taken from ADMIN_PASSWORD in .env (default: "password").
- * Change this before deploying to production.
+ * Run only when you intentionally use MySQL/SQLite for admin tooling:
+ *   php artisan migrate --seed
  */
 class DatabaseSeeder extends Seeder
 {

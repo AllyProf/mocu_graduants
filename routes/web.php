@@ -45,6 +45,6 @@ Route::get('/live', LiveCeremonyController::class)->name('live');
 Route::get('/help', HelpController::class)->name('help');
 Route::get('/voice/tts', VoiceTtsController::class)->name('voice.tts');
 
-/* Old auth URLs → home (login removed) */
+/* Legacy auth URLs (login removed) → home */
 Route::redirect('/login', '/')->name('login');
-Route::match(['get', 'post'], '/logout', fn () => redirect()->route('home'))->name('logout');
+Route::match(['get', 'post'], '/logout', fn () => redirect('/'))->name('logout');

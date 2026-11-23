@@ -18,8 +18,14 @@
 /public/storage
 /public/SmartGradu_App/assets/img/*-source.*
 /public/SmartGradu_App/assets/img/*.bak
+/public/SmartGradu_App/uploads/gallery/*
+!/public/SmartGradu_App/uploads/gallery/.gitignore
 /storage/*.key
 /storage/pail
+/storage/app/graduation/tts-cache/*
+!/storage/app/graduation/tts-cache/.gitignore
+/storage/app/graduation/pdf-cache/*
+!/storage/app/graduation/pdf-cache/.gitignore
 /storage/framework/cache/data/*
 /storage/framework/sessions/*
 /storage/framework/views/*

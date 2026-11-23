@@ -45,10 +45,6 @@
 					markApp();
 					document.documentElement.classList.add("sg-webview");
 					if (document.body) document.body.classList.add("sg-webview");
-					document.querySelectorAll(".sg-hide-in-webview").forEach(function (el) {
-						el.style.display = "none";
-						el.setAttribute("hidden", "hidden");
-					});
 					return true;
 				}
 				if (apply()) {
@@ -73,7 +69,7 @@
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/fonts.css') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/menu.css?v=20') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/style.css?v=20') }}">
-	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=204') }}">
+	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/mocu-brand.css?v=205') }}">
 	<link rel="stylesheet" href="{{ asset('SmartGradu_App/assets/css/responsive.css') }}">
 	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 	@stack('styles')
@@ -106,7 +102,7 @@
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=39') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-voice.js?v=17') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=5') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=35') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=36') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-pull-refresh.js?v=1') }}"></script>
 	@stack('scripts')
 </body>

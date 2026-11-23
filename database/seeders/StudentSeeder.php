@@ -75,7 +75,6 @@ class StudentSeeder extends Seeder
                 'gpa' => isset($row['gpa']) ? (float) $row['gpa'] : null,
                 'is_best_student' => (bool) ($row['is_best_student'] ?? false),
                 'best_award' => $row['best_award'] ?? null,
-                'award' => $row['award'] ?? null,
                 'is_active' => true,
             ]);
         }

@@ -2,32 +2,35 @@
 
 Mobile-first graduation companion for **Moshi Co-operative University (MoCU)**.
 
-Provides ceremony lists, best students, timetable, venues, university leaders, gallery memories, live streams, and help contacts.
+Public ceremony pages: graduand lists, best students, timetable, venues, leadership gallery, photo memories, live stream, help, and voice TTS.
 
 ## Stack
 
-- PHP 8.3+ / Laravel 12
+- PHP 8.2+ / Laravel 12
 - Blade views (`resources/views/SmartGradu_App`)
 - Front-end assets (`public/SmartGradu_App/assets`)
-- JSON data store (`storage/app/graduation`)
+- JSON data store (`storage/app/graduation`) — **no database required for the companion**
 
 ## Application structure
 
 | Path | Purpose |
 |------|---------|
 | `app/Http/Controllers/Graduation` | Ceremony page endpoints |
-| `app/Http/Controllers/Auth` | Login / logout |
 | `app/Services/GraduationData.php` | JSON data access |
 | `routes/web.php` | Public web routes |
 | `resources/views/SmartGradu_App` | UI templates |
 | `public/SmartGradu_App/assets` | CSS, JS, images |
-| `public/SmartGradu_App/uploads/gallery` | Gallery photo uploads |
+| `public/SmartGradu_App/uploads/gallery` | Gallery photo uploads (writable) |
+
+There is **no staff login**. `/login` and `/logout` redirect home for old bookmarks.
 
 ## JSON data (`storage/app/graduation`)
 
 | File | Purpose |
 |------|---------|
-| `graduands.json` | Graduands / best-student source list |
+| `graduands.json` | Graduands list |
+| `best-students.json` | Best students list (awards) |
+| `programmes.json` | Programme catalogue (filters) |
 | `locations.json` | Venue Guide map points |
 | `leaders.json` | University leaders |
 | `gallery.json` | Gallery memory index |
@@ -35,7 +38,7 @@ Provides ceremony lists, best students, timetable, venues, university leaders, g
 | `live.json` | Live stream config |
 | `help.json` | Help contacts / FAQs |
 
-Login still uses the `users` table. Ceremony list content is JSON-based.
+Sessions, cache, and queue use **file / sync** drivers by default — MySQL is optional.
 
 ## Local setup
 
@@ -43,19 +46,43 @@ Login still uses the `users` table. Ceremony list content is JSON-based.
 composer install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed
 php artisan serve
 ```
 
-Default seeded admin (change before production):
+Open `http://127.0.0.1:8000` (or your XAMPP virtual host).
 
-- Email: `admin@mocu.ac.tz`
-- Password: value of `ADMIN_PASSWORD` in `.env` (default `password`)
+Optional (only if you want Laravel DB tables / seeders):
 
-## Production notes
+```bash
+php artisan migrate --seed
+```
 
-1. Set `APP_ENV=production` and `APP_DEBUG=false`.
-2. Run `composer install --no-dev --optimize-autoloader`.
-3. Set a strong `ADMIN_PASSWORD` and re-seed or update the admin user.
-4. Ensure `storage/app/graduation/*.json` is present on the server.
-5. Ensure `public/SmartGradu_App/uploads/gallery` is writable for gallery uploads.
+## Production deploy
+
+1. Copy the project to the server and set `.env`:
+   - `APP_ENV=production`
+   - `APP_DEBUG=false`
+   - `APP_URL=https://your-domain.tld`
+   - `LOG_LEVEL=error`
+   - Keep `SESSION_DRIVER=file`, `CACHE_STORE=file`, `QUEUE_CONNECTION=sync` unless you intentionally use Redis/DB.
+2. Generate a unique key: `php artisan key:generate`
+3. Install dependencies:
+
+```bash
+composer install --no-dev --optimize-autoloader
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+4. Ensure these are **writable** by the web user:
+   - `storage/`
+   - `bootstrap/cache/`
+   - `public/SmartGradu_App/uploads/gallery/`
+5. Deploy `storage/app/graduation/*.json` with real ceremony data.
+6. Point the web root at `public/` (Apache/Nginx).
+7. Health check: `GET /up`
+
+### Apache note (XAMPP / shared hosting)
+
+Document root must be `public/`. Do not expose `.env`, `storage/`, or `vendor/` as public URLs.

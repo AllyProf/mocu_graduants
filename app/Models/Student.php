@@ -21,7 +21,6 @@ class Student extends Model
         'gpa',
         'is_best_student',
         'best_award',
-        'award',
         'is_active',
     ];
 
@@ -70,7 +69,6 @@ class Student extends Model
             'gpa' => $this->gpa,
             'is_best_student' => $this->is_best_student,
             'best_award' => $this->best_award,
-            'award' => $this->award,
             'registration_number' => $this->registration_number,
             'academic_year' => $this->academicYear?->name,
         ];

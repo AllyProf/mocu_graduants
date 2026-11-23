@@ -6,10 +6,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Laws",
         "programme_short": "LL.B",
-        "gpa": 4.7,
-        "is_best_student": true,
-        "best_award": "overall",
-        "award": null
+        "gpa": 4.7
     },
     {
         "full_name": "Grace Peter Kimaro",
@@ -18,10 +15,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Laws",
         "programme_short": "LL.B",
-        "gpa": 4.54,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.54
     },
     {
         "full_name": "Neema Neema Shirima",
@@ -30,10 +24,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Laws",
         "programme_short": "LL.B",
-        "gpa": 4.53,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.53
     },
     {
         "full_name": "Sophia Said Mwakyusa",
@@ -42,10 +33,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Business Information and Communication Technology",
         "programme_short": "BBICT",
-        "gpa": 4.52,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.52
     },
     {
         "full_name": "Halima Yusuf Komba",
@@ -54,10 +42,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Business Information and Communication Technology",
         "programme_short": "BBICT",
-        "gpa": 4.51,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.51
     },
     {
         "full_name": "Fatuma Paul Ally",
@@ -66,10 +51,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Business Information and Communication Technology",
         "programme_short": "BBICT",
-        "gpa": 4.5,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.5
     },
     {
         "full_name": "Rehema Frank Kessy",
@@ -78,10 +60,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Human Resource Management",
         "programme_short": "BHRM",
-        "gpa": 4.49,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.49
     },
     {
         "full_name": "Joyce Hassan Mtui",
@@ -90,10 +69,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Human Resource Management",
         "programme_short": "BHRM",
-        "gpa": 4.48,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.48
     },
     {
         "full_name": "Happy Abdul Lyimo",
@@ -102,10 +78,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Human Resource Management",
         "programme_short": "BHRM",
-        "gpa": 4.47,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.47
     },
     {
         "full_name": "Diana Deus Nkya",
@@ -114,10 +87,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Microfinance and Enterprise Development",
         "programme_short": "BME",
-        "gpa": 4.46,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.46
     },
     {
         "full_name": "Zainabu Elisante Mushi",
@@ -126,10 +96,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Microfinance and Enterprise Development",
         "programme_short": "BME",
-        "gpa": 4.45,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.45
     },
     {
         "full_name": "Lightness Godfrey Mrema",
@@ -138,10 +105,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Microfinance and Enterprise Development",
         "programme_short": "BME",
-        "gpa": 4.44,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.44
     },
     {
         "full_name": "Asha Wilson Mwanga",
@@ -150,10 +114,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Marketing and Entrepreneurship",
         "programme_short": "BMFED",
-        "gpa": 4.43,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.43
     },
     {
         "full_name": "Maria John Shao",
@@ -162,10 +123,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Marketing and Entrepreneurship",
         "programme_short": "BMFED",
-        "gpa": 4.42,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.42
     },
     {
         "full_name": "Sarah Ally Tarimo",
@@ -174,10 +132,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Marketing and Entrepreneurship",
         "programme_short": "BMFED",
-        "gpa": 4.41,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.41
     },
     {
         "full_name": "Esther Prosper Msigwa",
@@ -186,10 +141,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Procurement and Supply Chain Management",
         "programme_short": "BPSCM",
-        "gpa": 4.4,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.4
     },
     {
         "full_name": "Irene Hamisi Ngowi",
@@ -198,10 +150,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Procurement and Supply Chain Management",
         "programme_short": "BPSCM",
-        "gpa": 4.39,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.39
     },
     {
         "full_name": "Pendo Alphonce Masawe",
@@ -210,10 +159,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Procurement and Supply Chain Management",
         "programme_short": "BPSCM",
-        "gpa": 4.38,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.38
     },
     {
         "full_name": "Gloria Julius Kileo",
@@ -222,10 +168,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Cooperative Management and Accounting",
         "programme_short": "BCMA",
-        "gpa": 4.37,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.37
     },
     {
         "full_name": "Upendo Eliud Mosha",
@@ -234,10 +177,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Cooperative Management and Accounting",
         "programme_short": "BCMA",
-        "gpa": 4.36,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.36
     },
     {
         "full_name": "John Joseph Swai",
@@ -246,10 +186,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Cooperative Management and Accounting",
         "programme_short": "BCMA",
-        "gpa": 4.35,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.35
     },
     {
         "full_name": "Baraka Mwita Kyara",
@@ -258,10 +195,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Arts in Cooperative Management and Accounting",
         "programme_short": "BA-CMA",
-        "gpa": 4.34,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.34
     },
     {
         "full_name": "Daniel Kassim Mmasi",
@@ -270,10 +204,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Arts in Cooperative Management and Accounting",
         "programme_short": "BA-CMA",
-        "gpa": 4.33,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.33
     },
     {
         "full_name": "Michael Musa Makundi",
@@ -282,10 +213,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Arts in Cooperative Management and Accounting",
         "programme_short": "BA-CMA",
-        "gpa": 4.32,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.32
     },
     {
         "full_name": "Peter Ramadhani Msuya",
@@ -294,10 +222,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Economics",
         "programme_short": "BEC",
-        "gpa": 4.31,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.31
     },
     {
         "full_name": "Josephat Juma Hassan",
@@ -306,10 +231,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Economics",
         "programme_short": "BEC",
-        "gpa": 4.3,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.3
     },
     {
         "full_name": "Emmanuel Peter Kimaro",
@@ -318,10 +240,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Economics",
         "programme_short": "BEC",
-        "gpa": 4.29,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.29
     },
     {
         "full_name": "Ibrahim Neema Shirima",
@@ -330,10 +249,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Cooperative Education and Development",
         "programme_short": "BCED",
-        "gpa": 4.28,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.28
     },
     {
         "full_name": "Godfrey Said Mwakyusa",
@@ -342,10 +258,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Cooperative Education and Development",
         "programme_short": "BCED",
-        "gpa": 4.27,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.27
     },
     {
         "full_name": "Samwel Yusuf Komba",
@@ -354,10 +267,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Cooperative Education and Development",
         "programme_short": "BCED",
-        "gpa": 4.26,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.26
     },
     {
         "full_name": "Ally Paul Ally",
@@ -366,10 +276,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Accounting and Finance",
         "programme_short": "BAF",
-        "gpa": 4.25,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.25
     },
     {
         "full_name": "Juma Frank Kessy",
@@ -378,10 +285,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Accounting and Finance",
         "programme_short": "BAF",
-        "gpa": 4.24,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.24
     },
     {
         "full_name": "Deus Hassan Mtui",
@@ -390,10 +294,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Accounting and Finance",
         "programme_short": "BAF",
-        "gpa": 4.23,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.23
     },
     {
         "full_name": "Frank Abdul Lyimo",
@@ -402,10 +303,7 @@
         "year_of_study": "First Year",
         "programme": "Bachelor of Accounting and Taxation",
         "programme_short": "BAT",
-        "gpa": 4.22,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.22
     },
     {
         "full_name": "Eliud Deus Nkya",
@@ -414,10 +312,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Accounting and Taxation",
         "programme_short": "BAT",
-        "gpa": 4.21,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.21
     },
     {
         "full_name": "Hassan Elisante Mushi",
@@ -426,10 +321,7 @@
         "year_of_study": "Third Year",
         "programme": "Bachelor of Accounting and Taxation",
         "programme_short": "BAT",
-        "gpa": 4.2,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.2
     },
     {
         "full_name": "Paul Godfrey Mrema",
@@ -438,10 +330,7 @@
         "year_of_study": "First Year",
         "programme": "Diploma in Business and Enterprise Management",
         "programme_short": "DBEM",
-        "gpa": 4.08,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.08
     },
     {
         "full_name": "Erick Wilson Mwanga",
@@ -450,10 +339,7 @@
         "year_of_study": "Second Year",
         "programme": "Diploma in Business and Enterprise Management",
         "programme_short": "DBEM",
-        "gpa": 4.06,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.06
     },
     {
         "full_name": "Kelvin John Shao",
@@ -462,10 +348,7 @@
         "year_of_study": "First Year",
         "programme": "Diploma in Business and Resource Management",
         "programme_short": "DBRM",
-        "gpa": 4.04,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.04
     },
     {
         "full_name": "Brian Ally Tarimo",
@@ -474,10 +357,7 @@
         "year_of_study": "Second Year",
         "programme": "Diploma in Business and Resource Management",
         "programme_short": "DBRM",
-        "gpa": 4.02,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.02
     },
     {
         "full_name": "Amina Prosper Msigwa",
@@ -486,10 +366,7 @@
         "year_of_study": "First Year",
         "programme": "Diploma in Business Information and Communication Technology",
         "programme_short": "DBICT",
-        "gpa": 4.4,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.4
     },
     {
         "full_name": "Grace Hamisi Ngowi",
@@ -498,10 +375,7 @@
         "year_of_study": "Second Year",
         "programme": "Diploma in Business Information and Communication Technology",
         "programme_short": "DBICT",
-        "gpa": 4.38,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.38
     },
     {
         "full_name": "Neema Alphonce Masawe",
@@ -510,10 +384,7 @@
         "year_of_study": "First Year",
         "programme": "Diploma in Microfinance Management",
         "programme_short": "DMFM",
-        "gpa": 4.36,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.36
     },
     {
         "full_name": "Sophia Julius Kileo",
@@ -522,10 +393,7 @@
         "year_of_study": "Second Year",
         "programme": "Diploma in Microfinance Management",
         "programme_short": "DMFM",
-        "gpa": 4.34,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.34
     },
     {
         "full_name": "Halima Eliud Mosha",
@@ -534,10 +402,7 @@
         "year_of_study": "First Year",
         "programme": "Diploma in Cooperative Management and Accounting",
         "programme_short": "DCMA",
-        "gpa": 4.32,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.32
     },
     {
         "full_name": "Fatuma Joseph Swai",
@@ -546,10 +411,7 @@
         "year_of_study": "Second Year",
         "programme": "Diploma in Cooperative Management and Accounting",
         "programme_short": "DCMA",
-        "gpa": 4.3,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.3
     },
     {
         "full_name": "Rehema Mwita Kyara",
@@ -558,10 +420,7 @@
         "year_of_study": "First Year",
         "programme": "Certificate in Marketing and Accountancy",
         "programme_short": "CMA",
-        "gpa": 4.18,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.18
     },
     {
         "full_name": "Joyce Kassim Mmasi",
@@ -570,10 +429,7 @@
         "year_of_study": "Second Year",
         "programme": "Certificate in Marketing and Accountancy",
         "programme_short": "CMA",
-        "gpa": 4.16,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.16
     },
     {
         "full_name": "Happy Musa Makundi",
@@ -582,10 +438,7 @@
         "year_of_study": "First Year",
         "programme": "Certificate in Accountancy and Finance",
         "programme_short": "CAF",
-        "gpa": 4.14,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.14
     },
     {
         "full_name": "Diana Ramadhani Msuya",
@@ -594,10 +447,7 @@
         "year_of_study": "Second Year",
         "programme": "Certificate in Accountancy and Finance",
         "programme_short": "CAF",
-        "gpa": 4.12,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.12
     },
     {
         "full_name": "Zainabu Juma Hassan",
@@ -606,10 +456,7 @@
         "year_of_study": "First Year",
         "programme": "Certificate in Human Resource Management",
         "programme_short": "CHRM",
-        "gpa": 4.1,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.1
     },
     {
         "full_name": "Lightness Peter Kimaro",
@@ -618,10 +465,7 @@
         "year_of_study": "Second Year",
         "programme": "Certificate in Human Resource Management",
         "programme_short": "CHRM",
-        "gpa": 4.08,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.08
     },
     {
         "full_name": "Asha Neema Shirima",
@@ -630,10 +474,7 @@
         "year_of_study": "First Year",
         "programme": "Certificate in Information Technology",
         "programme_short": "CIT",
-        "gpa": 4.06,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.06
     },
     {
         "full_name": "Maria Said Mwakyusa",
@@ -642,10 +483,7 @@
         "year_of_study": "Second Year",
         "programme": "Certificate in Information Technology",
         "programme_short": "CIT",
-        "gpa": 4.04,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.04
     },
     {
         "full_name": "Sarah Yusuf Komba",
@@ -654,10 +492,7 @@
         "year_of_study": "First Year",
         "programme": "Certificate in Law",
         "programme_short": "CL",
-        "gpa": 4.02,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.02
     },
     {
         "full_name": "Esther Paul Ally",
@@ -666,10 +501,7 @@
         "year_of_study": "Second Year",
         "programme": "Certificate in Law",
         "programme_short": "CL",
-        "gpa": 4,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4
     },
     {
         "full_name": "Irene Frank Kessy",
@@ -678,10 +510,7 @@
         "year_of_study": "First Year",
         "programme": "Certificate in Marketing and Finance",
         "programme_short": "CMF",
-        "gpa": 3.98,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 3.98
     },
     {
         "full_name": "Pendo Hassan Mtui",
@@ -690,10 +519,7 @@
         "year_of_study": "Second Year",
         "programme": "Certificate in Marketing and Finance",
         "programme_short": "CMF",
-        "gpa": 3.96,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 3.96
     },
     {
         "full_name": "Gloria Abdul Lyimo",
@@ -702,10 +528,7 @@
         "year_of_study": "First Year",
         "programme": "Postgraduate Diploma in Cooperative Management and Accounting",
         "programme_short": "DCMA",
-        "gpa": 4.3,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.3
     },
     {
         "full_name": "Upendo Deus Nkya",
@@ -714,10 +537,7 @@
         "year_of_study": "Second Year",
         "programme": "Postgraduate Diploma in Business Management",
         "programme_short": "DBRM",
-        "gpa": 4.25,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.25
     },
     {
         "full_name": "John Elisante Mushi",
@@ -726,10 +546,7 @@
         "year_of_study": "First Year",
         "programme": "Master of Business Administration",
         "programme_short": "BA-CMA",
-        "gpa": 4.45,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.45
     },
     {
         "full_name": "Baraka Godfrey Mrema",
@@ -738,10 +555,7 @@
         "year_of_study": "Second Year",
         "programme": "Master of Arts in Cooperative Management",
         "programme_short": "BCMA",
-        "gpa": 4.42,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.42
     },
     {
         "full_name": "Daniel Wilson Mwanga",
@@ -750,10 +564,7 @@
         "year_of_study": "First Year",
         "programme": "Doctor of Philosophy in Economics",
         "programme_short": "BEC",
-        "gpa": 4.48,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.48
     },
     {
         "full_name": "Michael John Shao",
@@ -762,10 +573,7 @@
         "year_of_study": "Second Year",
         "programme": "Doctor of Philosophy in Cooperative Studies",
         "programme_short": "BCED",
-        "gpa": 4.46,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.46
     },
     {
         "full_name": "Peter Ally Tarimo",
@@ -774,10 +582,7 @@
         "year_of_study": "Third Year",
         "programme": "Doctor of Philosophy in Business Studies",
         "programme_short": "BAF",
-        "gpa": 4.5,
-        "is_best_student": true,
-        "best_award": "programme",
-        "award": null
+        "gpa": 4.5
     },
     {
         "full_name": "Diana Paul Nkya",
@@ -786,10 +591,7 @@
         "year_of_study": "Second Year",
         "programme": "Bachelor of Laws",
         "programme_short": "LL.B",
-        "gpa": 3.7,
-        "is_best_student": false,
-        "best_award": null,
-        "award": null
+        "gpa": 3.7
     },
     {
         "full_name": "Samwel Julius Tarimo",
@@ -798,9 +600,6 @@
         "year_of_study": "First Year",
         "programme": "Diploma in Cooperative Management and Accounting",
         "programme_short": "DCMA",
-        "gpa": 3.55,
-        "is_best_student": false,
-        "best_award": null,
-        "award": null
+        "gpa": 3.55
     }
 ]

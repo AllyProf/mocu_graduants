@@ -26,6 +26,9 @@ class GraduationData
     /** @var Collection<int, object>|null */
     protected ?Collection $graduandsCache = null;
 
+    /** @var Collection<int, object>|null */
+    protected ?Collection $bestStudentsCache = null;
+
     /**
      * Absolute path to a graduation JSON file.
      */
@@ -70,6 +73,7 @@ class GraduationData
 
     /**
      * Full graduands list from graduands.json, ordered by level then name.
+     * Marks rows that also appear in best-students.json for list badges.
      */
     public function graduands(): Collection
     {
@@ -77,8 +81,28 @@ class GraduationData
             return $this->graduandsCache;
         }
 
+        $bestNames = $this->bestStudents()
+            ->mapWithKeys(function ($row) {
+                $name = Str::lower(trim((string) ($row->full_name ?? '')));
+
+                return $name !== '' ? [$name => $row] : [];
+            });
+
         $this->graduandsCache = collect($this->read('graduands.json'))
-            ->map(fn (array $row) => (object) $row)
+            ->map(function (array $row) use ($bestNames) {
+                $item = (object) $row;
+                $name = Str::lower(trim((string) ($item->full_name ?? '')));
+                $best = $name !== '' ? ($bestNames[$name] ?? null) : null;
+
+                if ($best) {
+                    $item->is_best_student = true;
+                    $item->best_award = $best->best_award ?? ($item->best_award ?? null);
+                } else {
+                    $item->is_best_student = false;
+                }
+
+                return $item;
+            })
             ->sort(function ($a, $b) {
                 $levelCmp = $this->studyLevelRank($a->study_level ?? null)
                     <=> $this->studyLevelRank($b->study_level ?? null);
@@ -167,8 +191,9 @@ class GraduationData
     {
         $preferred = ['First Year', 'Second Year', 'Third Year', 'Fourth Year'];
 
-        $found = $this->graduands()
+        $found = $this->bestStudents()
             ->pluck('year_of_study')
+            ->merge($this->graduands()->pluck('year_of_study'))
             ->filter()
             ->unique()
             ->values();
@@ -259,12 +284,24 @@ class GraduationData
     }
 
     /**
-     * Best-student subset: overall award first, then by GPA descending.
+     * Best students from best-students.json (overall award first, then GPA).
      */
     public function bestStudents(): Collection
     {
-        return $this->graduands()
-            ->filter(fn ($row) => ! empty($row->is_best_student))
+        if ($this->bestStudentsCache !== null) {
+            return $this->bestStudentsCache;
+        }
+
+        $this->bestStudentsCache = collect($this->read('best-students.json'))
+            ->map(function (array $row) {
+                $item = (object) $row;
+                $item->is_best_student = true;
+                if (! isset($item->best_award) || $item->best_award === '') {
+                    $item->best_award = 'programme';
+                }
+
+                return $item;
+            })
             ->sort(function ($a, $b) {
                 $aOverall = ($a->best_award ?? '') === 'overall' ? 0 : 1;
                 $bOverall = ($b->best_award ?? '') === 'overall' ? 0 : 1;
@@ -276,6 +313,8 @@ class GraduationData
                 return ((float) ($b->gpa ?? 0)) <=> ((float) ($a->gpa ?? 0));
             })
             ->values();
+
+        return $this->bestStudentsCache;
     }
 
     /**
