@@ -102,7 +102,7 @@
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-filters.js?v=39') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-voice.js?v=17') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-sheet.js?v=5') }}"></script>
-	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=36') }}"></script>
+	<script src="{{ asset('SmartGradu_App/assets/js/sg-lang.js?v=37') }}"></script>
 	<script src="{{ asset('SmartGradu_App/assets/js/sg-pull-refresh.js?v=1') }}"></script>
 	@stack('scripts')
 </body>
