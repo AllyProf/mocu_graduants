@@ -96,6 +96,14 @@
         "session": "October intake"
     },
     {
+        "short": "PGD-SACCOS",
+        "name": "Postgraduate Diploma in SACCOS Management",
+        "level": "Postgraduate Diploma",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
         "short": "BBICT",
         "name": "Bachelor of Business Information and Communication Technology",
         "level": "Bachelor Degree",
@@ -144,8 +152,24 @@
         "session": "October intake"
     },
     {
+        "short": "BMFED",
+        "name": "Bachelor of Microfinance and Enterprise Development",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
         "short": "BMM",
         "name": "Bachelor of Marketing Management",
+        "level": "Bachelor Degree",
+        "duration": "3 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "BME",
+        "name": "Bachelor of Marketing and Entrepreneurship",
         "level": "Bachelor Degree",
         "duration": "3 Years",
         "delivery": "Full-time",
@@ -264,6 +288,14 @@
         "session": "October intake"
     },
     {
+        "short": "DLIS",
+        "name": "Diploma in Library and Information Sciences",
+        "level": "Diploma",
+        "duration": "2 Years",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
         "short": "CIT",
         "name": "Certificate in Information Technology",
         "level": "Certificate",
@@ -274,6 +306,22 @@
     {
         "short": "CAF",
         "name": "Certificate in Accounting and Finance",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CED",
+        "name": "Certificate in Enterprise Development",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "CQT",
+        "name": "Certificate in Coffee Quality and Trade",
         "level": "Certificate",
         "duration": "1 Year",
         "delivery": "Full-time",
@@ -296,6 +344,14 @@
         "session": "October intake"
     },
     {
+        "short": "CLIS",
+        "name": "Certificate in Library and Information Sciences",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
         "short": "CHRM",
         "name": "Certificate in Human Resource Management",
         "level": "Certificate",
@@ -306,6 +362,14 @@
     {
         "short": "CMA",
         "name": "Certificate in Co-operative Management and Accounting",
+        "level": "Certificate",
+        "duration": "1 Year",
+        "delivery": "Full-time",
+        "session": "October intake"
+    },
+    {
+        "short": "PC-SACCOS",
+        "name": "Professional Certificate in SACCOS Management",
         "level": "Certificate",
         "duration": "1 Year",
         "delivery": "Full-time",
